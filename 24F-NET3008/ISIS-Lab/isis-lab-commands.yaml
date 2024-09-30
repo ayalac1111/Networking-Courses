@@ -16,8 +16,10 @@ devices:
       password: {password}
     commands:
       - /routing/isis/neighbor/print
+      - /ip/route/print
       - /ip/route/print detail
       - /routing/isis/lsp/print detail
+      - /export
   - device_info:
       device_type: mikrotik_routeros
       # Replace {ip_address} with T2's IP address reachable from your host
@@ -27,5 +29,7 @@ devices:
       password: {password}
     commands:
       - /routing/isis/neighbor/print
+      - /ip/route/print
       - /ip/route/print detail
       - /routing/isis/lsp/print detail
+      - /export
