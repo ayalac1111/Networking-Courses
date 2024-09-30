@@ -1,0 +1,31 @@
+# 24F-NET3008 - ISIS Commands
+# To be used with x-remote.py
+# https://github.com/ayalac1111/x-remote
+
+# Replace {username} with your username
+output_file: {username}-ISIS.txt
+
+# Devices to collect information from
+devices:
+  - device_info:
+      device_type: mikrotik_routeros
+      # Replace {ip_address} with T1's IP address reachable from your host
+      ip: {ip_address}
+      username: admin
+      # Replace {password} with admin's password to be used by ssh
+      password: {password}
+    commands:
+      - /routing/isis/neighbor/print
+      - /ip/route/print detail
+      - /routing/isis/lsp/print detail
+  - device_info:
+      device_type: mikrotik_routeros
+      # Replace {ip_address} with T2's IP address reachable from your host
+      ip: {ip_address}
+      username: admin
+      # Replace {password} with admin's password to be used by ssh
+      password: {password}
+    commands:
+      - /routing/isis/neighbor/print
+      - /ip/route/print detail
+      - /routing/isis/lsp/print detail
