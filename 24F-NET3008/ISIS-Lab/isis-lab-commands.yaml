@@ -33,3 +33,16 @@ devices:
       - /ip/route/print detail
       - /routing/isis/lsp/print detail
       - /export
+  - device_info:
+      # You need to configure ssh in your Cisco router
+      device_type: cisco_xe
+      # Replace {ip_address} with R-U's IP address reachable from your host
+      ip: {ip_address}
+      # Replace {user} with your username
+      username: {user}
+      # Replace {password} with admin's password to be used by ssh
+      password: {password}
+    commands:
+      - show ip route
+      - show ip nat translations
+      - show ip nat stats
