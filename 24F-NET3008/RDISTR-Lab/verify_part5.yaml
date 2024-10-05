@@ -1,0 +1,33 @@
+# 24F-NET3008 - ENARSI 15.1.2 - Part 5
+# To be used with x-remote.py
+# https://github.com/ayalac1111/x-remote
+
+# Replace {username} with your username
+output_file: {username}-03-RDIST.txt
+
+# Devices to collect information from
+devices:
+  - device_info:
+      device_type: cisco_xe
+      ip: 192.168.100.2
+      username: admin
+      password: adminpass
+    commands:
+      - show ip access-list
+      - show route-map
+      - show prefix-list
+      - show ip protocols
+ - device_info:
+    device_type: cisco_xe
+    ip: 192.168.100.1
+    username: admin
+    password: adminpass
+  commands:
+    - show ip route eigrp | include EX
+ - device_info:
+    device_type: cisco_xe
+    ip: 192.168.100.3
+    username: admin
+    password: adminpass
+  commands:
+    - show ip route ospf | include E1
