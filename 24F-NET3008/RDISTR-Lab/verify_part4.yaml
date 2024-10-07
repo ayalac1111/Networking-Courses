@@ -13,12 +13,12 @@ devices:
       username: admin
       password: adminpass
     commands:
-      - show prefix-list
+      - show ip prefix-list
       - show ip protocols
- - device_info:
-    device_type: cisco_xe
-    ip: 192.168.100.3
-    username: admin
-    password: adminpass
-  commands:
-    - show ip route ospf | include E2
+  - device_info:
+      device_type: cisco_xe
+      ip: 192.168.100.3
+      username: admin
+      password: adminpass
+    commands:
+     - show ip route ospf | include E2

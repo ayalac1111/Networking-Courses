@@ -15,10 +15,10 @@ devices:
     commands:
       - show ip access-list
       - show ip protocols
- - device_info:
-    device_type: cisco_xe
-    ip: 192.168.100.1
-    username: admin
-    password: adminpass
-  commands:
-    - show ip route eigrp | begin Gateway
+  - device_info:
+     device_type: cisco_xe
+     ip: 192.168.100.1
+     username: admin
+     password: adminpass
+    commands:
+      - show ip route eigrp | begin Gateway

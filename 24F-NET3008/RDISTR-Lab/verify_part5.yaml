@@ -15,19 +15,19 @@ devices:
     commands:
       - show ip access-list
       - show route-map
-      - show prefix-list
+      - show ip prefix-list
       - show ip protocols
- - device_info:
-    device_type: cisco_xe
-    ip: 192.168.100.1
-    username: admin
-    password: adminpass
-  commands:
-    - show ip route eigrp | include EX
- - device_info:
-    device_type: cisco_xe
-    ip: 192.168.100.3
-    username: admin
-    password: adminpass
-  commands:
-    - show ip route ospf | include E1
+  - device_info:
+      device_type: cisco_xe
+      ip: 192.168.100.1
+      username: admin
+      password: adminpass
+    commands:
+      - show ip route eigrp | include EX
+  - device_info:
+      device_type: cisco_xe
+      ip: 192.168.100.3
+      username: admin
+      password: adminpass
+    commands:
+      - show ip route ospf | include E1
