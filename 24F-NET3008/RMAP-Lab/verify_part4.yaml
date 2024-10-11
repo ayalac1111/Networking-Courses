@@ -1,0 +1,23 @@
+# 24F-NET3008 - ENARSI 15.1.3
+# Verify Route Map Local-PBR
+# First Test via traceroute
+# Then collect information in R1 to ensure the policy matched
+# To be used with x-remote.py
+# https://github.com/ayalac1111/x-remote
+
+# Replace {username} with your username
+output_file: {username}-01-RMAP.txt
+
+# Devices to collect information from
+devices:
+  - device_info:
+      device_type: cisco_xe
+      ip: 192.168.100.4
+      username: admin
+      password: adminpass
+    commands:
+      - traceroute 192.168.1.1
+      - traceroute 192.168.0.2
+      - show ip access-list
+      - show route map
+      - show ip policy
