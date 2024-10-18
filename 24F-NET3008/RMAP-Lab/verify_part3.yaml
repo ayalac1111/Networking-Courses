@@ -25,5 +25,5 @@ devices:
      password: adminpass
     commands:
       - show ip access-list
-      - show route map
+      - show route-map
       - show ip policy
