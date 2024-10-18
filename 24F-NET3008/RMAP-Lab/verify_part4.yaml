@@ -6,13 +6,13 @@
 # https://github.com/ayalac1111/x-remote
 
 # Replace {username} with your username
-output_file: {username}-01-RMAP.txt
+output_file: {username}-02-RMAP.txt
 
 # Devices to collect information from
 devices:
   - device_info:
       device_type: cisco_xe
-      ip: 192.168.100.4
+      ip: 192.168.100.1
       username: admin
       password: adminpass
     commands:
