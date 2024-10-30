@@ -1,0 +1,25 @@
+enable
+conf t
+
+hostname R3
+
+interface Loopback3
+ ip address 30.30.30.30 255.255.255.0
+ ip ospf network point-to-point
+ ip ospf priority 1
+!
+interface GigabitEthernet0/0
+ ip address 10.1.3.3 255.255.255.248
+ no shut
+!
+interface GigabitEthernet0/1
+ ip address 10.2.3.3 255.255.255.248
+ no shut
+!
+router eigrp 123
+ network 10.2.3.3 0.0.0.0
+!
+router ospf 13
+ router-id 0.0.0.3
+ network 10.1.3.3 0.0.0.0 area 0
+ network 30.30.30.30 0.0.0.0 area 30
