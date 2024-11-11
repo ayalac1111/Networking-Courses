@@ -30,18 +30,13 @@ devices:
     commands:
       - show bpg ipv4 unicast | i 300
       - show ip prefix-list ALLOWED_FROM_R2
-      - show ip bgp neighbor 10.1.2.2 filters
       - show ip bgp neighbor 10.1.2.2 received-routes
       - show ip bgp ipv4 unicast | i 500
-      - show ip as-path access-list
-      - show ipv6 prefix-list ALLOWED_FROM_R2
-      - show bpg ipv6 unicast neighbor 2001:db8:acad:1012::2 filters
-      - show bpg ipv6 unicast neighbor 2001:db8:acad:1012::2 received-routes
+      - show ip as-path-access-list
+      - show ipv6 prefix-list IPV6_ALLOWED_FROM_R2
       - show bgp ipv6 unicast neighbors 2001:db8:acad:1012::2 routes
       - show ip prefix-list PREFERRED_IPV4_PATH
       - show route-map USE_THIS_PATH_FOR_IPV4
-      - show ip bgp neighbors 10.1.3.130 route-map
-      - show ip bgp neighbors 10.1.3.130 received-routes
       - show ip route bgp | begin Gateway
       - show ip bgp ipv4 unicast | begin Network
   - device_info:
@@ -52,6 +47,4 @@ devices:
     commands:
       - show ip bgp neighbors 10.1.3.1 advertised-routes
       - show ip bgp neighbors 10.1.2.129 advertised-routes
-      - show ip bgp neighbors 10.1.3.1 route-map
-      - show ip bgp neighbors 10.1.2.129 route-map
       - show access-list ALLOWED_TO_R1
