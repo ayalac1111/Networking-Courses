@@ -16,7 +16,7 @@ devices:
     commands:
       - show bgp all neighbors
       - show ip bgp
-      - show ipv6 bgp
+      - show bgp ipv6
       - show bgp ipv4 unicast 192.168.1.0 255.255.255.224
       - show bgp ipv6 unicast 2001:db8:acad:1000::/64
       - show ip route bgp | begin Gateway
@@ -28,7 +28,7 @@ devices:
      password: adminpass
     commands:
       - show ip bgp
-      - show ipv6 bgp
+      - show bgp ipv6
       - show ip route bgp | begin Gateway
       - show ipv6 route bgp | section 2001
   - device_info:
@@ -38,6 +38,6 @@ devices:
       password: adminpass
     commands:
       - show ip bgp
-      - show ipv6 bgp
+      - show bgp ipv6
       - show ip route bgp | begin Gateway
       - show ipv6 route bgp | section 2001

@@ -32,7 +32,7 @@ devices:
       password: adminpass
     commands:
       - show ip bgp
-      - show ipv6 bgp
+      - show bgp ipv6
       - show ip route bgp | begin Gateway
       - show ipv6 route bgp | section 2001
       - show ip bgp 192.168.1.0 | begin Refesh
