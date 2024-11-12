@@ -2,6 +2,13 @@
 # Verifies BGP neighbours and routes
 # To be used with x-remote.py
 # https://github.com/ayalac1111/x-remote
+# -----------------------------------------------------------------------------
+# Grading:
+# [ 1 Point ] R2: BGP ipv4 neighbours - show bgp all neigh
+# [ 1 Point ] R2: BGP ipv6 neighbours - show bgp all neigh
+# [ 1 Points] R2: BGP Ipv4 learned routes  - show ip route bgp
+# [ 1 Points] R2: BGP IPv6 learned routes  - show ipv6 route bgp
+# -----------------------------------------------------------------------------
 
 # Replace {username} with your username
 output_file: {username}-01-MP_BGP.txt
@@ -15,29 +22,5 @@ devices:
       password: adminpass
     commands:
       - show bgp all neighbors
-      - show ip bgp
-      - show bgp ipv6
-      - show bgp ipv4 unicast 192.168.1.0 255.255.255.224
-      - show bgp ipv6 unicast 2001:db8:acad:1000::/64
-      - show ip route bgp | begin Gateway
-      - show ipv6 route bgp | section 2001
-  - device_info:
-     device_type: cisco_xe
-     ip: 192.168.100.1
-     username: admin
-     password: adminpass
-    commands:
-      - show ip bgp
-      - show bgp ipv6
-      - show ip route bgp | begin Gateway
-      - show ipv6 route bgp | section 2001
-  - device_info:
-      device_type: cisco_xe
-      ip: 192.168.100.3
-      username: admin
-      password: adminpass
-    commands:
-      - show ip bgp
-      - show bgp ipv6
       - show ip route bgp | begin Gateway
       - show ipv6 route bgp | section 2001

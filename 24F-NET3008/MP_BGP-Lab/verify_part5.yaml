@@ -2,21 +2,19 @@
 # Verifies Route summarization and default route
 # To be used with x-remote.py
 # https://github.com/ayalac1111/x-remote
+# -----------------------------------------------------------------------------
+# Grading:
+# [ 2 Point ] R2: BGP IPv4 learned summarized routes  - show ip route bgp
+# [ 1 Point ] R1: BGP IPv4 learned default routes  - show ip route bgp
+# [ 1 Point ] R2: BGP IPv4 learned routes from R2  - show ip route bgp
+# [ 2 Point ] R2: BGP IPv6 learned summarized routes  - show ipv6 route bgp
+# -----------------------------------------------------------------------------
 
 # Replace {username} with your username
 output_file: {username}-02-MP_BGP.txt
 
 # Devices to collect information from
 devices:
-  - device_info:
-      device_type: cisco_xe
-      ip: 192.168.100.2
-      username: admin
-      password: adminpass
-    commands:
-      - show ip route bgp | begin Gateway
-      - show ipv6 route bgp | section 2001
-      - show ip bgp 192.168.1.0 | begin Refesh
   - device_info:
      device_type: cisco_xe
      ip: 192.168.100.1
@@ -27,13 +25,10 @@ devices:
       - show ipv6 route bgp | section 2001
   - device_info:
       device_type: cisco_xe
-      ip: 192.168.100.3
+      ip: 192.168.100.2
       username: admin
       password: adminpass
     commands:
-      - show ip bgp
-      - show bgp ipv6
       - show ip route bgp | begin Gateway
       - show ipv6 route bgp | section 2001
-      - show ip bgp 192.168.1.0 | begin Refesh
 
