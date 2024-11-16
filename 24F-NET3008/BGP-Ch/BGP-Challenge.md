@@ -41,7 +41,7 @@ For this lab, it is recommended that students use **MikroTik RouterOS 6.49** ins
 ---
 ## Initial Configuration
 
-1. Use `eth1` in all devices to connect to a `host-only` management network using the address `192.168.100.0/24`.  Each device should use its ID as its IP address.  For example, T1, eth1 should be `192.168.100.1/24`
+1. Use `eth4` in all devices to connect to a `host-only` management network using the address `192.168.100.0/24`.  Each device should use its ID as its IP address.  For example, `T1-eth4` should be `192.168.100.1/24`
 2. Use `internal network` for all other networks.
 4. Set the hostnames of each device as shown in the topology and prepend your username.
 5. Create all loopback devices using the **exact** names as shown in the topology. For example, the loopback 0 interfaces should be called `Lo0`
