@@ -79,6 +79,6 @@ This document is designed to prepare you for understanding and configuring BGP i
 ### Topology Reference
 
 Refer to the provided topology image for the relationships and connections between the routers:
-![Topology Diagram](eBGP-iBGP.png)
+![Topology Diagram](img/eBGP-iBGP.png)
 
 ---
