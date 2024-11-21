@@ -71,20 +71,64 @@ Flags: **X** - disabled, **I** - invalid, **D** - dynamic 
 -  **[0 Point]** Router IDs should follow the format `{U}.0.0.ID`, where `ID` represents the router number. (Evaluated in OSPF)
 - **[1 Point]** **T1** should advertise the network prefix represented by `Lo1`.  
 
-#### **From T2:**
+#### **Configure eBGP in T1 and T2**
+- [ ] Set BGP instance (ASN).
+- [ ] Set router-id.
+- [ ] Set BGP peer.
+- [ ] In T1 advertised the 1.1.1.0 network.
+
+```c#
+#-- Configure eBGP with T1 -- Do a similar config for T2
+#-- Using U=200
+routing bgp instance add name=AS100 as=100 router-id=200.0.0.1
+routing bgp peer add name=eBGP-T2 remote-as=240 remote-address=10.200.12.2 instance=AS100
+routing bgp network add network=1.1.1.0/24
+```
+
+#### **Verification From T1:**
+
+``` c#
+
+#-- Similar to the show ip bgp, but it only shows the advertised networks
+#-- Notice that the AS-Path is empty, and the pre-appending happens as the
+#-- update message leaves the AS
+
+[admin@ayalac-T1] > routing bgp advertisements print                             
+PEER     PREFIX         NEXTHOP     AS-PATH          ORIGIN     LOCAL-PREF
+eBGP-T2  1.1.1.0/24     10.200.12.1                   igp
+```
+
+#### **Verification From T2:**
 
 ```C#
+#-- A partial view of log pint
+#-- Notice the TCP connection established after setting up BGP
+#-- and the RemoteAddress as the one configured as neighbour
+
 12:46:50 system,info bgp instance AS240 added by admin 
 12:46:50 system,info bgp peer eBGP-T1 added by admin 
 12:46:51 route,bgp,info TCP connection established 
 12:46:51 route,bgp,info     RemoteAddress=10.200.12.1 
 
+[admin@ayalac-T2] > routing bgp peer print   
+Flags: **X** - disabled, **E** - established 
+ #   INSTANCE                  REMOTE-ADDRESS            REMOTE-AS  
+ 0 E AS240                      10.200.12.1                100
+
+#-- Notice the "ADb" b for BGP in the routing table
 [admin@ayalac-T2] > ip route print                             
- **#      DST-ADDRESS        PREF-SRC        GATEWAY            DISTANCE**
- 0 **ADb**  1.1.1.0/24                         10.200.12.1              20
- 1 **ADC**  10.200.2.0/24      10.200.2.2      Lo0                       0
- 2 **ADC**  10.200.12.0/24     10.200.12.2     ether2                    0
- 3 **ADC**  192.168.23.0/24    192.168.23.2    ether1                    0
- 4 **ADC**  192.168.100.0/24   192.168.100.2   ether4                    0
+ #      DST-ADDRESS        PREF-SRC        GATEWAY            DISTANCE
+ 0 ADb  1.1.1.0/24                         10.200.12.1              20
+ 1 ADC  10.200.2.0/24      10.200.2.2      Lo0                       0
+ 2 ADC  10.200.12.0/24     10.200.12.2     ether2                    0
+ 3 ADC  192.168.23.0/24    192.168.23.2    ether1                    0
+ 4 ADC  192.168.100.0/24   192.168.100.2   ether4                    0
+
+#-- Shows connecivity
+[admin@ayalac-T2] > ping count=2 1.1.1.1 
+  SEQ HOST                                     SIZE TTL TIME  STATUS              0 1.1.1.1                                    56  64 1ms  
+  1 1.1.1.1                                    56  64 1ms  
+ sent=2 received=2 packet-loss=0% min-rtt=1ms avg-rtt=1ms max-rtt=1ms
 ```
 
+---
