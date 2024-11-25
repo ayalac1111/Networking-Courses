@@ -66,7 +66,7 @@ For this lab, it is recommended that students use **MikroTik RouterOS 6.49** ins
 ---
 ## iBGP Peering
 
-- **[1 Point]** **T2 & T4** should peer via iBGP using the Lo0 of each router.
+- **[1 Point]** **Complete iBGP Mesh** in transit area via iBGP using each router.
 - **[1 Point]** Ensure `Lo0` of T2 & T4 participate in OSPF for reachability of iBGP neighbors.
 - **[1 Point]** Ensure the `nexthop-choice` is correctly set.
 
