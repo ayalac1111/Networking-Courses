@@ -1,0 +1,70 @@
+#--------------------------------------------------------------------------
+# 24F-NET3008 - BGP Challenge Verification Commands
+# To be used with x-remote.py
+# https://github.com/ayalac1111/x-remote
+#--------------------------------------------------------------------------
+# [1 Point ] BGP router ID in the forme {U}.0.0.ID
+# [5 Points] eBGP configuration between T1-T2 T1-T5 and T4-T5
+# [3 Point]  iBGP configuration between T2-T4
+# [1 Point]  OSPF configuraton between T2-T3-T4
+# [2 Points] BGP network advertisments T1-Lo1, T4-Lo4, T5-Lo1-Lo5
+# [2 Points] Challenge #1 AS_PATH prepending
+# [3 Points] Challenge #2 MED modification
+# [3 Points] Challenge #3 T5 filter to T1
+# TOTAL Points in Lab:  20 Points
+#--------------------------------------------------------------------------
+
+# Replace {username} with your username
+# Replace the admin password if necessary
+output_file: {username}-BGP.txt
+
+# Devices to collect information from
+devices:
+  - device_info:
+      device_type: mikrotik_routeros
+      ip: 192.168.100.1
+      username: admin
+      password: admin
+    commands:
+      - :put ([/system identity get name] . [/system clock get time] . [/system clock get date])
+      - /routing bgp instance print
+      - /routing bgp peer print detail
+      - /routing bgp network print
+      - /routing filter print
+      - /ip route print detail where bgp
+      - /tool traceroute count=1 4.4.4.4
+  - device_info:
+      device_type: mikrotik_routeros
+      ip: 192.168.100.2
+      username: admin
+      password: admin
+    commands:
+      - /routing bgp peer print detail
+      - /routing filter print
+      - /ip route print
+      - /ip route print detail where bgp
+  - device_info:
+      device_type: mikrotik_routeros
+      ip: 192.168.100.4
+      username: admin
+      password: admin
+    commands:
+      - /routing bgp peer print detail
+      - /routing bgp network print
+      - /ip route print detail where bgp
+      - /tool traceroute count=1 1.1.1.1 src-address=10.200.4.4
+  - device_info:
+      device_type: mikrotik_routeros
+      ip: 192.168.100.5
+      username: admin
+      password: admin
+    commands:
+      - /routing bgp peer print detail
+      - /routing bgp network print
+      - /routing bgp advertisements print
+      - /routing filter print
+      - /ip route print detail where bgp
+      - /tool traceroute count=1 1.1.1.1 src-address=10.200.5.5
+      - /tool traceroute count=1 4.4.4.4 src-address=10.200.5.5
+      - :put ([/system identity get name] . [/system clock get time] . [/system clock get date])
+
