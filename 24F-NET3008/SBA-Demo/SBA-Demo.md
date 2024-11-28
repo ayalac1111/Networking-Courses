@@ -49,12 +49,7 @@ During this demo, I will guide you through the **key tasks and configurations** 
 
 ### [ 2 Points ] **EIGRP Configuration**
 1. [ No Points given for basic configuration ] **AS123 Configuration**: 
-   - Enable EIGRP on **EIGRP-1** and **RDIS-2**:
-     ```bash
-     router eigrp 123
-      network 10.200.12.1 0.0.0.0
-      network 10.200.21.1 0.0.0.0
-     ```
+   - Enable EIGRP on **EIGRP-1** and **RDIS-2**.
    - Verify adjacencies:
      ```bash
      show ip eigrp neighbors
@@ -90,9 +85,10 @@ During this demo, I will guide you through the **key tasks and configurations** 
    - Configure **eBGP** on **ASB-3** and **BGP-4**
 	   - Using directly connected or loopback devices
 1. **Verify BGP Neighbours**:
-   ```bash
+```bash
    show ip bgp summary
 ```
+
 2. **Route Advertisement**:
     - Advertise network prefixes in BGP.
 
@@ -106,8 +102,55 @@ During this demo, I will guide you through the **key tasks and configurations** 
 2. Advertise the routes via a routing protocol.
 3. Use a prefix-list or a distribution list to filter out the routes.
 ### [ 2 Points] **Redistribution**
-1. Perform redistribution from one protocol to another, for example from EIGRP to OSPF.
-2. Use a route-map to apply a metric or change a value in the redistribution.
+1. Perform `redistribution` from one protocol to another, such as EIGRP to OSPF.
+2. Use a `route-map` to apply a metric or change a value in the redistribution.
 ### [ 3 Points] **Path Control**
-1. Use a route-map to modify attributes from BGP.
-2. Apply PBR to specify the next-hop of a route.
+1. Use a `route-map` to modify attributes from BGP.
+2. Apply PBR to specify the `next-hop` of a route.
+
+---
+
+## **Key Guidelines for the SBA**
+
+1. **Basic Protocols Are Enough to Pass**
+    - The SBA is designed so that you can pass by configuring only the **basic routing protocols** (EIGRP, OSPF, and BGP). Ensure these are fully functional before attempting advanced tasks.
+2. **Summarization is Critical**
+    - **Summary routes must be as small as possible** to optimize routing and prevent unnecessary advertisements. Review your summarization calculations carefully.
+3. **EIGRP Variance**
+    - The **variance** setting should be precise. Avoid using excessively large values, as they will not be accepted. Test your configuration to ensure the correct routes are included.
+4. **Route Filtering and Control**
+    - Review and practice using:
+        - **Prefix lists**
+        - **Distribute lists**
+        - **Route maps**
+    - These concepts form a major portion of the SBA and will be essential for tasks involving route filtering and redistribution.
+5. **BGP Path Selection**
+    - Be familiar with modifying the following attributes for BGP path selection:
+        - **Local Preference**
+        - **Multi-Exit Discriminator (MED)**
+        - **Weight**
+    - For **AS-PATH Prepending**, use the following command in Cisco
+        `set as-path prepend 650014 650014 650014 650014`
+
+---
+
+## **SBA Arrival Instructions**
+
+1. **Personal Items**
+    - Place all your items at the front of the lab.
+    - Do **not** keep your phones with you.
+    - Do **not** bring or use a USB memory stick.
+2. **Equipment and Materials**
+    - You are allowed your **written** lab book.  If you don't have a lab book you are allowed a set of **written** notes on paper.  You must leave the papers behind.
+    - It is considered **academic dishonesty** to use another student's note for your SBA.
+    - You will be provided with **10 cables**. Use them wisely, as no extra cables will be given.
+    - Do **not** turn off any equipment during the SBA. Ensure all devices remain powered on to avoid loss of progress or configurations.
+
+---
+
+## **Final Reminders**
+
+- Plan your time effectively.
+- Verify each configuration step as you proceed.
+- If in doubt, refer to your lab notes.
+- I'm there to support you in case of an equipment failure, but I will not be helping any student to remember commands or interpret the SBA.
