@@ -52,7 +52,7 @@ devices:
       - /routing bgp peer print detail
       - /routing bgp network print
       - /ip route print detail where bgp
-      - /tool traceroute count=1 1.1.1.1 src-address=10.200.4.4
+      - /tool traceroute count=1 1.1.1.1 src-address=10.{U}.4.4
   - device_info:
       device_type: mikrotik_routeros
       ip: 192.168.100.5
@@ -64,7 +64,7 @@ devices:
       - /routing bgp advertisements print
       - /routing filter print
       - /ip route print detail where bgp
-      - /tool traceroute count=1 1.1.1.1 src-address=10.200.5.5
-      - /tool traceroute count=1 4.4.4.4 src-address=10.200.5.5
+      - /tool traceroute count=1 1.1.1.1 src-address=10.{U}.5.5
+      - /tool traceroute count=1 4.4.4.4 src-address=10.{U}.5.5
       - :put ([/system identity get name] . [/system clock get time] . [/system clock get date])
 
