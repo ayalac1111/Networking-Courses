@@ -154,7 +154,7 @@ In this step, you’ll bring **R2** online as the final internal router. **R2** 
 
 #### 📋 CO3 - Verification and Collection of Information
 
-Copy the following commands in your `01-username.txt`file, under the label **CO3:
+Copy the following commands in your `01-username.txt`file, under the label **CO3**:
 
 ```bash
   - R2:   ping 198.18.U.130 source Lo2              !-- VM
@@ -175,7 +175,7 @@ Don't forget to save the file.
 
 #### 📋 CO4 - Verification and Collection of Information
 
-Copy the following commands in your `01-username.txt`file, under the label **CO4:
+Copy the following commands in your `01-username.txt`file, under the label **CO4**:
 
 ```bash
   - MLS:  show ip route | begin Gateway
