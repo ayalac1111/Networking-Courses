@@ -133,7 +133,6 @@ Copy the following commands in your `01-username.txt`file, under the label **CO2
   - R1:   ping 198.18.U.66                !-- PC
   - R1:   ping 198.18.U.130 source Lo1    !-- VM
   - R1:   ping 192.0.2.69                 !-- TFTP server
-  - R1:   traceroute 198.18.U.33          !-- R2-Lo2
 ```
 
 > 💬 **Note:**
