@@ -1,9 +1,7 @@
 # Lab 02 – IPv6 Addressing and Static Routing
 
 > Based on Linda MacEwan's IPv6 Lab
-> 
-> 🚧 *This lab is currently under development and will be released soon.*
-> 
+
 ## 🧭 Overview
 This lab introduces you to IPv6 routing concepts, including Global Unicast Addresses (GUA), Link-Local Addresses (LLA), Unique Local Addresses (ULA), and static route configuration using both GUA and LLA as next hops. You'll work through a multi-router topology, configure hosts, and verify IPv6 connectivity from end to end.
 
@@ -252,7 +250,7 @@ Copy the following commands in your `02-username.txt`file, under the label **CO2
 
 ```
 - SA, RB, RC: show ipv6 route
-- SA:  ping 2001:db8:192::62                 ! TFTP Server
+- RC:  ping 2001:db8:192::62                 ! TFTP Server
 - RC:  ping fd00:U:aa::10                    ! SA - Lo10
 - RC:  ping fd00:U:aa::10 source Lo12        ! SA - Lo10 sourcing from Lo12
 ```
@@ -268,6 +266,7 @@ Copy the following commands in your `02-username.txt`file, under the label **CO2
 - [ ] A ping to the TFTP server IPv6 address should be successful
 - [ ] Test web browser access: `http://[2001:db8:192::69]`
 
+> In IPv6, you must **enclose the IP address in square brackets** when using it in a URL, which tells protocols like HTTP that it's an address, not part of the port or path.
 ### 2. Alpine VM:
 
 #### 🖥️ Why You’re Using Alpine Linux in This Lab
@@ -317,6 +316,9 @@ Where:
 Copy the following commands in your `02-username.txt`file, under the label **CO3**:
 
 ```bash
+PC:
+curl "http://[2001:db8:192::69]"
+
 ALPINE:
 ip address show dev eth0
 ip -6 route show
@@ -325,7 +327,6 @@ ping -c 4 PC-Address                ! You will need to find this Address on PC
 ping -c 4 fd00:100:aa::10           ! SA-Lo10
 ping -c 4 2001:db8:192::69
 ```
-
 
 ---
 ## Part E - 📤 Submission and Cleanup
