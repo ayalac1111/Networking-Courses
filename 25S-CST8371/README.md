@@ -13,6 +13,12 @@ This course focuses on scalable network design, IPv6, NAT, routing protocols, AC
 | 01   | [Static Routing, SVIs, and Review](./01-Lab-Review/README.md)    | Lab equipment | Configure inter-VLAN routing, static routes, and management access on multilayer switches                                                                                                                            | May 7  |
 | 02   | [IPv6 Addressing and Static Route](./02-Lab-IPv6/02-Lab-IPv6.md) | Lab equipment | Introduction of core IPv6 concepts through hands-on configuration of LLA, GUA, and ULA across a multi-router topology. Students set up and verify static and default routes using both GUA and LLA next-hop methods. | May 14 |
 
+## 🧭 Example Index
+
+| Week | Example Title                                                                         | Type | Description                                                                                                                                                          | Done            |
+| ---- | ------------------------------------------------------------------------------------- | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| 01   | [Walkthrough: Troubleshooting IPv4 Lab Topology](./Examples/01-Example/01-Example.md) | CML  | The example runs in CML, walks through common misconfigurations and troubleshooting scenarios that students may have encountered during or after completing the lab. | May 8 - Lecture |
+
 ---
 
 ## 📦 Folder Structure
