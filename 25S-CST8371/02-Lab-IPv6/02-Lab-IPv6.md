@@ -322,12 +322,23 @@ PC:
 curl "http://[2001:db8:192::69]"
 
 ALPINE:
+!-- Review the following commands - We will be using them from now on.
+!-- You need VMware Virtual Tools to copy/paste 
+!-- 
 ip address show dev eth0
 ip -6 route show
 ip neighbor
 ping -c 4 PC-Address                ! You will need to find this Address on PC 
 ping -c 4 fd00:100:aa::10           ! SA-Lo10
 ping -c 4 2001:db8:192::69
+
+
+Alternative Commands from PC if VM Tools is not installed
+
+PC:  ping VM
+PC:  ping fd00:U::cc::12
+PC:  ping 2001:db8:192::69
+
 ```
 
 ---
