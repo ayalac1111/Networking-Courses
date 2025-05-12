@@ -252,7 +252,7 @@ Copy the following command outputs in your `02-username.txt`file, under the labe
 
 ```
 - SA, RB, RC: show ipv6 route
-- RC:  ping 2001:db8:192::62                 ! TFTP Server
+- RC:  ping 2001:db8:192::69                 ! TFTP Server
 - RC:  ping fd00:U:aa::10                    ! SA - Lo10
 - RC:  ping fd00:U:aa::10 source Lo12        ! SA - Lo10 sourcing from Lo12
 ```
