@@ -38,7 +38,7 @@ Most importantly, this lab gives you hands-on experience with IPv6 **as it’s d
 | Block            | Role             | Use                                |
 | ---------------- | ---------------- | ---------------------------------- |
 | `2010:acad::/48` | Student Internal | All router, VLAN, and lab configs  |
-| `fd00::/8`       | ULA Loopbacks    | Non-routable internal only         |
+| `fd00:U::/8`     | Loopbacks        | Non-routable internal only         |
 | `2001:db8::/32`  | Remote / Teacher | Simulated external/public services |
 #### Student Addressing:
 All students use the format `2010:acad:U:<segment>::/64`, where:
@@ -50,7 +50,7 @@ All students use the format `2010:acad:U:<segment>::/64`, where:
 | `2010:acad:U:aa::/64` | **`aa`**     | SA VLAN 10 (PC LAN)  |
 | `2010:acad:U:ab::/64` | **`ab`**     | SA ↔ RB link         |
 | `2010:acad:U:bc::/64` | **`bc`**     | RB ↔ RC link         |
-| `2010:acad:U:cc::/64` | **`cc`**     | RC VLAN 20 (VM LAN)  |
+| `2010:acad:U:cc::/64` | **`cc`**     | RC CC (VM LAN)       |
 
 ---
 ## 🧾 Configuration and Verification Commands for Cisco IPv6
@@ -129,6 +129,8 @@ In IPv6, a single interface can have **multiple IP addresses**, and this is **by
 | **LLA**      | `fe80::/10`     | Local link-only communication  | All interfaces.      | Required for neighbour discovery and used as next-hop in static routes |
 | **GUA**      | `2000::/3`      | Global communication routing   | Physical interfaces. | Used for default/static routes, ping tests, and Internet access        |
 | **ULA**      | `fd00::/8`      | Private internal communication | Loopback interfaces. | Similar to private IPv4 (RFC1918); not routable on global Internet     |
+
+
 ### 1. Addressing
 - [ ] For **SA**:  
 	- [ ] Create `VLAN 10` and `VLAN 666`, 
@@ -188,11 +190,11 @@ Vlan10                 [up/up]
  ⚠️ **Common Mistakes to Watch For**:
 - **Missing address**: Likely due to forgetting `no shutdown` or a misconfigured prefix.
 - **Wrong `U` value**: Double-check that it matches your number assigned.
-- **LLA mismatch**: If it shows something like `FE80::1AB:23FF:FECD:4567`, that means it’s still **auto-generated**, not manually assigned.
-- **SVI down**:  Check that your VLAN is created and has switchports associated with it.
+- **LLA mismatch**: If it shows something like `FE80::1AB:23FF:FECD:4567`, it’s still **auto-generated**, not manually assigned.
+- **SVI down**:  Check that your VLAN is created and has switchports associated.
 ### 🔍 CO1 - Verification and Collection of Information
 
-Copy the following commands in your `02-username.txt`file, under the label **CO1**:
+Copy the following command outputs in your `02-username.txt`file, under the label **CO1**:
 
 From SA, RB and RC:
 
@@ -225,7 +227,7 @@ ipv6 route ::/0 gigabitethernet1/0/1  2010:acad:100:ab::11
 Configure a **default IPv6 route on RC**, but instead of using a GUA, you’ll use the **Link-Local Address (LLA)** of the next-hop router (RB).
 
 LLAs are **guaranteed to be present** and don’t change, even if GUAs are renumbered. That makes them ideal for **stable local links**, especially for static routing on simple point-to-point connections. When configuring routes using LLAs, the exit interface *must* be configured, since LLAs are **only unique on each link**, IOS needs to know **which interface** to send the packet out. Without it, the router wouldn't know which neighbour the LLA refers to.
-#### ⚙️ Cisco default route using LLA as the next hop
+#### ⚙️ Cisco default route using GUA as the next hop
 ``` bash
 ipv6 route ::/0 gigabitethernet0/0/2 fe80::2
 ```
@@ -246,7 +248,7 @@ On RB, you'll configure **specific static routes** for known internal networks, 
 
 ### 🔍 CO2 - Verification and Collection of Information
 
-Copy the following commands in your `02-username.txt`file, under the label **CO2**:
+Copy the following command outputs in your `02-username.txt`file, under the label **CO2**:
 
 ```
 - SA, RB, RC: show ipv6 route
@@ -313,7 +315,7 @@ Where:
 - Note that the last 6 hex numbers of your MAC address are used to form your IPv6 addresses
 ### 🔍 CO3 - Verification and Collection of Information
 
-Copy the following commands in your `02-username.txt`file, under the label **CO3**:
+Copy the following command outputs in your `02-username.txt`file, under the label **CO3**:
 
 ```bash
 PC:
