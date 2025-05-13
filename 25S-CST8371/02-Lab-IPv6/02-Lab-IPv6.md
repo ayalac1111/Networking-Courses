@@ -213,7 +213,7 @@ show ipv6 int brief
 Configure a **default route on SA** using the **Global Unicast Address (GUA)** of its next-hop neighbour (RB). 
 
 **SA** is at the edge of the network, and it needs to send traffic to other routers or devices beyond its own link. Using the **GUA of RB** makes it clear and easy to route traffic across multiple segments. It’s also **more intuitive for beginners**, as the GUA is human-readable and globally scoped.
-#### ⚙️ Cisco default route using LLA as the next hop
+#### ⚙️ Cisco default route using GUA as the next hop
 ``` bash
 ipv6 route ::/0 gigabitethernet1/0/1  2010:acad:100:ab::11
 ```
@@ -227,9 +227,9 @@ ipv6 route ::/0 gigabitethernet1/0/1  2010:acad:100:ab::11
 Configure a **default IPv6 route on RC**, but instead of using a GUA, you’ll use the **Link-Local Address (LLA)** of the next-hop router (RB).
 
 LLAs are **guaranteed to be present** and don’t change, even if GUAs are renumbered. That makes them ideal for **stable local links**, especially for static routing on simple point-to-point connections. When configuring routes using LLAs, the exit interface *must* be configured, since LLAs are **only unique on each link**, IOS needs to know **which interface** to send the packet out. Without it, the router wouldn't know which neighbour the LLA refers to.
-#### ⚙️ Cisco default route using GUA as the next hop
+#### ⚙️ Cisco default route using LLA as the next hop
 ``` bash
-ipv6 route ::/0 gigabitethernet0/0/2 fe80::2
+ipv6 route ::/0 gigabitethernet0/0/2 fe80::12
 ```
 
 This command means:
@@ -276,6 +276,8 @@ Copy the following command outputs in your `02-username.txt`file, under the labe
 In this lab, you work with a lightweight Linux VM called **Alpine** instead of another Windows system. In the real world, most network devices, servers, and cloud systems run on Linux, and often without a graphical interface. By using Alpine, you’ll gain experience with essential **command-line tools** like `ip`, `ip -6 route`, and `ip neighbor`, which help you understand and verify IPv6 behaviour such as **SLAAC**, **EUI-64**, and routing. 
 
 This is a valuable chance to build comfort with cross-platform networking, preparing you for careers in **DevOps, network engineering, and systems administration**, where Linux is everywhere.
+
+Use `root/cisco`for credentials.
 
 - [ ] Use `ip link set up dev eth0`
 - [ ] Verify SLAAC-derived IPv6 address matches EUI-64 from MAC
