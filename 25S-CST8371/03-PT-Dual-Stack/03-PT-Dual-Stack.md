@@ -31,7 +31,7 @@ Modern networks are transitioning to IPv6 due to IPv4 exhaustion, but IPv4 remai
 ### 0. Create submission file
 - [ ]  On your desktop, create a file `03-username.txt`.  You will submit this file to BrightSpace.
 ### 1. Basic Configuration
-- [ ] Download [03-PT-dual-stack.pkt](../Resources/03-PT-dual-stack.pkt).  This is not a packet tracer activity, it is not auto-graded.  Rename the file to `03-username.pkt`
+- [ ] [Download 03-PT-dual-stack.pkt](https://github.com/ayalac1111/Networking-Courses/raw/main/25S-CST8371/Resources/03-PT-dual-stack.pkt).  This is not a packet tracer activity, it is not auto-graded.  Rename the file to `03-username.pkt`
 - [ ] Use the provided base configuration file: [basic.cfg](../Resources/basic.cfg)
 ### 2. Power On Devices
 - [ ] All devices are powered off by default. Ensure each is turned on before starting the configuration.
