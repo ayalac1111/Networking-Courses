@@ -12,7 +12,7 @@ This course focuses on scalable network design, IPv6, NAT, routing protocols, AC
 | ---- | ---------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
 | 01   | [Static Routing, SVIs, and Review](./01-Lab-Review/README.md)    | Lab equipment | Configure inter-VLAN routing, static routes, and management access on multilayer switches                                                                                                                            | May 7  |
 | 02   | [IPv6 Addressing and Static Route](./02-Lab-IPv6/02-Lab-IPv6.md) | Lab equipment | Introduction of core IPv6 concepts through hands-on configuration of LLA, GUA, and ULA across a multi-router topology. Students set up and verify static and default routes using both GUA and LLA next-hop methods. | May 14 |
-| 03   | [Dual-Stack-Network](./03-PT-Dual-Stack.md)                      | Packet Tracer | Configure a dual-stack network using IPv4 and IPv6. Students assign interface addresses, implement static and floating routes, and observe Router Advertisements (RA) for SLAAC-based address autoconfiguration.     | May 23 |
+| 03   | [Dual-Stack-Network](03-PT-Dual-Stack/03-PT-Dual-Stack.md)       | Packet Tracer | Configure a dual-stack network using IPv4 and IPv6. Students assign interface addresses, implement static and floating routes, and observe Router Advertisements (RA) for SLAAC-based address autoconfiguration.     | May 23 |
 
 ## 🧭 Example Index
 
