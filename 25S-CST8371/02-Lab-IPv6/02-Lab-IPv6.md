@@ -130,7 +130,6 @@ In IPv6, a single interface can have **multiple IP addresses**, and this is **by
 | **GUA**      | `2000::/3`      | Global communication routing   | Physical interfaces. | Used for default/static routes, ping tests, and Internet access        |
 | **ULA**      | `fd00::/8`      | Private internal communication | Loopback interfaces. | Similar to private IPv4 (RFC1918); not routable on global Internet     |
 
-
 ### 1. Addressing
 - [ ] For **SA**:  
 	- [ ] Create `VLAN 10` and `VLAN 666`, 
@@ -338,7 +337,7 @@ ping -c 4 2001:db8:192::69
 Alternative Commands from PC if VM Tools is not installed
 
 PC:  ping VM
-PC:  ping fd00:U::cc::12
+PC:  ping fd00:U:cc::12
 PC:  ping 2001:db8:192::69
 
 ```
