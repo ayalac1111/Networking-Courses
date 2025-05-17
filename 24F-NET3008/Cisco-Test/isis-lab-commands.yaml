@@ -1,0 +1,18 @@
+# 24F-NET3008 - Cisco Commands
+# To be used with x-remote.py
+# https://github.com/ayalac1111/x-remote
+
+# Replace {username} with your username
+output_file: ayalac-Test.txt
+
+# Devices to collect information from
+devices:
+  - device_info:
+      device_type: ios
+      # Replace {ip_address} with T1's IP address reachable from your host
+      ip: 192.168.100.100
+      username: admin
+      # Replace {password} with admin's password to be used by ssh
+      password: adminpass
+    commands:
+      - show ip int brief | ex una

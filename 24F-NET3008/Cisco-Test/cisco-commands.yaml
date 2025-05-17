@@ -1,0 +1,29 @@
+# 24F-NET3008 - ENARSI 15.1.2 - Part 3
+# To be used with x-remote.py
+# https://github.com/ayalac1111/x-remote
+
+
+# Replace {username} with your username
+output_file: {username}-01-RDIST.txt
+
+# Devices to collect information from
+devices:
+  - device_info:
+      device_type: cisco_xe
+      # Replace {ip_address} with R1's IP address reachable from your host
+      ip: 192.168.100.2
+      username: admin
+      # Replace {password} with admin's password to be used by ssh
+      password: adminpass
+    commands:
+      - show ip access-list
+      - show ip protocols
+ - device_info:
+    device_type: cisco_xe
+    # Replace {ip_address} with R1's IP address reachable from your host
+    ip: 192.168.100.1
+    username: admin
+    # Replace {password} with admin's password to be used by ssh
+    password: adminpass
+  commands:
+    - show ip route eigrp | begin Gateway

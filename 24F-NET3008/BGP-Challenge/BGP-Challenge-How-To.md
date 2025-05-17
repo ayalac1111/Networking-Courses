@@ -44,7 +44,7 @@ Flags: **X** - disabled, **I** - invalid, **D** - dynamic 
 
 ![Topology Diagram](img/T2-NICs.png)
 
-- [ ] **ether1** - Connects to T3 via Internal Network `intnet13`
+- [ ] **ether1** - Connects to T3 via Internal Network `intnet23`
 - [ ] **ether2** - Connects to T1 via Internal Network `intnet12`
 - [ ] **ether3** - Is not in use but must be present.
 - [ ] **ether4** - Connects to a Host-only Network.  The adapter that is going to be used for the network management.
@@ -200,10 +200,6 @@ eBGP-T2  35.5.5.0/24     10.200.12.1      500       igp       
 eBGP-T2  25.5.5.0/24     10.200.12.1      500       igp       
 eBGP-T2  1.1.1.0/24      10.200.12.1                igp       
 eBGP-T5  1.1.1.0/24      10.200.1.1                 igp       
-
 ```
-
-
-
 
 ---

@@ -59,6 +59,7 @@ This demo provides an in-depth walkthrough of the lab topology, focusing on rout
 4. **Redistribute EIGRP into OSPF (on R1)**
 	- Redistribute EIGRP routes into OSPF using R1 as the redistribution point. 
 		  - **Command**:
+
 		  ```bash 
 		  router ospf 13 redistribute eigrp 123 subnets metric 20 
 		  ``` 
