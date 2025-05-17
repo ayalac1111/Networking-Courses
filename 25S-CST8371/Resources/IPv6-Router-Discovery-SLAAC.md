@@ -9,7 +9,7 @@
 
 ## 📁 Part 1 – Open the Packet Capture
 
-[Download PCAP file](https://https://github.com/ayalac1111/Networking-Courses/raw/main/25S-CST8371/Resources/ipv6-Router-Discovery.pcapng)
+[Download PCAP file](https://github.com/ayalac1111/Networking-Courses/raw/main/25S-CST8371/Resources/IPv6-Router-Discovery.pcapng)
 
 Open the file: `IPv6-Router-Discovery.pcap` in Wireshark.
 

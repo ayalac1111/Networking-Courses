@@ -17,7 +17,7 @@ This course focuses on scalable network design, IPv6, NAT, routing protocols, AC
 | 02   | [IPv6 Address Shortening](./Resources/ipv6-shorten-student.md)           | ✏️ Work      | Learn how to abbreviate IPv6 addresses per RFC rules.                                      | __         |
 | 02   | [IPv6 Shortening (Advanced)](./Resources/ipv6-shorten-student-tricky.md) | ✏️ Work      | Complex shortening examples to test student accuracy.                                      | __         |
 | 03   | [Dual-Stack Network](./03-PT-Dual-Stack/03-PT-Dual-Stack.md)             | ✅ Lab        | Deploy a dual-stack network with static and floating routes.                               | **May 23** |
-| 03   | [IPv6 Router Discovery](ipv6-Router-Discovery-SLAAC.md)                  | ✏️ Work      | Understand how a host discovers a router and forms an IPv6 address using SLAAC.            | __         |
+| 03   | [IPv6 Router Discovery](Resources/IPv6-Router-Discovery-SLAAC.md)        | ✏️ Work      | Understand how a host discovers a router and forms an IPv6 address using SLAAC.            | __         |
 
 ##### **Legend**:  
 ✅ Required & Graded  
@@ -27,7 +27,7 @@ This course focuses on scalable network design, IPv6, NAT, routing protocols, AC
 
 ---
 
-## 📦 Folder Structure
+### 📁 Folder Structure:
 
 ```
 25S-CST8371/
