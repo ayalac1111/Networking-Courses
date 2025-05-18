@@ -50,7 +50,7 @@ Modern networks are transitioning to IPv6 due to IPv4 exhaustion, but IPv4 remai
 | ISP-A  | S0/0/0    | `203.0.113.254/30` | `2001:fab:203:a::254/64` | `fe80::a`  | To Edge           |
 | ISP-A  | G0/0      | `192.0.2.254/24`   | `2001:db8:192::254/64`   | `fe80::a`  | To Server Network |
 | ISP-B  | S0/0/1    | `203.0.113.250/30` | `2001:fab:203:b::250/64` | `fe80::b`  | To Edge           |
-| ISP-B  | G0/1      | `192.0.2.253/24`   | `2001:db8:192::253/64`   | `fe80::b`  | To Server Network |
+| ISP-B  | G0/0      | `192.0.2.253/24`   | `2001:db8:192::253/64`   | `fe80::b`  | To Server Network |
 | Server | NIC       | `192.0.2.69/24`    | `2001:db8:192::69/64`    | `fe80::69` | Dual-stack server |
 | PC-A   | NIC       | `198.18.U.10/25`   | `2010:acad:U:a::10/64`   | `fe80::10` | LAN A Host        |
 | PC-B   | NIC       | `198.18.U.130/25`  | `SLAAC`                  | `SLAAC`    | LAN B Host        |
