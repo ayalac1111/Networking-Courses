@@ -153,7 +153,7 @@ show ip ospf interface brief
 ✅ What to check:
 - [ ] **PID**: The OSPF Process ID is `U`, as configured.
 - [ ] **Area**: Both interfaces are in **Area 0**.
-- [ ] **IP Address**: Matches your configured IPs (`10.U.101.1`, `10.U.102.1`)
+- [ ] **IP Address**: Matches your configured IPs
 - [ ] **State**: Should be `DR` initially when no neighbour is present
 - [ ] **Nbrs**: **0** — this is expected for now. Neighbours will appear once R1 and R2 are configured in the next steps.
 
@@ -202,7 +202,6 @@ show ip ospf neighbor
 ✅ **What to check:**
 - [ ] R1 should show **1 OSPF neighbour** — this should be **SA**
 - [ ] The neighbour is in **Area 0** and on a **directly connected subnet**
-- [ ] Hello and Dead timers should match (default: **10s Hello** / **40s Dead**)
 - [ ] The neighbour state should be **Full** once the adjacency is complete
 
 ⚠️ **Reminder**  
@@ -299,7 +298,7 @@ PC:  tracert -d 203.0.113.U
 PC:  tracert -d 203.0.113.U
 ```
 **✅ What to check:**
-- [ ] Path should be PC -> R1 -> RB -> SA
+- [ ] Path should be PC -> R1 -> R2 -> SA
 
 ---
 ## 📤 Submission Checklist

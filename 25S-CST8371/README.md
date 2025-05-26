@@ -19,6 +19,7 @@ This course focuses on scalable network design, IPv6, NAT, routing protocols, AC
 | 03   | [Dual-Stack Network](./03-PT-Dual-Stack/03-PT-Dual-Stack.md)             | ✅ Lab        | Deploy a dual-stack network with static and floating routes.                                                                                                                        | **May 23** |
 | 03   | [IPv6 Router Discovery](Resources/IPv6-Router-Discovery-SLAAC.md)        | ✏️ Work      | Understand how a host discovers a router and forms an IPv6 address using SLAAC.                                                                                                     | __         |
 | 04   | [OSPF Basic Configuration](./04-Basic-OSPF/04-OSPF-Basic.md)             | ✅ Lab        | Configure and verify basic OSPFv2 on a multi-router topology. Includes router ID selection, interface-based OSPF activation, default route redistribution, and convergence testing. | **May 28** |
+| 05   | [OSPF Tuning and Advanced Features](./05-OSPF-Tuning/05-OSPF-Tuning.md)  | ✅ Lab        | Tune OSPF behaviour: router IDs, network types, DR elections, Hello/Dead timers, passive interfaces, and reference bandwidth.                                                       | **JUne 4** |
 
 ##### **Legend**:  
 ✅ Required & Graded  
