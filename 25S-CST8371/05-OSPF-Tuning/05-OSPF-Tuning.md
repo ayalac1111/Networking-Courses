@@ -201,7 +201,9 @@ This is a common design decision in real networks:
 
 ### 1️. Check How R2’s Loopback Is Advertised
 
-From **R1**, check what R2 is currently advertising:
+1. Enable OSPF on `R2-Lo200` in area `0`.
+
+2. From **R1**, check what R2 is currently advertising:
 
 ```bash
 show ip route ospf
