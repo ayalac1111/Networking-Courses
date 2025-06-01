@@ -21,9 +21,10 @@ This course focuses on scalable network design, IPv6, NAT, routing protocols, AC
 | 04   | [OSPF Basic Configuration](./04-Basic-OSPF/04-OSPF-Basic.md)                 | ✅ Lab        | Configure and verify basic OSPFv2 on a multi-router topology. Includes router ID selection, interface-based OSPF activation, default route redistribution, and convergence testing. | **May 28** |
 | 04   | [OSPF Basic Configuration Init Network](Resources/Example_-_Basic_OSPF.yaml) | 👩🏽‍🏫 Demo | CML-based walkthrough basic OSPF Configuration - SBA Topology                                                                                                                       | __         |
 | 04   | [No Quiz Sample](Resources/route_not_present.md)                             | ✏️ No Quiz   | Sample Quiz                                                                                                                                                                         | __         |
-| 05   | [OSPF Tuning and Advanced Features](./05-OSPF-Tuning/05-OSPF-Tuning.md)      | ✅ Lab        | Tune OSPF behaviour: router IDs, network types, DR elections, Hello/Dead timers, passive interfaces, and reference bandwidth.                                                       | **JUne 4** |
+| 05   | [OSPF Tuning and Advanced Features](./05-OSPF-Tuning/05-OSPF-Tuning.md)      | ✅ Lab        | Tune OSPF behaviour: router IDs, network types, DR elections, Hello/Dead timers, passive interfaces, and reference bandwidth.                                                       | **June 4** |
+| 05   | [Sample 01 SBA](Resources/Sample-01-SBA.md)                                  | 🟡 Optional  | Use to practice your SBA skills                                                                                                                                                     | __         |
 
-##### **Legend**:  
+##### **Legend**: 
 ✅ Required & Graded  
 👩🏽‍🏫 In-Class Example
 ✏️ In-Class Participation  
