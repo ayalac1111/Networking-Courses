@@ -1,6 +1,6 @@
 # IPv6 Addressing and SLAAC – VLAN 150 Review
 
-A PC boots up in **VLAN 150** with the MAC address `AC-DE-48-76-54-32`. The router on that VLAN advertises the IPv6 prefix `2010:ACAD:150::/64`. The PC uses SLAAC (Stateless Address Autoconfiguration) to configure its IPv6 address using the EUI-64 method.
+A PC boots up in **VLAN 150** with the MAC address `AC-DE-48-76-54-32`. The router on that VLAN advertises the IPv6 prefix `2010:ACAD:U:150::/64`. The PC uses SLAAC (Stateless Address Autoconfiguration) to configure its IPv6 address using the EUI-64 method.
 
 ---
 
@@ -21,6 +21,6 @@ A PC boots up in **VLAN 150** with the MAC address `AC-DE-48-76-54-32`. The rout
    What is the **source IPv6 address** used by the PC when it sends the RS, before it has assigned a Global Unicast Address?
 
 5. **Prefix Advertisement**  
-   Which **network device** is responsible for advertising the IPv6 prefix `2010:ACAD:150::/64` to the PC?
+   Which **network device** is responsible for advertising the IPv6 prefix `2010:ACAD:U:150::/64` to the PC?
 
 ---
