@@ -364,7 +364,7 @@ ayalac-R1# show logging | include OSPF
 === CO3 – DR Election Verification ===
 ```
 
-From **R2**, copy the following:
+From **SA**, copy the following:
 ```
 show ip ospf neighbor
 ```
