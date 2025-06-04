@@ -1,4 +1,5 @@
 # OSPF Operation – Neighbour Adjacency
+![Midterm Topology](img/midterm-sample-topology.png)
 
 Routers **RA** and **RC** are directly connected via their `GigabitEthernet0/2` interfaces and are both configured for **OSPF in area 0**.
 

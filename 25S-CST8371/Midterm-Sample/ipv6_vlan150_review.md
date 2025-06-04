@@ -1,4 +1,5 @@
 # IPv6 Addressing and SLAAC – VLAN 150 Review
+![Midterm Topology](img/midterm-sample-topology.png)
 
 A PC boots up in **VLAN 150** with the MAC address `AC-DE-48-76-54-32`. The router on that VLAN advertises the IPv6 prefix `2010:ACAD:U:150::/64`. The PC uses SLAAC (Stateless Address Autoconfiguration) to configure its IPv6 address using the EUI-64 method.
 

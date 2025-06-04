@@ -1,5 +1,7 @@
 # Basic Routing Concepts – Administrative Distance on RB
 
+![Midterm Topology](img/midterm-sample-topology.png)
+
 The network **10.U.40.0/24** is present in your OSPF network and is learned on **Router RB** through OSPF from **Router RC**. The route is visible in the OSPF database and is marked as **O** (intra-area) with a cost of 10.
 
 The network administrator wants to **prefer a manually configured static route** to that network and adds the following configuration on **RB**:
