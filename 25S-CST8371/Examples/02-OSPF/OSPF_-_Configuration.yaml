@@ -1,0 +1,612 @@
+annotations:
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#EE0606'
+    rotation: 0
+    text_bold: true
+    text_content: 203.0.113.0/24
+    text_font: monospace
+    text_italic: false
+    text_size: 14
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: 280.0
+    y1: -280.0
+    z_index: 0
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#397723'
+    rotation: 0
+    text_bold: true
+    text_content: 2001:fab:203::/64
+    text_font: monospace
+    text_italic: false
+    text_size: 13
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: 280.0
+    y1: -240.0
+    z_index: 1
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#EC0606'
+    rotation: 0
+    text_bold: true
+    text_content: 192.0.2.0/24
+    text_font: monospace
+    text_italic: false
+    text_size: 14
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: 560.0
+    y1: -280.0
+    z_index: 2
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#F80000'
+    rotation: 0
+    text_bold: true
+    text_content: 10.100.0.0/16
+    text_font: monospace
+    text_italic: false
+    text_size: 14
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: 40.0
+    y1: -280.0
+    z_index: 3
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#DD0E0E'
+    rotation: 0
+    text_bold: false
+    text_content: .10.0/24
+    text_font: monospace
+    text_italic: false
+    text_size: 12
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: 80.0
+    y1: -200.0
+    z_index: 4
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#E90A0A'
+    rotation: 0
+    text_bold: false
+    text_content: .20.0/24
+    text_font: monospace
+    text_italic: false
+    text_size: 12
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: 80.0
+    y1: -120.0
+    z_index: 5
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#E40C0C'
+    rotation: 0
+    text_bold: false
+    text_content: 30.0/24
+    text_font: monospace
+    text_italic: false
+    text_size: 12
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: -40.0
+    y1: -40.0
+    z_index: 6
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#175F02'
+    rotation: 0
+    text_bold: true
+    text_content: 2010:acad:100::/48
+    text_font: monospace
+    text_italic: false
+    text_size: 13
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: 0.0
+    y1: -240.0
+    z_index: 7
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#0C6303'
+    rotation: 0
+    text_bold: true
+    text_content: 2001:db8:192::/64
+    text_font: monospace
+    text_italic: false
+    text_size: 13
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: 560.0
+    y1: -240.0
+    z_index: 8
+smart_annotations:
+  - tag: OSPF-100
+    is_on: true
+    padding: 35
+    label: OSPF-100
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#B7E3D980'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: REMOTE
+    is_on: true
+    padding: 35
+    label: REMOTE
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#DDE5EE80'
+    border_color: '#00000080'
+    z_index: 2
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |
+          hostname RB
+
+          !--------------BASIC
+          !-- Enable secret password to class
+          enable secret class
+
+          !-- Disable dns lookups
+          no ip domain lookup
+
+          !
+          !-- Console logging suppression
+          line con 0
+          logging synchronous
+          exec-timeout 0 0
+
+          ! VTY access with SSH and Telnet
+          ip domain name cnap.cst
+          username cisco privilege 15 secret cisco
+          crypto key generate rsa modulus 2048
+          ip ssh version 2
+          !
+          line vty 0 4
+          transport input telnet ssh
+          login local
+
+          !-- Enable IPv6 if needed
+          ipv6 unicast-routing
+
+          !-- Allow the router to pick the source IP of the
+          !-- outgoing interface to the destination.
+          no ip tftp source-interface
+
+          !----------------- IP Configuration
+
+          int e0/1
+          ip add 10.100.10.2 255.255.255.0
+          ipv6 address fe80::2 link-local
+          ipv6 address 2010:acad:100:10::2/64
+          description To-RB-Link-1
+          no shut
+
+          int e0/2
+          ip add 10.100.20.2 255.255.255.0
+          ipv6 address fe80::2 link-local
+          ipv6 address 2010:acad:100:20::2/64
+          description To-RB-Link-2
+          no shut
+
+          int e1/0
+          ip add 10.100.30.2 255.255.255.0
+          ipv6 add fe80::1 link-local
+          ipv6 add 2010:acad:100:30::1/64
+          description Lan-30
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: RB
+    node_definition: iol-xe
+    parameters: {}
+    ram: null
+    tags:
+      - OSPF-100
+    x: 0
+    y: -160
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/0
+        mac_address: null
+        slot: 4
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname RA
+
+          !--------------BASIC
+          !-- Enable secret password to class
+          enable secret class
+
+          !-- Disable dns lookups
+          no ip domain lookup
+
+          !
+          !-- Console logging suppression
+          line con 0
+          logging synchronous
+          exec-timeout 0 0
+
+          ! VTY access with SSH and Telnet
+          ip domain name cnap.cst
+          username cisco privilege 15 secret cisco
+          crypto key generate rsa modulus 2048
+          ip ssh version 2
+          !
+          line vty 0 4
+          transport input telnet ssh
+          login local
+
+          !-- Enable IPv6 if needed
+          ipv6 unicast-routing
+
+          !-- Allow the router to pick the source IP of the
+          !-- outgoing interface to the destination.
+          no ip tftp source-interface
+
+          !----------------- IP Configuration
+          int e0/0
+          ip add 203.0.113.100 255.255.255.0
+          ipv6 add fe80::100 link-local
+          ipv6 add 2001:fab:203::100/64
+          description To-REMOTE
+          no shut
+
+          int e0/1
+          ip add 10.100.10.1 255.255.255.0
+          ipv6 add fe80::1 link-local
+          ipv6 add 2010:acad:100:10::1/64
+          description To-RB-Link-1
+          no shut
+
+          int e0/2
+          ip add 10.100.20.1 255.255.255.0
+          ipv6 add fe80::1 link-local
+          ipv6 add 2010:acad:100:20::1/64
+          description To-RB-Link-2
+          no shut
+
+          int loopback1
+          ip add 10.100.100.1 255.255.255.0
+          ipv6 add fe80::1 link-local
+          ipv6 add 2010:acad:100:100::1/64
+          description Mimick-Lan-100
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: RA
+    node_definition: iol-xe
+    parameters: {}
+    ram: null
+    tags:
+      - OSPF-100
+    x: 240
+    y: -160
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          hostname REMOTE
+
+          !--------------BASIC
+          !-- Enable secret password to class
+          enable secret class
+
+          !-- Disable dns lookups
+          no ip domain lookup
+
+          !
+          !-- Console logging suppression
+          line con 0
+          logging synchronous
+          exec-timeout 0 0
+
+          ! VTY access with SSH and Telnet
+          ip domain name cnap.cst
+          username cisco privilege 15 secret cisco
+          crypto key generate rsa modulus 2048
+          ip ssh version 2
+          !
+          line vty 0 4
+          transport input telnet ssh
+          login local
+
+          !-- Enable IPv6 if needed
+          ipv6 unicast-routing
+
+          !-- Allow the router to pick the source IP of the
+          !-- outgoing interface to the destination.
+          no ip tftp source-interface
+
+          !----------------- IP Configuration
+
+          interface e0/0
+          ip add 203.0.113.254 255.255.255.0
+          ipv6 add fe80::254 link-local
+          ipv6 add 2001:fab:203::254/64
+          no shut
+
+          int e1/0
+          ip add 192.0.2.254 255.255.255.0
+          ipv6 add fe80::254 link-local
+          ipv6 add 2001:db8:192::254/64
+
+          no shut
+          !
+
+          !-----------------Static Routes Configuration
+
+          ip route 10.100.0.0 255.255.0.0 e0/0 203.0.113.100
+          ipv6 route 2010:acad:100::/48 e0/0 2001:fab:203::100
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: null
+    label: REMOTE
+    node_definition: iol-xe
+    parameters: {}
+    ram: null
+    tags:
+      - REMOTE
+    x: 440
+    y: -160
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/0
+        mac_address: null
+        slot: 4
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          # this is a shell script which will be sourced at boot
+          hostname TFPT-Server
+          # configurable user account
+          USERNAME=cisco
+          PASSWORD=cisco
+
+          ip address add 192.0.2.69/24 dev eth0
+          ip -6 address add 2001:db8:192::69/64 dev eth0
+          ip link set dev eth0 up
+          ip route add 192.0.2.0/24 dev eth0
+          ip -6 route add 2001:db8:192::/64 dev eth0
+          ip route add default via 192.0.2.254
+          ip -6 route add default via 2001:db8:192::254
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: null
+    label: TFTP Server
+    node_definition: alpine
+    parameters: {}
+    ram: null
+    tags:
+      - REMOTE
+    x: 760
+    y: -160
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        slot: 0
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |
+          # this is a shell script which will be sourced at boot
+          hostname TFPT-Server
+          # configurable user account
+          USERNAME=cisco
+          PASSWORD=cisco
+
+          ip address add 10.100.30.30/24 dev eth0
+          ip -6 address add 2010:acad:100:30::30/64 dev eth0
+          ip link set dev eth0 up
+          ip route add 10.100.30.0/24 dev eth0
+          ip -6 route add 2010:acad:100:30::/64 dev eth0
+          ip route add default via 10.100.30.2
+          ip -6 route add default via 2010:acad:100:30::2
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: null
+    label: PC
+    node_definition: alpine
+    parameters: {}
+    ram: null
+    tags:
+      - OSPF-100
+    x: 0
+    y: 80
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        slot: 0
+        type: physical
+links:
+  - id: l0
+    n1: n0
+    n2: n1
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: RB-Ethernet0/1<->RA-Ethernet0/1
+  - id: l1
+    n1: n0
+    n2: n1
+    i1: i3
+    i2: i3
+    conditioning: {}
+    label: RB-Ethernet0/2<->RA-Ethernet0/2
+  - id: l2
+    n1: n1
+    n2: n2
+    i1: i1
+    i2: i1
+    conditioning: {}
+    label: RA-Ethernet0/0<->REMOTE-Ethernet0/0
+  - id: l3
+    n1: n3
+    n2: n2
+    i1: i0
+    i2: i5
+    conditioning: {}
+    label: TFTP Server-eth0<->REMOTE-Ethernet1/0
+  - id: l4
+    n1: n4
+    n2: n0
+    i1: i0
+    i2: i5
+    conditioning: {}
+    label: PC-eth0<->RB-Ethernet1/0
+lab:
+  description: CST8371 - Basic OSPF Configuration
+  notes: |
+    # OSPF Configuration
+
+    ## RA - IPv4 Basic Routing Configuration
+    1. Enable OSPF using process ID `U`
+    2. Enable OSPF interfaces in `E0/1` , `E0/2` and `Loopback1` in `area 0`
+    3. Configure a default route towards `REMOTE` using a **fully specified route**
+    4. Propagate the default route in the OSPF domain.
+
+    ## RA - Verification
+    1. Verify the correct process ID, and enabled interfaces.
+    2. Verify connectivity to the TFTP Server
+
+    ## RB - IPv4 Basic Routing Configuration
+    1. Enable OSPF using process ID `U`
+    2. Manually set the router-ID to `U.0.0.2`
+    3. Enable OSPF interfaces in `E0/1` , `E0/2` and `E1/0` in `area 0`
+
+    ## RB - Verification
+    1. Verify the correct OSPF process ID, router-id and enabled OSPF interfaces.
+    2. Verify OSPF neighbours
+    3. Verify connectivity from PC to the TFTP server
+    4. Verify OSPF learned routes from OSPF.
+
+    ## OSPF Tuning
+    1. Set the reference bandwidth to `10000 Mpbs`
+    2. `RA-Loopback1` mimics a complete LAN, ensure the right mask is advertised.
+    3. Configure all interfaces that are not directly connected to an OSPF neighbour to be `passive`
+    4. Tune the hello timer for the interfaces `E0/1` to ensure a fast convergence to be `5` and `10` - hello, dead.
+    5. **RA** should be come the **DR** in the network `10.100.20.0/24`
+    6. Verify the above settings
+  title: OSPF - Configuration
+  version: 0.3.0
