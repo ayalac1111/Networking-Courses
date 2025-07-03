@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Final Points Needed to Pass</title>
+  <style>
+    body { font-family: sans-serif; max-width: 480px; margin: 2em auto; line-height: 1.5; }
+    label { display: block; margin-top: 1em; }
+    input { width: 4em; margin-left: .5em; }
+    button { margin-top: 1em; }
+    .result { margin-top: 1.5em; padding: .75em; border: 1px solid #ccc; background: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <h1>What You Need on the Final</h1>
+  <p>Midterm was graded out of 40 points, for 20% of your final grade.<br>
+    Final will be graded out of 50 points, for 25% of your final grade.</p>
+  <p>To pass the course you need <strong>22.5 points</strong> total (50% of 45).</p>
+  <label>
+    Your Midterm points (0–40):
+    <input id="midtermPts" type="number" min="0" max="40" step="0.5" value="30.0">
+  </label>
+  <button onclick="calcFinal()">Calculate</button>
+
+  <div id="output" class="result">—</div>
+
+  <script>
+    function calcFinal() {
+      const mid = parseFloat(document.getElementById('midtermPts').value) || 0;
+      const targetTotal = 22.5;
+      const maxFinal = 25;
+
+      // Points needed on final
+      let needPts = targetTotal - (mid / 2);
+      // Convert to percentage of the final exam
+      let needPct = (needPts / maxFinal) * 100;
+
+      let msg;
+      if (needPts > maxFinal) {
+        msg = `You’d need ${needPts.toFixed(1)} points, which exceeds the 25-point final → not possible.`;
+      } else if (needPts <= 0) {
+        msg = `You’ve already secured enough points—you need 0 points on the final.`;
+      } else {
+        msg = `You need <strong>${needPts.toFixed(1)} points</strong> on the final or ` +
+              `<strong>${needPct.toFixed(1)}%</strong>.`;
+      }
+
+      document.getElementById('output').innerHTML = `
+        <strong>Midterm:</strong> ${mid.toFixed(1)} / 40<br>
+        ${msg}
+      `;
+    }
+  </script>
+</body>
+</html>
