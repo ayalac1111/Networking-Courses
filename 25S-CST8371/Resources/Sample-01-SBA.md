@@ -53,7 +53,7 @@ Example:
 
 ### 🌐 Task 2 – Configure OSPFv2 (20 mins – 5 points)
 
-- Use a provided **process ID** per Lab 04
+- Use the provided **process ID** per Lab 04
 - Set manual `router-id`
 - Enable OSPF on internal interfaces only
 - Validate neighbour adjacency with:
