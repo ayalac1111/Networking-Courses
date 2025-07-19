@@ -110,7 +110,12 @@ You will need a partner for connectivity testing. If you don’t find a partner,
 	  - [ ] `Dead` interval: 5 seconds
 
 ## 🔍 CO1 - Verification and Collection of Information
-Copy the following command outputs in your `01-OSPF-username.txt`file, under the label **CO1**:
+
+📝 In your `11-OSPF-username.txt` file, create a section labelled:
+
+```diff
+=== CO1 – OSPF Verification ===
+```
 
 From **RA** and **RB**:
 ```bash
@@ -134,7 +139,6 @@ show ip route ospf | begin Gateway
 | ⏱️ Timer Validation          | Confirm that **Hello = 3**, **Dead = 5** on `Gi0/0/1`                            |
 | 🗒️ Comment                  | Add a verification note, e.g.:                                                   |
 |                              | `!-- OSPF configuration check as per specs`                                      |
-
 
 
 ---
@@ -191,5 +195,100 @@ ip http secure-server
 - `ip http server` turns on the HTTP daemon.
 - `ip http secure-server` turns on the HTTPS daemon (uses TLS).
 - `ip http authentication local` tells the router to check the local username database for web logins.
+
+
+### 🔍 CO2 – Verification and Collection of Information
+
+📝 In your `11-OSPF-<username>.txt` file, create four sections labelled:
+
+```diff
+=== CO2 – Services Verification ===
+```
+
+**Testing Preparation:**
+1. **Console into RA** (your workstation) and  `ssh` into RB.
+2. From your PC browser, open an HTTPS session to RA and log in with your credentials.
+
+Copy the output of the commands listed below for **RA**:
+
+```bash
+show ssh
+show ip ssh
+show ip http server status
+show ip http secure-server status
+show users
+show tcp brief
+show running-config | section logging
+show logging
+show ntp status
+show ntp associations detail
+show clock
+```
+
+✅ **What to Include:**
+
+| Requirement             | Details                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------- |
+| 🖥️ Device prompt       | Include device name and command, e.g., `ayalac-RA# show ip ssh`                                   |
+| 📜 Full command output  | Show the entire output of each command                                                            |
+| 🔍 SSH status           | Verify `SSH Enabled - version 2.0`                                                                |
+| 🔍 Active session       | In `show users`, confirm an active SSH session listed on RA                                       |
+| 🔍 Test syslog entry    | Confirm syslog messages appears in PC’s Syslog window                                             |
+| 🔍 HTTP status          | Confirm `HTTP server status: Enable`<br>Confirm `HTTP Secure server status: Enabled` (or similar) |
+| 🔍 Active HTTPS session | In `show tcp brief                                                                                |
+| 🗒️ Comment             | e.g., `!-- Services configured and verifed.`                                                      |
+
+📘 **Sample Output Block** (partial):
+
+```bash
+
+!-- HTTPS session active; web management reachable.
+
+ayalac-RA# show ip http server status
+HTTP server status: Enabled
+
+ayalac-RA# show ip http secure-server status
+HTTP secure server status: Enabled
+
+ayalac-RA# show tcp brief | include 443  
+TCB       Local Address          Foreign Address        (state)
+0x123456  198.18.U.17.443        10.U.18.14.51514       ESTAB
+
+ayalac-RA# show users
+    Line       User       Host(s)              Idle       Location
+  *  0 vty 0  ssh     idle                 00:01:23  10.U.18.14 
+  *  0 vty 1  http    idle                 00:00:10  10.U.18.14
+
+!-- Syslog test message received at PC; RA logging config verified.
+
+ayalac-RA# show logging
+Syslog logging: enabled (console, host 10.U.18.14)
+    Facility: daemon, Level: informational
+  Timestamp logging: msec localtime
+    No active filter modules.
+  Console logging: disabled
+    Buffer logging: level debugging, 50 messages logged
+    Host 10.U.18.14:514, 10 messages dropped, 0 rate-limited
+
+
+!-- NTP synchronized to 203.0.113.254; clock verified.
+
+ayalac-RA# show ntp status
+Clock is synchronized, stratum 2, reference is 203.0.113.254
+nominal frequency is 250.0000 Hz, precision is 2**18
+reference time is D4ED:86B3:8D3F.C000 (04:15:51.763 UTC Tue Jul 15 2025)
+
+RA# show ntp associations detail
+
+  address         ref clock       st  when  poll  reach  delay  offset    disp    jitter
+=================================================================================
+*~203.0.113.254   .REFCLK.        1   15    64    377   0.023   -0.001    0.040     0.005
+
+associd=17 status=0124, leap_none, sync_ntp, auth_disable, port_ok
+version=4, remote=203.0.113.254, local=198.18.<U>.17
+delay=0.023, offset=-0.001, dispersion=0.040, jitter=0.005
+
+
+```
 
 
