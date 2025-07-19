@@ -291,7 +291,12 @@ delay=0.023, offset=-0.001, dispersion=0.040, jitter=0.005
 ```
 
 
-> 💾 **Reminder**: Download your configs to your PC TFTP server.
+### 📤 Submit Verification File
+
+- [ ] Submit `11-OSPF-username.txt` to the TFTP server.
+- [ ] Include all `CO` sections:  CO1-CO2
+- [ ] Upload the syslog file to the TFTP server; label this file as `11-OSPF-SYSLOG-username.txt`
+- [ ] Upload router configurations to the PC's TFTP server.
 
 ---
 
@@ -535,6 +540,56 @@ ayalac-RA# show users
 
 > Be sure you leave each Telnet session open while you capture these outputs.
 
+
+---
+
+## NAT Rule #3: Dynamic PAT with Address Pool
+
+**Enable dynamic PAT for your PC network (`10.U.18.0/28`) using a pool of public addresses on RA**.
+
+- [ ] Configure NAT with overload for the network `10.U.18.0/28` to an address from the pool 
+    - [ ] Identify the nat inside and outside interfaces.
+    - [ ] Code access-list `18` to permit the inside private addresses `10.U.18.0/28`.
+    - [ ] Set up the NAT pool called `NAT_POOL` using addresses `209.10.U.2 - 209.10.U.6 / 29`.
+    - [ ] Code the translation rule with an overload to translate host addresses permitted by access-list 18 to an address from the NP NAT pool.
+
+### 🔍 CO5 – Dynamic PAT Pool Verification
+
+📝 In your `11-NAT-<username>.txt` file, create a section labelled:
+
+```diff
+=== CO5 – Dynamic PAT Pool Verification ===
+```
+
+Generate two types of traffic from your **PC (10.U.18.14)**:
+
+1. **ICMP test**: Ping to 192.0.2.69
+2. **TFPT test**:  Upload a file to the TFTP server; it could be your current `11-NAT-username.txt"
+
+On **RA**:
+```bash
+show ip nat translations
+show ip nat statistics
+show access-lists 18
+```
+
+✅ **What to Include:**
+
+| Requirement                 | Details                                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 🖥️ Device prompt & command | Include device name and exact command for each, e.g., `ayalac-RA# show ip nat translations`                |
+| 📜 Full command output      | Copy the entire output of each command without truncation                                                  |
+| 🔍 Translation entries      | In `show ip nat translations`, confirm: • An ICMP entry for `223.3.3.3` • A UDP entry for port `69` (TFTP) |
+| 🔍 ACL hit count            | From `show access-lists 18`, verify `permit 10.<U>.18.0 0.0.0.15` shows a hit count ≥ 2                    |
+| 🗒️ Comment                 | e.g., `!-- Dynamic PAT pool NAT_POOL functioning; ICMP and TFTP translations verified.`                    |
+> This confirms that inside hosts in `10.U.18.0/28` are translating via addresses in pool `NAT_POOL`, for both standard ICMP and UDP/TFTP traffic.
+
+### 📤 Submit Verification File
+
+- [ ] Submit `11-NAT-username.txt` to the TFTP server.
+- [ ] Include all `CO` sections:  CO3-CO5
+- [ ] Upload the syslog file to the TFTP server; label this file as `11-NAT-SYSLOG-username.txt`
+- [ ] Upload router configurations to the PC's TFTP server.
 
 ---
 
