@@ -27,7 +27,7 @@ By the end of this lab, you will be able to:
     
 ---
 
-## 💡Why This Lab Is Important
+## 💡 Why This Lab Is Important
 
 Network Address Translation (NAT) is a foundational technique in IPv4 networks, allowing organizations to:
 
@@ -45,7 +45,7 @@ By mastering PAT, static port-forwarding, and dynamic NAT pools, you’ll gain p
 
 ## 📘  Addressing Table (IPv4)
 
-Use the table below to configure your devices. Replace `<U>` with your assigned student ID number.
+Use the table below to configure your devices. Replace `U` with your assigned student ID number.
 
 | Device             | Interface | IP Address (CIDR)  | Description                                 |
 | ------------------ | --------- | ------------------ | ------------------------------------------- |
@@ -59,9 +59,10 @@ Use the table below to configure your devices. Replace `<U>` with your assigned 
 | **PC (Pool host)** | Gi0/0/0   | `10.U.18.14/28`    | Inside host for dynamic NAT pool tests      |
 | **Remote**         | —         | `203.0.113.254/24` | External tester for Internet connectivity   |
 
-> **VM Network Note**:
-> **All students will use the same VM network (172.17.9.32/28) and configure identical IP addresses on their VMs.**  
-> This demonstrates how overlapping private networks can coexist behind NAT: although every student’s VM will have the same internal address, the NAT on their border router will translate traffic uniquely to the public Internet.
+> 💡 **VM Network**  
+> All students use **172.16.9.32/28** for their VM subnet.  
+> Assign your VM **172.16.9.46/28**, identical across students, to illustrate how private networks overlap behind NAT.
+
 
 ---
 ## Partner Collaboration
@@ -285,7 +286,7 @@ RA# show ntp associations detail
 *~203.0.113.254   .REFCLK.        1   15    64    377   0.023   -0.001    0.040     0.005
 
 associd=17 status=0124, leap_none, sync_ntp, auth_disable, port_ok
-version=4, remote=203.0.113.254, local=198.18.<U>.17
+version=4, remote=203.0.113.254, local=198.18.U.17
 delay=0.023, offset=-0.001, dispersion=0.040, jitter=0.005
 
 ```
@@ -339,8 +340,6 @@ delay=0.023, offset=-0.001, dispersion=0.040, jitter=0.005
 > For any packet sourced from `172.16.9.32/28`, translate its private source IP to the public IP on Gi0/0/0; and because of `overload`, allow many private hosts to reuse that one public IP by differentiating them via port numbers.
 
 ### Testing NAT with DNS and ICMP
-
-Now we’ll generate two types of traffic from the **VM** verify their entries in the NAT table on **RA**. Note that `www.cnap.cst` resolves to **192.0.2.80**.
 
 1. **Set VM's DNS server** to 192.0.2.53 in your network settings.
 2. **Enable NAT debugging** on RA
@@ -432,7 +431,7 @@ Under this header, perform the following steps and include the outputs as descri
 | Step                                       | Command(s)                                                                          | What to Include                                                                                                         |
 | ------------------------------------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | **1. Enable NAT debug & generate traffic** | <br>`debug ip nat`<br>`ping 192.0.2.80 source 172.16.9.46 repeat 2`<br>`undebug all | - **Two** debug lines showing translation of the ICMP echo-request and echo-reply  <br>- Example timestamps and details |
-| **2. Show NAT translations**               | `show ip nat translations`                                                          | - Full translation table, showing an entry for ICMP from `172.16.9.46` → `203.0.113.<U>` to `192.0.2.80`                |
+| **2. Show NAT translations**               | `show ip nat translations`                                                          | - Full translation table, showing an entry for ICMP from `172.16.9.46` → `203.0.113.U` to `192.0.2.80`                |
 | **3. Verify ACL hits**                     | `show ip access-lists 16`                                                           | - The ACL 16 permit statement  <br>- Hit count ≥ 1 indicating the subnet was matched                                    |
 | **4. Show NAT statistics**                 | `show ip nat statistics`                                                            | - Total active translations ≥ 1  <br>- Hits/Misses summary for inside source translations                               |
 
@@ -498,7 +497,7 @@ Copy and paste the outputs (including device prompts) of the following commands 
 | Requirement                | Details                                                                                                                               |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | 🖥️ Access‐list check      | `show access-lists`  <br>Verify the ACL entry permitting inbound TCP 2323 to 172.16.9.33 is present and hit count ≥ 1                 |
-| 🖥️ NAT translations       | `show ip nat translations`  <br>Confirm a static entry mapping `203.0.113.<U>:2323` → `172.16.9.33:23`                                |
+| 🖥️ NAT translations       | `show ip nat translations`  <br>Confirm a static entry mapping `203.0.113.U:2323` → `172.16.9.33:23`                                |
 | 🖥️ TCP listener check     | `show tcp brief`  <br>Ensure there is a LISTEN or ESTAB on local port 2323                                                            |
 | 🖥️ Active Telnet sessions | `show users`  <br>Confirm at least one `vty` line with protocol `telnet` from your PC or partner’s PC to RA and to the switch is open |
 
@@ -575,13 +574,13 @@ show access-lists 18
 
 ✅ **What to Include:**
 
-| Requirement                 | Details                                                                                                    |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 🖥️ Device prompt & command | Include device name and exact command for each, e.g., `ayalac-RA# show ip nat translations`                |
-| 📜 Full command output      | Copy the entire output of each command without truncation                                                  |
-| 🔍 Translation entries      | In `show ip nat translations`, confirm: • An ICMP entry for `223.3.3.3` • A UDP entry for port `69` (TFTP) |
-| 🔍 ACL hit count            | From `show access-lists 18`, verify `permit 10.<U>.18.0 0.0.0.15` shows a hit count ≥ 2                    |
-| 🗒️ Comment                 | e.g., `!-- Dynamic PAT pool NAT_POOL functioning; ICMP and TFTP translations verified.`                    |
+| Requirement                 | Details                                                                                                     |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 🖥️ Device prompt & command | Include device name and exact command for each, e.g., `ayalac-RA# show ip nat translations`                 |
+| 📜 Full command output      | Copy the entire output of each command without truncation                                                   |
+| 🔍 Translation entries      | In `show ip nat translations`, confirm: • An ICMP entry for `192.0.2.53` • A UDP entry for port `69` (TFTP) |
+| 🔍 ACL hit count            | From `show access-lists 18`, verify `permit 10.U.18.0 0.0.0.15` shows a hit count ≥ 2                     |
+| 🗒️ Comment                 | e.g., `!-- Dynamic PAT pool NAT_POOL functioning; ICMP and TFTP translations verified.`                     |
 > This confirms that inside hosts in `10.U.18.0/28` are translating via addresses in pool `NAT_POOL`, for both standard ICMP and UDP/TFTP traffic.
 
 ### 📤 Submit Verification File
@@ -603,7 +602,7 @@ Permit the following traffic **from** the VM subnet `172.16.9.32/28` **to** thes
 - **Deny** all other IPv4 traffic from `172.16.9.32/28`
 
 > 💡 **NOTE:** Even traffic **originating** from RB’s Gi0/0/2 toward the Internet will match these rules.
-> Keeping this in mind, where should you apply this ACL?
+> **Reflection:** Where should you apply this ACL?
 
 1. Code an extended ACL, `VM-NET-FILTER`, to filter traffic as per policy specifications.
 2. Use at least **5** ACE, leaving the ISO to assign numbering.  It should be 10, 20, ...
@@ -648,3 +647,68 @@ show ip interface GigabitEthernetX
 
 ---
 
+# Extended ACL 2
+### Policy Statement
+To safeguard the PC subnet (`10.U.18.0/28`) from unsolicited ping probes and unauthorized access, protect the PC network by permitting only these inbound flows and denying everything else:
+- **ICMP echo-reply**, **TTL-exceeded**, and **destination-unreachable** messages to `10.U.18.0/28` (so PCs can receive responses to their own pings)
+- **UDP/53** from the lab DNS server (`192.0.2.69`) to `10.U.18.0/28` (so DNS lookups succeed)
+- **Deny** all inbound **ICMP echo-requests** to `10.U.18.0/28` from any source (including the VM subnet, RA after NAT, or Internet)
+- **Deny** all other IPv4 traffic destined for `10.U.18.0/28`
+    
+> 💡 **NOTE:** Apply this ACL **inbound on RB’s Gi0/0/0** (the link directly above the PC LAN).  
+> **Reflection:** Why must this ACL live on RB rather than RA?
+
+1. **Code the extended ACL** `PROTECT-PC` to enforce the above policy.
+2. Use at least **5 ACEs**, numbered 10, 20, 30, … in canonical order.
+3. Include a final **`deny ip any any`** to catch all remaining traffic.
+4. **Test the ACL:**
+    -  **PC → Internet ping**: ping 192.0.2.69` should **succeed**.
+    -  **PC DNS lookup**: `nslookup www.cnap.cst` should **succeed** (server `192.0.2.53`).
+    -  **VM → PC ping**: `ping 10.U.18.14` should **fail** (echo-requests denied).
+    -  **VM → PC HTTP**: `http://10.U.18.1` should **fail**.  You need to enable HTTP in RB!
+
+### 🔍 CO7 – Extended ACL #2 Verification
+
+📝 In your `11-ACL-<username>.txt` file, add this section:
+
+```diff
+=== CO7 – Extended ACL #2 Verification ===
+```
+
+Copy/paste the outputs (with prompts), then add your confirmation comment immediately under the header.
+
+From **RB**:
+```bash
+!-- Ensure there are matches for each ACE
+show access-lists PROTECT-PC
+
+!-- Ensure your ACL is bound in the right direction
+show ip interface GigabitEthernet0/0/0
+```
+
+
+✅ **What to Include:**
+
+| Requirement                 | Details                                                                                                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🖥️ Device prompt & command | `show access-lists PROTECT-PC` and `show ip interface GigabitEthernet0/0/0`                                                                                                |
+| 📜 Full command output      | Include every line of the ACL and interface output                                                                                                                        |
+| 🔍 ACL entries              | Verify all your ACEs are present                                                                                                                                          |
+| 🔍 Hit counts               | In `show access-lists`, confirm all lines have hits                                                                                                                       |
+| 🔍 ACL binding              | In `show ip interface GigabitEthernet0/0/0`, confirm `PROTECT-PC` is applied `in`                                                                                         |
+| 🗒️ Comment                 | e.g., `!-- ACL: PROTECT-PC.  External pings blocked; PC-initiated ICMP and DNS responses allowed; HTTP to PC blocked. ACL verified.`                                      |
+
+## 📤 Submission Checklist
+
+- [ ] `11-ACL-username.txt` uploaded via TFTP.  
+- [ ] CO6-C07 outputs included.  
+- [ ] Upload updated configs to the TFTP server.
+- [ ] Verify with:
+```bash
+ssh cisco@192.0.2.22
+ls -l /var/tftp/*username*
+```
+
+If you haven't done before, ensure
+- [ ] `11-OSPF-username.txt` uploaded via TFTP.  
+- [ ] `11-NAT-username.txt` uploaded via TFTP.  
