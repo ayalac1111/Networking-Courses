@@ -236,7 +236,7 @@ show clock
 | 🔍 Test syslog entry    | Confirm syslog messages appears in PC’s Syslog window                                             |
 | 🔍 HTTP status          | Confirm `HTTP server status: Enable`<br>Confirm `HTTP Secure server status: Enabled` (or similar) |
 | 🔍 Active HTTPS session | In `show tcp brief                                                                                |
-| 🗒️ Comment             | e.g., `!-- Services configured and verifed.`                                                      |
+| 🗒️ Comment             | e.g., `!-- Services configured and verified.`                                                     |
 
 📘 **Sample Output Block** (partial):
 
@@ -457,7 +457,84 @@ Hits: 2  Misses: 0
 ```
 
 
-
 ---
 
+## NAT Rule #2: Static Port‐Forwarding
+
+**“Allow Internet users to Telnet to our internal switch at 172.16.9.33:23 via RA’s public IP on TCP 2323.”**
+
+- [ ] Code a **port-forwarding** rule so that external hosts can connect to the telnet server on the switch. 
+    ```
+    ip nat inside source static <tcp/udp> <in_addr port> <out_add port>
+    ```
+    - [ ] Telnet is a TCP protocol
+    - [ ] Outside hosts should connect to `203.0.113.U` port `2323`.
+    - [ ] Internally, the switch telnet server is at `172.16.9.33` port `23`.
+
+**Testing:**
+- [ ] From PC, telnet to your partner's router `203.0.113.P` and login.  Keep the connection open, 
+- [ ] From PC, telnet to your partner's switch `203.0.113.P 2323` and login.  Keep the connection open. 
+- [ ] From your partner PC, telnet to your router `203.0.113.U` and login.  Keep the connection open
+- [ ] From your partner PC, telnet to your switch ``203.0.113.U 2323` and login.  Keep the connection open.
+
+> `P`:  Your partner's `U`
+> You are testing your partner's configuration.  They are testing your configuration.
+
+### 🔍 CO4 – Port-Forwarding Verification
+
+📝 In your `11-NAT-<username>.txt` file, under the label:
+
+```diff
+=== CO4 – Static Port Forwarding Verification ===
+```
+
+Copy and paste the outputs (including device prompts) of the following commands from **RA**, then add your confirmation comment below the header:
+
+| Requirement                | Details                                                                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 🖥️ Access‐list check      | `show access-lists`  <br>Verify the ACL entry permitting inbound TCP 2323 to 172.16.9.33 is present and hit count ≥ 1                 |
+| 🖥️ NAT translations       | `show ip nat translations`  <br>Confirm a static entry mapping `203.0.113.<U>:2323` → `172.16.9.33:23`                                |
+| 🖥️ TCP listener check     | `show tcp brief`  <br>Ensure there is a LISTEN or ESTAB on local port 2323                                                            |
+| 🖥️ Active Telnet sessions | `show users`  <br>Confirm at least one `vty` line with protocol `telnet` from your PC or partner’s PC to RA and to the switch is open |
+
+✅ **What to Include:**
+
+| Requirement                 | Details                                                                                                                        |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 🖥️ Device prompt & command | Include device name and exact command,                                                                                         |
+| 📜 Full command output      | Capture the entire output of each command without truncation                                                                   |
+| 🔍 ACL entry                | In `show access-lists`, verify the ACL permits `tcp any host 172.16.9.33 eq 23` and shows a hit count ≥ 1                      |
+| 🔍 NAT translation entry    | In `show ip nat translations`, confirm a static entry mapping `220.0.0.U:2323` → `172.16.9.33:23`                              |
+| 🔍 TCP listener             | In `show tcp brief` ensure there is a `LISTEN` (or `ESTAB`) on local port 2323 on RA                                           |
+| 🔍 Active Telnet sessions   | In `show users`, confirm at least one `vty` line with protocol `telnet` from your PC (or partner’s PC) to RA and to the switch |
+| 🗒️ Comment                 | e.g., `!-- Static port-forward for Telnet to 172.16.9.33:23 verified; TCP listener, and sessions confirmed.`                   |
+
+#### 📘 Sample Output Block
+
+```bash
+=== CO4 – Port-Forwarding Verification ===
+!-- Static port-forward for Telnet to 172.16.9.33:23 verified; TCP listener and sessions present.
+
+ayalac-RA# show access-lists
+Standard IP access list 101
+    permit tcp any host 172.16.9.33 eq 23 (hit count: 2)
+
+ayalac-RA# show ip nat translations
+Pro Inside global          Inside local         Outside local        Outside global
+tcp 220.0.0.U:2323        172.16.9.33:23       10.P.18.14:54321      10.P.18.14:54321
+
+ayalac-RA# show tcp brief | include 2323
+TCB     Local Address         Foreign Address      (state)
+0xABC   220.0.0.U.2323       10.P.18.14.56789     LISTEN
+
+ayalac-RA# show users
+    Line       User       Host(s)              Idle       Location
+   *  0 vty 2  telnet    idle                 00:00:12  10.P.18.14
+
+```
+
+> Be sure you leave each Telnet session open while you capture these outputs.
+
+
+---
 
