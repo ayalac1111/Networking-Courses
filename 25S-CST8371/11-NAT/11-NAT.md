@@ -593,3 +593,58 @@ show access-lists 18
 
 ---
 
+# Extended ACL 1
+
+### Policy Statement
+Permit the following traffic **from** the VM subnet `172.16.9.32/28` **to** these destinations, and deny everything else:
+- **ICMP echo-requests** to **any** host
+- **HTTP (TCP/80)** and **HTTPS (TCP/443)** to **any** web server
+- **DNS queries (UDP/53)** to the DNS server at **192.0.2.53**
+- **Deny** all other IPv4 traffic from `172.16.9.32/28`
+
+> 💡 **NOTE:** Even traffic **originating** from RB’s Gi0/0/2 toward the Internet will match these rules.
+> Keeping this in mind, where should you apply this ACL?
+
+1. Code an extended ACL, `VM-NET-FILTER`, to filter traffic as per policy specifications.
+2. Use at least **5** ACE, leaving the ISO to assign numbering.  It should be 10, 20, ...
+3. Explicitly deny all other IP traffic.
+4. Test the ACL 
+    - [ ] VM should be able to ping `192.0.2.69`
+    - [ ] VM should be able to resolve names: `nslookup www.cnap.cst`
+    - [ ] VM should be able to connect to a web server: `https://192.0.2.80`
+    - [ ] Telnet from RB to RA should fail:
+	    ```bash
+	    RB# telnet 203.0.113.U /source-interface GigabitEthernet0/0/2
+	    ```
+
+### 🔍 CO6 – Extended ACL #1 Verification
+
+📝 In your `11-ACL-<username>.txt` file, add this section:
+
+```diff
+=== CO6 – Extended ACL #1 Verification ===
+```
+
+Paste your outputs below, then your confirmation comment:
+
+```bash
+!-- Ensure there are matches for each ACE
+show access-lists VM-NET-FILTER
+
+!-- Ensure your ACL is bound in the right direction
+show ip interface GigabitEthernetX
+```
+
+✅ **What to Include:**
+
+| Requirement                 | Details                                                                                                                              |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 🖥️ Device prompt & command | Include device name and exact command for each result                                                                                |
+| 📜 Full command output      | Include every line of each command’s output                                                                                          |
+| 🔍 ACL entries              | Verify all four `permit` lines and the final `deny ip` are present                                                                   |
+| 🔍 Hit counts               | In `show access-lists`, confirm each `permit` line has hits ≥ 1 and the `deny` line shows hits for disallowed traffic (e.g., Telnet) |
+| 🔍 ACL binding              | In `show ip interface GigabitEthernetX`, confirm `VM-NET-FILTER` is applied in the right direction                                   |
+| 🗒️ Comment                 | e.g., `!-- VM-NET-FILTER ACL applied; ICMP, HTTP/HTTPS, DNS permitted; Telnet blocked as expected.`                                  |
+
+---
+
