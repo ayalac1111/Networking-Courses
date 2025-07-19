@@ -288,7 +288,176 @@ associd=17 status=0124, leap_none, sync_ntp, auth_disable, port_ok
 version=4, remote=203.0.113.254, local=198.18.<U>.17
 delay=0.023, offset=-0.001, dispersion=0.040, jitter=0.005
 
+```
+
+
+> 💾 **Reminder**: Download your configs to your PC TFTP server.
+
+---
+
+## NAT Rule #1: Translate to the Public Address of the Exit Interface
+
+**Hosts in the VM Network 172.16.9.32/28 must share RA’s public IP when accessing the Internet.**
+
+1. **Identify the NAT device**
+    - Device: **RA** (the border router with the public‐facing interface)
+2. **Set inside/outside interfaces**
+    ```bash
+    ! On RA
+	interface GigabitEthernet0/0/1
+	  ip nat inside
+	interface GigabitEthernet0/0/0
+	  ip nat outside
+    ```
+    
+3. **Create a standard ACL (16) to match the inside network**
+	```bash
+	access-list 16 permit 172.16.9.32 0.0.0.15
+	```
+    
+4. **Enable PAT to the exit interface’s public IP**
+    ```bash
+    ip nat inside source list 16 interface GigabitEthernet0/0/0 overload
+    ```
+
+	Command explanation:
+	- **`ip nat inside source`**  
+	    Specifies that we’re translating source addresses of packets coming from the **inside** network.
+	- **`list 16`**  
+	    Uses the **standard ACL 16** to identify which source addresses to translate (in our case, every host in `172.16.9.32/28`).
+	- **`interface GigabitEthernet0/0/0`**  
+	    Tells the router to use the IP address assigned to **Gi0/0/0** (the outside/public interface) as the translated address.
+	- **`overload`**  
+	    Enables **Port Address Translation (PAT)**, which lets **all** matched inside hosts share that single public IP by mapping their source port numbers.
+	    Put simply, this one line says:
+
+> For any packet sourced from `172.16.9.32/28`, translate its private source IP to the public IP on Gi0/0/0; and because of `overload`, allow many private hosts to reuse that one public IP by differentiating them via port numbers.
+
+### Testing NAT with DNS and ICMP
+
+Now we’ll generate two types of traffic from the **VM** verify their entries in the NAT table on **RA**. Note that `www.cnap.cst` resolves to **192.0.2.80**.
+
+1. **Set VM's DNS server** to 192.0.2.53 in your network settings.
+2. **Enable NAT debugging** on RA
+	```bash
+	RA# debug ip nat
+	```
+3. From VM: **Perform a DNS lookup**
+	```bash
+	VM# nslookup www.cnap.cst
+	Server:         192.0.2.53
+	Address:        192.0.2.53#53
+
+	Non-authoritative answer:
+	Name:   www.cnap.cst
+	Address: 192.0.2.80
+	```
+4. From VM: **Perform a ping to www.cnap.cst**
+5. **Inspect the NAT translation table**
+	```bash
+	RA# show ip nat translations
+	```
+	
+!-- Sample Output
+	<table border="1" cellpadding="4" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Pro</th>
+      <th>Inside Global</th>
+      <th>Inside Local</th>
+      <th>Outside Local</th>
+      <th>Outside Global</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>UDP</td>
+      <td>203.0.113.17:52345</td>
+      <td>172.16.9.46:52345</td>
+      <td>192.0.2.53:53</td>
+      <td>192.0.2.53:53</td>
+    </tr>
+    <tr>
+      <td>ICMP</td>
+      <td>203.0.113.17:1</td>
+      <td>172.16.9.46:1</td>
+      <td>192.0.2.80:0</td>
+      <td>192.0.2.80:0</td>
+    </tr>
+  </tbody>
+</table>
+
+6. **Verify ACL and statistics**
+```bash
+RA# show access-lists 16
+RA# show ip nat statistics
+```
+- **ACL 16** should report ≥ 2 hits.
+- **Total active translations** should be ≥ 2.
+
+7. **Disable debugging**
+Before you disable debugging, you should see console messages for each translation event. Here’s an example of what two packets look like in the debug output (timestamps illustrative):
+
+```bash
+`*Mar 19 14:05:01.123: NAT: s=172.16.9.46(52345) d=192.0.2.53(53) proto=UDP translate src to 203.0.113.17(52345) 
+*Mar 19 14:05:02.456: NAT: s=172.16.9.46(icmptype:8 icmpid:0) d=192.0.2.80(icmptype:8 icmpid:0) proto=ICMP translate src to 203.0.113.17(1)
+```
+
+- The **first line** shows the VM’s DNS query (UDP/53) being translated: source 172.16.9.46:52345 becomes 203.0.113.17:52345.
+- The **second line** shows the ICMP echo (ping): ICMP type 8/id 0 from 172.16.9.46 is translated to ICMP type 8/id 1 on 203.0.113.17.
+
+Once you’ve observed these messages, you can turn off debugging:
+
+```bash
+RA# undebug all
+```
+
+### 🔍 CO3 – Verification and Collection of Information
+
+📝 In your `11-NAT-<username>.txt` file, create a section labelled:
+
+
+```diff
+=== CO3 – PAT to Exit Interface Verification ===
+```
+
+Under this header, perform the following steps and include the outputs as described.
+
+
+| Step                                       | Command(s)                                                                          | What to Include                                                                                                         |
+| ------------------------------------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **1. Enable NAT debug & generate traffic** | <br>`debug ip nat`<br>`ping 192.0.2.80 source 172.16.9.46 repeat 2`<br>`undebug all | - **Two** debug lines showing translation of the ICMP echo-request and echo-reply  <br>- Example timestamps and details |
+| **2. Show NAT translations**               | `show ip nat translations`                                                          | - Full translation table, showing an entry for ICMP from `172.16.9.46` → `203.0.113.<U>` to `192.0.2.80`                |
+| **3. Verify ACL hits**                     | `show ip access-lists 16`                                                           | - The ACL 16 permit statement  <br>- Hit count ≥ 1 indicating the subnet was matched                                    |
+| **4. Show NAT statistics**                 | `show ip nat statistics`                                                            | - Total active translations ≥ 1  <br>- Hits/Misses summary for inside source translations                               |
+
+#### 📘 Sample Output Block
+
+```bash
+=== CO3 – PAT to Exit Interface Verification ===
+!-- PAT to exit interface functioning; ICMP translations and ACL verified.
+
+*Mar 19 14:05:01.123: NAT: s=172.16.9.46(0) d=192.0.2.80(0) proto=ICMP translate src to 203.0.113.17(1)
+*Mar 19 14:05:01.456: NAT: s=192.0.2.80(0) d=203.0.113.17(1) proto=ICMP translate dst to 172.16.9.46(1)
+
+ayalac-RA# show ip nat translations
+Pro  Inside global        Inside local         Outside local       Outside global
+ICMP 203.0.113.17:1       172.16.9.46:1        192.0.2.80:0         192.0.2.80:0
+
+ayalac-RA# show ip access-lists 16
+Standard IP access list 16
+    permit 172.16.9.32 0.0.0.15 (hit count: 2)
+
+ayalac-RA# show ip nat statistics
+Total active translations: 1 (0 static, 0 extended)
+Outside interfaces: 1
+  GigabitEthernet0/0/0
+Hits: 2  Misses: 0
 
 ```
+
+
+
+---
 
 
