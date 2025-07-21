@@ -159,24 +159,28 @@ On your PC (using TFTP64):
 On **both** RA and RB, enter global configuration mode and apply the following:
 
 ```bash
-! 1. Synchronize time via NTP
-ntp server 203.0.113.254
+! 1. Set a NTP Master in RA
+ntp master 5
 
-! 2. Send syslog messages to your PC’s Syslog server
-logging trap informational
-! (Optionally adjust trap level: debug, informational, warnings, errors, etc.)
+! 2. Synchronize time via NTP in RB
+ntp server 203.0.113.U
+
+! Point syslog to the PC
+3. logging host 10.U.18.14 transport udp port 514
 
 ! Specify which source interface’s IP shows up on the syslog messages
 logging source-interface GigabitEthernet0/0/0
 
-! Point syslog to the PC
-logging host 10.U.18.14 transport udp port 514
+! OPTIONAL Send syslog messages to your PC’s Syslog server
+logging trap informational
+! (Optionally adjust trap level: debug, informational, warnings, errors, etc.)
 
 ! (Optional) Include timestamps in the log messages
 service timestamps log datetime msec localtime
 ```
 
-- **`ntp server 203.0.113.254`** ensures your router clocks are synchronized with the remote time source.
+- **`ntp master 5`** sets the RA as a master of stratum 5.
+- **`ntp server 203.0.113.U`** ensures your router clocks are synchronized with the remote time source.
 - **`logging trap informational`** sets the minimum severity level of messages sent to your
 - **`logging source-interface`** picks the outbound interface whose IP is used as the syslog source address.
 - **`logging host … transport udp port 514`** directs syslog packets to your PC on the standard syslog port.
@@ -210,20 +214,22 @@ ip http secure-server
 1. **Console into RA** (your workstation) and  `ssh` into RB.
 2. From your PC browser, open an HTTPS session to RA and log in with your credentials.
 
-Copy the output of the commands listed below for **RA**:
+Copy the output of the commands listed:
 
 ```bash
+!-- From RA
 show ssh
-show ip ssh
 show ip http server status
-show ip http secure-server status
-show users
-show tcp brief
 show running-config | section logging
 show logging
 show ntp status
 show ntp associations detail
 show clock
+
+!-- From RB
+show ip ssh
+show users
+show tcp brief
 ```
 
 ✅ **What to Include:**
