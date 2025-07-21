@@ -479,8 +479,8 @@ Hits: 2  Misses: 0
     ip nat inside source static <tcp/udp> <in_addr port> <out_add port>
     ```
     - [ ] Telnet is a TCP protocol
-    - [ ] Outside hosts should connect to `203.0.113.U` port `2323`.
     - [ ] Internally, the RB telnet server is at `172.16.9.33` port `23`.
+    - [ ] Outside hosts should connect to `203.0.113.U` port `2323`.
 
 **Testing:**
 - [ ] From PC, telnet to your partner's router `203.0.113.P` and login.  Keep the connection open, 
