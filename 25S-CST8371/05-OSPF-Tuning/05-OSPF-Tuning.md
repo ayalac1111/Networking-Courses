@@ -390,7 +390,7 @@ show logging | include OSPF
 | --------------------------- | ------------------------------------------------------------------------------------------- |
 | 🖥️ Device Prompt & Command | Include the device name and command                                                         |
 | 📜 Full Command Output      | Submit the complete output for both commands                                                |
-| 🧾 Neighbor Table Check     | Confirm that **R1 is the DR** on `Gi0/0/0`                                                  |
+| 🧾 Neighbour Table Check    | Confirm that **R1 is the DR** on `Gi0/0/0`                                                  |
 | 🧪 Debug Line Check         | Include at least lines labeled `[3]`, `[4]`, `[5]`, and `[9]` from the OSPF debug log       |
 | 🗒️ Comment                 | Add a verification note, e.g.:                                                              |
 |                             | `!-- Debug captures showing the election of the DR and confirmation that R1 is now the DR.` |

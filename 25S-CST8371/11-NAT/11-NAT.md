@@ -67,7 +67,7 @@ Use the table below to configure your devices. Replace `U` with your assigned st
 ---
 ## Partner Collaboration
 
-You will need a partner for connectivity testing. If you don’t find a partner, ask your lab instructor to telnet into your switch.
+You will need a partner for connectivity testing. If you don’t find a partner, ask your lab instructor to telnet into your RB.
 
 - [ ]  You will each configure your own devices but work together to test connectivity. The topology diagram shows **only your own** devices; your partner will have the same topology on their end.
 - [ ]  You need **one PC** and **one VM** each for testing.
@@ -428,12 +428,12 @@ RA# undebug all
 Under this header, perform the following steps and include the outputs as described.
 
 
-| Step                                       | Command(s)                                                                          | What to Include                                                                                                         |
-| ------------------------------------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **1. Enable NAT debug & generate traffic** | <br>`debug ip nat`<br>`ping 192.0.2.80 source 172.16.9.46 repeat 2`<br>`undebug all | - **Two** debug lines showing translation of the ICMP echo-request and echo-reply  <br>- Example timestamps and details |
-| **2. Show NAT translations**               | `show ip nat translations`                                                          | - Full translation table, showing an entry for ICMP from `172.16.9.46` → `203.0.113.U` to `192.0.2.80`                |
-| **3. Verify ACL hits**                     | `show ip access-lists 16`                                                           | - The ACL 16 permit statement  <br>- Hit count ≥ 1 indicating the subnet was matched                                    |
-| **4. Show NAT statistics**                 | `show ip nat statistics`                                                            | - Total active translations ≥ 1  <br>- Hits/Misses summary for inside source translations                               |
+| Step                                       | Command(s)                                                                           | What to Include                                                                                                         |
+| ------------------------------------------ | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **1. Enable NAT debug & generate traffic** | <br>`debug ip nat`<br>`ping 192.0.2.80 source 172.16.9.46 repeat 2`<br>`undebug all` | - **Two** debug lines showing translation of the ICMP echo-request and echo-reply  <br>- Example timestamps and details |
+| **2. Show NAT translations**               | `show ip nat translations`                                                           | - Full translation table, showing an entry for ICMP from `172.16.9.46` → `203.0.113.U` to `192.0.2.80`                  |
+| **3. Verify ACL hits**                     | `show ip access-lists 16`                                                            | - The ACL 16 permit statement  <br>- Hit count ≥ 1 indicating the subnet was matched                                    |
+| **4. Show NAT statistics**                 | `show ip nat statistics`                                                             | - Total active translations ≥ 1  <br>- Hits/Misses summary for inside source translations                               |
 
 #### 📘 Sample Output Block
 
@@ -465,21 +465,21 @@ Hits: 2  Misses: 0
 
 ## NAT Rule #2: Static Port‐Forwarding
 
-**“Allow Internet users to Telnet to our internal switch at 172.16.9.33:23 via RA’s public IP on TCP 2323.”**
+**“Allow Internet users to Telnet to our internal RB at 172.16.9.33:23 via RA’s public IP on TCP 2323.”**
 
-- [ ] Code a **port-forwarding** rule so that external hosts can connect to the telnet server on the switch. 
+- [ ] Code a **port-forwarding** rule so that external hosts can connect to the telnet server on the RB. 
     ```
     ip nat inside source static <tcp/udp> <in_addr port> <out_add port>
     ```
     - [ ] Telnet is a TCP protocol
     - [ ] Outside hosts should connect to `203.0.113.U` port `2323`.
-    - [ ] Internally, the switch telnet server is at `172.16.9.33` port `23`.
+    - [ ] Internally, the RB telnet server is at `172.16.9.33` port `23`.
 
 **Testing:**
 - [ ] From PC, telnet to your partner's router `203.0.113.P` and login.  Keep the connection open, 
-- [ ] From PC, telnet to your partner's switch `203.0.113.P 2323` and login.  Keep the connection open. 
+- [ ] From PC, telnet to your partner's RB `203.0.113.P 2323` and login.  Keep the connection open. 
 - [ ] From your partner PC, telnet to your router `203.0.113.U` and login.  Keep the connection open
-- [ ] From your partner PC, telnet to your switch ``203.0.113.U 2323` and login.  Keep the connection open.
+- [ ] From your partner PC, telnet to your RB ``203.0.113.U 2323` and login.  Keep the connection open.
 
 > `P`:  Your partner's `U`
 > You are testing your partner's configuration.  They are testing your configuration.
@@ -499,7 +499,7 @@ Copy and paste the outputs (including device prompts) of the following commands 
 | 🖥️ Access‐list check      | `show access-lists`  <br>Verify the ACL entry permitting inbound TCP 2323 to 172.16.9.33 is present and hit count ≥ 1                 |
 | 🖥️ NAT translations       | `show ip nat translations`  <br>Confirm a static entry mapping `203.0.113.U:2323` → `172.16.9.33:23`                                |
 | 🖥️ TCP listener check     | `show tcp brief`  <br>Ensure there is a LISTEN or ESTAB on local port 2323                                                            |
-| 🖥️ Active Telnet sessions | `show users`  <br>Confirm at least one `vty` line with protocol `telnet` from your PC or partner’s PC to RA and to the switch is open |
+| 🖥️ Active Telnet sessions | `show users`  <br>Confirm at least one `vty` line with protocol `telnet` from your PC or partner’s PC to RA and to the RB is open |
 
 ✅ **What to Include:**
 
@@ -510,7 +510,7 @@ Copy and paste the outputs (including device prompts) of the following commands 
 | 🔍 ACL entry                | In `show access-lists`, verify the ACL permits `tcp any host 172.16.9.33 eq 23` and shows a hit count ≥ 1                      |
 | 🔍 NAT translation entry    | In `show ip nat translations`, confirm a static entry mapping `220.0.0.U:2323` → `172.16.9.33:23`                              |
 | 🔍 TCP listener             | In `show tcp brief` ensure there is a `LISTEN` (or `ESTAB`) on local port 2323 on RA                                           |
-| 🔍 Active Telnet sessions   | In `show users`, confirm at least one `vty` line with protocol `telnet` from your PC (or partner’s PC) to RA and to the switch |
+| 🔍 Active Telnet sessions   | In `show users`, confirm at least one `vty` line with protocol `telnet` from your PC (or partner’s PC) to RA and to the RB |
 | 🗒️ Comment                 | e.g., `!-- Static port-forward for Telnet to 172.16.9.33:23 verified; TCP listener, and sessions confirmed.`                   |
 
 #### 📘 Sample Output Block
@@ -701,6 +701,7 @@ show ip interface GigabitEthernet0/0/0
 ## 📤 Submission Checklist
 
 - [ ] `11-ACL-username.txt` uploaded via TFTP.  
+- [ ] Upload the syslog file to the TFTP server; label this file as `11-SYSLOG-username.txt`
 - [ ] CO6-C07 outputs included.  
 - [ ] Upload updated configs to the TFTP server.
 - [ ] Verify with:
@@ -709,6 +710,6 @@ ssh cisco@192.0.2.22
 ls -l /var/tftp/*username*
 ```
 
-If you haven't done before, ensure
+If you haven't done it before, ensure
 - [ ] `11-OSPF-username.txt` uploaded via TFTP.  
 - [ ] `11-NAT-username.txt` uploaded via TFTP.  

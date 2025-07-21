@@ -223,7 +223,7 @@ EDGE# clear access-list counters PROTECT-VM
 Copy the output of these commands from **CORE**:
 ```bash 
 # ping 198.18.U.46                          !-- FAIL
-# ping 198.18.U.33 source 198.18.U.190      !-- PASS
+# ping 198.18.U.46 source 198.18.U.190      !-- PASS
 ```
 
 Copy the output of these commands from **EDGE**:

@@ -9,8 +9,8 @@ This lab is designed to reinforce the key concepts from the midterm exam using h
 
 ![Lab Topology](img/07-topology.png)
 
-### Device ID Mapping (per your convention)
-Use the following IDs for IP addressing, for example, EDGE-Gi0/1 will be 10.U.10.U 
+### Device ID Mapping
+Use the following IDs for IP addressing, for example, EDGE-Gi0/1 will be `10.U.10.U`
 
 | Device | ID  |
 | ------ | --- |
@@ -115,7 +115,7 @@ This section helps students understand how OSPF chooses the best path based on i
 ```
 show ip ospf interface [int]
 ```
-	✅ Note the **cost** of each link (based on default bandwidth) 
+✅ Note the **cost** of each link (based on default bandwidth) 
 
 ### 2. Analyze OSPF Cost Values
 - [ ]  Based on the `show ip ospf interface` outputs, calculate the **total cost** from **DLS to LAN-A**

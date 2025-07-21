@@ -18,16 +18,16 @@ In this lab, you will integrate a **physical Cisco router** (EDGE) with **MikroT
 ---
 ## 📘 Addressing Table
 
-| Device     | Interface | IP Address       | Notes                          |
-| ---------- | --------- | ---------------- | ------------------------------ |
-| **EDGE**   | Gi0/0/0   | `10.U.10.U/24`   | To T1 (MikroTik Cloud)         |
-|            | Gi0/0/1   | `10.U.11.U/24`   | To PC                          |
-|            | Gi0/0/2   | `203.0.113.U/24` | To Remote / TFTP network       |
-| **T1**     | eth2      | `10.U.10.1/24`   | To EDGE                        |
-|            | eth1      | `10.U.12.1/24`   | Host-only link to T2           |
-| **T2**     | eth1      | `10.U.12.2/24`   | Host-only link to T1           |
-|            | Loop22    | `10.U.22.2/24`   | Simulated LAN on T2            |
-| **PC**     | (vNIC)    | `10.U.11.10/24`  | Default gateway = `10.U.11.10` |
+| Device   | Interface | IP Address       | Notes                         |
+| -------- | --------- | ---------------- | ----------------------------- |
+| **EDGE** | Gi0/0/0   | `10.U.10.U/24`   | To T1 (MikroTik Cloud)        |
+|          | Gi0/0/1   | `10.U.11.U/24`   | To PC                         |
+|          | Gi0/0/2   | `203.0.113.U/24` | To Remote / TFTP network      |
+| **T1**   | eth2      | `10.U.10.1/24`   | To EDGE                       |
+|          | eth1      | `10.U.12.1/24`   | Host-only link to T2          |
+| **T2**   | eth1      | `10.U.12.2/24`   | Host-only link to T1          |
+|          | Loop22    | `10.U.22.2/24`   | Simulated LAN on T2           |
+| **PC**   | (vNIC)    | `10.U.11.10/24`  | Default gateway = `10.U.11.U` |
 
 ---
 ## Part A – Configure EDGE (Cisco IOS)
@@ -91,19 +91,20 @@ Before making any changes, it’s useful to get a baseline of your MikroTik VM�
 1. Ensure your interfaces are labelled `eth1`and `eth2`, if not, rename the interfaces to ensure the name convention of the lab.
 ```shell
 [admin@MikroTik] > interface print
-Flags: R - **RUNNING**
-Columns: **NAME**, **TYPE**, **ACTUAL-MTU**, **MAC-ADDRESS**
-**#**   **NAME**    **TYPE**      **ACTUAL-MTU**  **MAC-ADDRESS**      
+Flags: R - RUNNING
+
+#   NAME    TYPE       ACTUAL-MTU MAC-ADDRESS     
 0 R ether3  ether           1500  08:00:27:2E:F6:5C
 1 R ether4  ether           1500  08:00:27:BC:DC:9B
 2 R lo      loopback       65536  00:00:00:00:00:00
 ```
 
 ```bash
+#-- number refers to the id (#) in the above list
 interface set number=0 name=ether1 
 interface set number=1 name=ether2
 
-interface print                   
+[admin@MikroTik] > interface print                   
 
 0 R ether1  ether           1500  08:00:27:BC:DC:9B
 1 R ether2  ether           1500  08:00:27:2E:F6:5C
@@ -124,13 +125,13 @@ interface print                   
 /routing ospf area add name=backbone area-id=0.0.0.0 instance=ospfU
 
 # Advertise networks
-routing ospf interface-template add interfaces=ether2 networks=10.100.12.0/24 area=backbone
+routing ospf interface-template add interfaces=ether2 networks=10.U.12.0/24 area=backbone
 ```
 #### **T2 Configuration**
  Mirror the above on T2, using `.2` addresses and router-ID `2.0.0.2`.
 Advertise `10.U.12.0/24` and `10.U.22.0/24` into OSPF.     
 ### ✅ Reflection Questions
-1. How can you verify on T1/T2 that you have full mesh adjacency with EDGE?
+1. How can you verify on T1/T2 that you have full adjacency with EDGE?
 2. If the host-only link between T1 & T2 goes down, what happens to OSPF peering?
 
 ---
