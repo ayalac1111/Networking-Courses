@@ -222,14 +222,15 @@ show ssh
 show ip http server status
 show running-config | section logging
 show logging
-show ntp status
-show ntp associations detail
 show clock
 
 !-- From RB
 show ip ssh
 show users
 show tcp brief
+show ntp status
+show ntp associations detail
+
 ```
 
 ✅ **What to Include:**
