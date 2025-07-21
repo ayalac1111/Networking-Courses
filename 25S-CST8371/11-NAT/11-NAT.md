@@ -483,8 +483,8 @@ Hits: 2  Misses: 0
     - [ ] Outside hosts should connect to `203.0.113.U` port `2323`.
 
 **Testing:**
-- [ ] From PC, telnet to your partner's router `203.0.113.P` and login.  Keep the connection open, 
-- [ ] From PC, telnet to your partner's RB `203.0.113.P 2323` and login.  Keep the connection open. 
+- [ ] From VM, telnet to your partner's router `203.0.113.P` and login.  Keep the connection open, 
+- [ ] From VM, telnet to your partner's RB `203.0.113.P 2323` and login.  Keep the connection open. 
 - [ ] From your partner PC, telnet to your router `203.0.113.U` and login.  Keep the connection open
 - [ ] From your partner PC, telnet to your RB ``203.0.113.U 2323` and login.  Keep the connection open.
 
