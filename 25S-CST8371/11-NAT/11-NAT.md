@@ -230,7 +230,6 @@ show users
 show tcp brief
 show ntp status
 show ntp associations detail
-
 ```
 
 ✅ **What to Include:**
@@ -252,24 +251,24 @@ show ntp associations detail
 
 !-- HTTPS session active; web management reachable.
 
-ayalac-RA# show ip http server status
+# show ip http server status
 HTTP server status: Enabled
 
-ayalac-RA# show ip http secure-server status
+# show ip http secure-server status
 HTTP secure server status: Enabled
 
-ayalac-RA# show tcp brief | include 443  
+# show tcp brief | include 443  
 TCB       Local Address          Foreign Address        (state)
 0x123456  198.18.U.17.443        10.U.18.14.51514       ESTAB
 
-ayalac-RA# show users
+# show users
     Line       User       Host(s)              Idle       Location
   *  0 vty 0  ssh     idle                 00:01:23  10.U.18.14 
   *  0 vty 1  http    idle                 00:00:10  10.U.18.14
 
 !-- Syslog test message received at PC; RA logging config verified.
 
-ayalac-RA# show logging
+# show logging
 Syslog logging: enabled (console, host 10.U.18.14)
     Facility: daemon, Level: informational
   Timestamp logging: msec localtime
@@ -281,12 +280,12 @@ Syslog logging: enabled (console, host 10.U.18.14)
 
 !-- NTP synchronized to 203.0.113.254; clock verified.
 
-ayalac-RA# show ntp status
+# show ntp status
 Clock is synchronized, stratum 2, reference is 203.0.113.254
 nominal frequency is 250.0000 Hz, precision is 2**18
 reference time is D4ED:86B3:8D3F.C000 (04:15:51.763 UTC Tue Jul 15 2025)
 
-RA# show ntp associations detail
+# show ntp associations detail
 
   address         ref clock       st  when  poll  reach  delay  offset    disp    jitter
 =================================================================================
@@ -529,7 +528,7 @@ Copy and paste the outputs (including device prompts) of the following commands 
 
 ayalac-RB# show ip nat translations
 Pro Inside global          Inside local         Outside local        Outside global
-tcp 220.0.0.U:2323        172.16.9.33:23       10.P.18.14:54321      10.P.18.14:54321
+tcp 220.0.0.U:2323        172.16.9.33:23       10.P.18.14:54321  10.P.18.14:54321
 
 ayalac-RB# show tcp brief | include 2323
 TCB     Local Address         Foreign Address      (state)
