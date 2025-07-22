@@ -351,7 +351,8 @@ delay=0.023, offset=-0.001, dispersion=0.040, jitter=0.005
 1. **Set VM's DNS server** to 192.0.2.53 in your network settings.
 2. **Enable NAT debugging** on RA
 	```bash
-	RA# debug ip nat
+	!-- This command is not showing the expected results on the routers
+	RA# debug ip nat [ACCESS_LIST]
 	```
 3. From VM: **Perform a DNS lookup**
 	```bash
@@ -410,7 +411,8 @@ RA# show ip nat statistics
 Before you disable debugging, you should see console messages for each translation event. Here’s an example of what two packets look like in the debug output (timestamps illustrative):
 
 ```bash
-`*Mar 19 14:05:01.123: NAT: s=172.16.9.46(52345) d=192.0.2.53(53) proto=UDP translate src to 203.0.113.17(52345) 
+!-- Expected results not showing in the routers
+*Mar 19 14:05:01.123: NAT: s=172.16.9.46(52345) d=192.0.2.53(53) proto=UDP translate src to 203.0.113.17(52345) 
 *Mar 19 14:05:02.456: NAT: s=172.16.9.46(icmptype:8 icmpid:0) d=192.0.2.80(icmptype:8 icmpid:0) proto=ICMP translate src to 203.0.113.17(1)
 ```
 
@@ -448,6 +450,7 @@ Under this header, perform the following steps and include the outputs as descri
 === CO3 – PAT to Exit Interface Verification ===
 !-- PAT to exit interface functioning; ICMP translations and ACL verified.
 
+!-- Not working 
 *Mar 19 14:05:01.123: NAT: s=172.16.9.46(0) d=192.0.2.80(0) proto=ICMP translate src to 203.0.113.17(1)
 *Mar 19 14:05:01.456: NAT: s=192.0.2.80(0) d=203.0.113.17(1) proto=ICMP translate dst to 172.16.9.46(1)
 
@@ -499,26 +502,24 @@ Hits: 2  Misses: 0
 === CO4 – Static Port Forwarding Verification ===
 ```
 
-Copy and paste the outputs (including device prompts) of the following commands from **RA**, then add your confirmation comment below the header:
+Copy and paste the outputs (including device prompts) of the following commands from **RA** / **RB**, then add your confirmation comment below the header:
 
 | Requirement                | Details                                                                                                                               |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| 🖥️ Access‐list check      | `show access-lists`  <br>Verify the ACL entry permitting inbound TCP 2323 to 172.16.9.33 is present and hit count ≥ 1                 |
-| 🖥️ NAT translations       | `show ip nat translations`  <br>Confirm a static entry mapping `203.0.113.U:2323` → `172.16.9.33:23`                                |
-| 🖥️ TCP listener check     | `show tcp brief`  <br>Ensure there is a LISTEN or ESTAB on local port 2323                                                            |
-| 🖥️ Active Telnet sessions | `show users`  <br>Confirm at least one `vty` line with protocol `telnet` from your PC or partner’s PC to RA and to the RB is open |
+| 🖥️ NAT translations       | `RA:  show ip nat translations`  <br>Confirm a static entry mapping `203.0.113.U:2323` → `172.16.9.33:23`                             |
+| 🖥️ TCP listener check     | `RB: show tcp brief`  <br>Ensure there is a LISTEN or ESTAB on local port 2323                                                        |
+| 🖥️ Active Telnet sessions | `RB: show users`  <br>Confirm at least one `vty` line with protocol `telnet` from your PC or partner’s PC to RA and to the RB is open |
 
 ✅ **What to Include:**
 
-| Requirement                 | Details                                                                                                                        |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| 🖥️ Device prompt & command | Include device name and exact command,                                                                                         |
-| 📜 Full command output      | Capture the entire output of each command without truncation                                                                   |
-| 🔍 ACL entry                | In `show access-lists`, verify the ACL permits `tcp any host 172.16.9.33 eq 23` and shows a hit count ≥ 1                      |
-| 🔍 NAT translation entry    | In `show ip nat translations`, confirm a static entry mapping `220.0.0.U:2323` → `172.16.9.33:23`                              |
-| 🔍 TCP listener             | In `show tcp brief` ensure there is a `LISTEN` (or `ESTAB`) on local port 2323 on RA                                           |
+| Requirement                 | Details                                                                                                                    |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 🖥️ Device prompt & command | Include device name and exact command,                                                                                     |
+| 📜 Full command output      | Capture the entire output of each command without truncation                                                               |
+| 🔍 NAT translation entry    | In `show ip nat translations`, confirm a static entry mapping `220.0.0.U:2323` → `172.16.9.33:23`                          |
+| 🔍 TCP listener             | In `show tcp brief` ensure there is a `LISTEN` (or `ESTAB`) on local port 2323 on RA                                       |
 | 🔍 Active Telnet sessions   | In `show users`, confirm at least one `vty` line with protocol `telnet` from your PC (or partner’s PC) to RA and to the RB |
-| 🗒️ Comment                 | e.g., `!-- Static port-forward for Telnet to 172.16.9.33:23 verified; TCP listener, and sessions confirmed.`                   |
+| 🗒️ Comment                 | e.g., `!-- Static port-forward for Telnet to 172.16.9.33:23 verified; TCP listener, and sessions confirmed.`               |
 
 #### 📘 Sample Output Block
 
@@ -526,19 +527,15 @@ Copy and paste the outputs (including device prompts) of the following commands 
 === CO4 – Port-Forwarding Verification ===
 !-- Static port-forward for Telnet to 172.16.9.33:23 verified; TCP listener and sessions present.
 
-ayalac-RA# show access-lists
-Standard IP access list 101
-    permit tcp any host 172.16.9.33 eq 23 (hit count: 2)
-
-ayalac-RA# show ip nat translations
+ayalac-RB# show ip nat translations
 Pro Inside global          Inside local         Outside local        Outside global
 tcp 220.0.0.U:2323        172.16.9.33:23       10.P.18.14:54321      10.P.18.14:54321
 
-ayalac-RA# show tcp brief | include 2323
+ayalac-RB# show tcp brief | include 2323
 TCB     Local Address         Foreign Address      (state)
 0xABC   220.0.0.U.2323       10.P.18.14.56789     LISTEN
 
-ayalac-RA# show users
+ayalac-RB# show users
     Line       User       Host(s)              Idle       Location
    *  0 vty 2  telnet    idle                 00:00:12  10.P.18.14
 
