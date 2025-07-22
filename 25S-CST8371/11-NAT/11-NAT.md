@@ -218,16 +218,21 @@ Copy the output of the commands listed:
 
 ```bash
 !-- From RA
-show ssh
 show ip http server status
 show running-config | section logging
 show logging
 show clock
 
 !-- From RB
+!-- shows ssh connections
+show ssh
+!-- shows that SSH is configured
 show ip ssh
+!-- shows the users logged into the systems
 show users
+!-- shows the ports being used
 show tcp brief
+!-- shows the NTP synchorization
 show ntp status
 show ntp associations detail
 ```
