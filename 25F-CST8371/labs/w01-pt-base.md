@@ -10,11 +10,12 @@ This Packet Tracer lab gets your toolkit working and establishes a **baseline ro
 - Build **reachability with static routes**.
 - Secure remote access (**SSHv2** only, local user).
 - Configure **NTP** (time), **Syslog** (remote logging), and **CDP** (neighbour discovery).
-- Capture concise **evidence** for each checkpoint (C01–C07) in a small text file.
+- Capture concise **evidence** for each checkpoint (C01–C06) in a small text file.
 
 **What you submit:**  
-`w01-pt-base-<username>.txt` containing evidence for C01–C07 (tag + one verification per item).  
+`w01-pt-base-<username>.txt` containing evidence for C01–C06 (tag + one verification per item).  
 *Keep it minimal—no full running-configs.*
+
 **Estimated time:** 60–90 minutes (including verification and evidence capture).
 
 ---
@@ -71,7 +72,7 @@ By the end of this lab, you should be able to:
 **Routing for Week 1 (static only)**
 - **EDGE**: default route to the REMOTE gateway `203.0.113.254`.
 - **CORE**: default route to **EDGE** (`198.18.U.1`).
-- That’s enough to reach course services (NTP/Syslog) behind REMOTE without introducing OSPF yet.
+- That’s enough to reach course services (TFTP/HTTPs) behind REMOTE without introducing OSPF yet.
 
 **Management plane**
 - **SSH only** on VTY (no Telnet).
@@ -86,14 +87,22 @@ By the end of this lab, you should be able to:
 > Replace every `U` with your assigned number. Keep configurations **minimal**.  
 > After each Task, complete the matching **🔍 C0x — Verification & Collection of Information**.
 
-### Create submission file
+### Create Submission File
 - [ ] On your desktop, create **`w01-pt-base-<username>.txt`**. You will submit this file to Brightspace.
-### Task  0- — Basic Configuration (CORE & EDGE)
+- [ ] **Avoid double extensions:** Many editors (Notepad, TextEdit) add `.txt` automatically.
+	  - In **Notepad (Windows)**: either type the name **without** `.txt` (Notepad adds it), **or** choose **Save as type: All Files (*.*)** if you include `.txt` yourself.
+	  - In **TextEdit (macOS)**: use **Format → Make Plain Text**, then save as `w01-pt-base-<username>.txt`.
+	  - **Check the final name** is exactly: `w01-pt-base-<username>.txt`
+	    - ✅ `w01-pt-base-ayalac.txt`
+	    - ❌ `w01-pt-base-ayalac.txt.txt`
+
+### Task  0 — Basic Configuration (CORE & EDGE)
 - [ ] Set **hostname** (CORE / EDGE) as `username-<devicename>` (eg: *ayal0014-EDGE*)
 - [ ] Disable **DNS lookup**.
 - [ ] Protect privileged exec with password `class` stored with strong encryption.
 - [ ] Configure the console line to minimize disruptions caused by log messages.
 ### Task 1 — IP Addressing & Interface State
+- [ ] Find your `U` number in Brightspace; you will be using it as part of your network addresses during the semester.
 - [ ] Assign IPs per the **Addressing Plan/Topology** (replace `U` with your number).
 - [ ] Add clear **descriptions** to each interface you configure.
 - [ ] Ensure required interfaces are **up/up** (CORE↔EDGE link and EDGE↔REMOTE).
@@ -105,46 +114,76 @@ By the end of this lab, you should be able to:
 === CO1 – IP Addressing & Interface State ===
 ```
 
-Copy the output of these commands from **EDGE** and **CORE**:
+##### **Part A — Verify (run on EDGE and CORE)**
 
-```bash
-show ip interface brief 
-```
+1. **Interface state (fast scan):**
+    
+	```plaintext
+	show ip interface brief | ex una
+	```
 
-✅ **What to Include:**
+> This hides lines with `unassigned`, so you focus on configured interfaces and **up/down** status. 
+> ⚠️ Note: this command **does not show subnet masks**.
 
-| Requirement              | Details                                                                       |
-| ------------------------ | ----------------------------------------------------------------------------- |
-| 🖥️ Device prompt        | Include device name and command, e.g., `ayalac-EDGE# show ip interface brief` |
-| 📜 Full command output   | Paste the full `show ip interface brief` for **both** routers                 |
-| 🔌 Interface state check | Required links show **up/up**                                                 |
-| 🧭 Addressing check      | IPs match the addressing plan (`U` replaced with your assigned number)        |
-| 🗒️ Comment              | Add a confirmation line, e.g.: `!-- IPs/state verified; link up both ways.`   |
-📘 **Sample Output Block** _(example uses `U=7`; your values will differ)_
+2. **Address + mask (authoritative):**
+    
 
-```
-=== CO1 – IP Addressing & Interface State ===
-!-- IPs/state verified; link up both ways
+```plaintext
+show ip route | inc C|L
+````
 
-ayalac-EDGE#show ip interface brief
+> The routing table shows **C (connected)** and **L (local)** routes with **prefix length** (mask) and the bound interface.  
+> Use this to confirm your configured IP **and** mask are correct.
+
+
+📘 **Sample Verification Output Block** _(example uses `U=250`; your values will differ)_
+```plaintext
+ayalac-CORE#show ip interface brief | ex una
 Interface              IP-Address      OK? Method Status                Protocol
-GigabitEthernet0/0     203.0.113.7     YES manual up                    up
-GigabitEthernet0/1     198.18.7.1      YES manual up                    up
+GigabitEthernet0/0/0     10.250.1.2      YES manual up                    up
+GigabitEthernet0/0/2     10.250.2.2      YES manual up                    up
+Loopback250            10.250.3.2      YES manual up                    up
+GigabitEthernet0/0/1     198.18.250.2    YES manual up                    up
 
-ayalac-CORE#show ip interface brief
-Interface              IP-Address      OK? Method Status                Protocol
-GigabitEthernet0/1     198.18.7.2      YES manual up                    up
-GigabitEthernet0/0     10.7.1.2        YES manual up                    up
+ayalac-CORE#show ip route | inc C|L
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+C       10.250.1.0/28 is directly connected, GigabitEthernet0/0/0
+L       10.250.1.2/32 is directly connected, GigabitEthernet0/0/0
+C       10.250.2.0/26 is directly connected, GigabitEthernet0/0/2
+L       10.250.2.2/32 is directly connected, GigabitEthernet0/0/2
+C       10.250.3.0/24 is directly connected, Loopback250
+L       10.250.3.2/32 is directly connected, Loopback250
+C       198.18.250.0/24 is directly connected, GigabitEthernet0/0/1
+L       198.18.250.2/32 is directly connected, GigabitEthernet0/0/1
 ```
+
+
+##### **Part B — What to submit (both devices)**
+
+```plaintext
+show ip route | inc C|L
+```
+
+✅ **What to Include (CO1 — submission)**
+
+| Requirement                              | Details                                                                                                                                                     |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🖥️ Device prompt + command              | Include device name and command, e.g., `ayalac-EDGE# show ip route \| inc C\|L` and `ayalac-CORE# show ip route \| inc C\|L`.                               |
+| 📜 Output to paste                       | **Only** the filtered routing table lines (`C` + `L`) from **both** routers. No `show run`, no screenshots.                                                 |
+| 🧭 Addressing check                      | `C` (connected) prefixes show **network + mask** and interface; `L` (local) shows the **host /32**. Confirm they match the addressing plan with your `U`.   |
+| 🔌 Interface state (verify, don’t paste) | Use `show ip interface brief \| ex una` on each router to ensure required links are **up/up**. **Do not** include this output in CO1—just use it to verify. |
+| 🗒️ Comment line                         | Add one line after the outputs, e.g.: `!-- Interfaces up/up confirmed via brief; IP + mask verified via C/L routes.`                                        |
+| 🔁 Both devices                          | Provide the `show ip route \| inc C\|L` block **for EDGE and CORE**.                                                                                        |
 
 ---
 
 ### Task 2 — Static Routing (baseline reachability)
 
-- [ ] On **EDGE**: install a **fully specified default route** **to REMOTE** (via `203.0.113.254`).
-- [ ] On **CORE**: install a **fully specified default route** **to EDGE** (via `198.18.U.1`).
-- [ ] On **EDGE**: install a **fully specified summary route** for **all internal networks** behind CORE.
-- [ ] On **REMOTE**: install **fully specified return routes** **back via EDGE** so REMOTE can reach internal subnets:
+- [ ] On **EDGE**: install a **default route** **to REMOTE** (via `203.0.113.254`).
+- [ ] On **CORE**: install a **default route** **to EDGE** (via `198.18.U.1`).
+- [ ] On **EDGE**: install a **summary route** for **all internal networks** behind CORE.
+- [ ] On **REMOTE**: install **return routes** **back via EDGE** so REMOTE can reach internal subnets:
   - `198.18.U.0/24` (internal link space)
   - `10.U.0.0/16`  (PC/VM/Loopback summary)
 
@@ -156,21 +195,22 @@ A single summary **`10.U.0.0/16`** covers all of them → fewer routes, same rea
 **Commands (replace `U` and interfaces to match your diagram):**
 ```plaintext
 ! ----- EDGE -----
-ip route 0.0.0.0 0.0.0.0 203.0.113.254 GigabitEthernet0/0
-ip route 10.U.0.0 255.255.0.0 198.18.U.2 GigabitEthernet0/1
-!                             ^ next-hop ^ exit-if (fully specified)
+ip route 0.0.0.0 0.0.0.0 203.0.113.254
+ip route 10.U.0.0 255.255.0.0 198.18.U.2
+
 
 ! ----- CORE -----
-ip route 0.0.0.0 0.0.0.0 198.18.U.1 GigabitEthernet0/1
+ip route 0.0.0.0 0.0.0.0 198.18.U.1
 
 ! ----- REMOTE -----
 ! Return paths back via EDGE (EDGE’s WAN IP is 203.0.113.U)
-ip route 198.18.U.0 255.255.255.0 203.0.113.U GigabitEthernet0/0
-ip route 10.U.0.0    255.255.0.0   203.0.113.U GigabitEthernet0/0
+ip route 198.18.U.0 255.255.255.0 203.0.113.U
+ip route 10.U.0.0    255.255.0.0   203.0.113.U
 !               ^ summaries back toward EDGE’s WAN
 ```
 
-> **Full marks require “fully specified” static routes** (provide **next-hop IP** _and_ **exit interface**).
+> **Note (PT vs real gear):** PT can be inconsistent with “fully specified” routes (next-hop **+** exit interface).  
+> In PT we use **next-hop only**. In the physical lab, you’ll be expected to use **fully specified** statics.
 
 #### 🔍 C02 — Verification & Collection of Information
 📝 In your `w01-pt-base-<username>.txt` file, create a section labelled:
@@ -179,110 +219,117 @@ ip route 10.U.0.0    255.255.0.0   203.0.113.U GigabitEthernet0/0
 === CO2 – Static Routing & REMOTE Reachability ===
 ```
 
+##### **Part A — Verify (run these first)**
+
+> We already confirmed directly connected links in **CO1**.  
+ 
+1. **EDGE & CORE** — show only your static routes
+```plaintext
+!-- EDGE & CORE
+show ip route static
+```
+- Look for `S* 0.0.0.0/0` (default) on both.
+- On EDGE, also see `S 10.U.0.0/16` (summary).
+
+2. **REMOTE** — prove the return routes exist
+```plaintext
+!-- REMOTE
+show ip route 198.18.U.0
+show ip route 10.U.0.0
+```
+- You should see **Known via "static", distance 1**, and next-hop `203.0.113.U`.
+
+3. **PC** — end-to-end path test (better than a single ping)
+```bash
+C:\> tracert 192.0.2.69
+```
+- Confirms the path: **PC → CORE → EDGE → REMOTE → TFTP**.
+
+**How `tracert` works (quick)**  
+Windows `tracert` sends **ICMP Echo** packets with **increasing TTL (1, 2, 3, …)**.  
+Each router decrements TTL; when TTL hits 0, that router returns **ICMP Time Exceeded**, revealing itself as a hop.  
+At the final hop, the destination replies with **ICMP Echo Reply**.  
+Compared to a single `ping`, `tracert` is better for **path diagnostics**: you see where traffic goes and **where it breaks** (e.g., a missing static route or blocked hop).  
+_Tip: Asterisks `*` can appear if a hop doesn’t respond to TTL-expired probes—path can still work end-to-end._
+
+4. **EDGE** — internal reachability to the VM
+```bash
+ping 10.U.2.10
+```
+
+
+📘 **Sample Verification Output Block** _(example uses `U=250`; your values will differ)_
+
+```plaintext
+ayalac-EDGE#show ip route static
+     10.0.0.0/16 is subnetted, 1 subnets
+S       10.250.0.0 [1/0] via 198.18.250.2
+S*   0.0.0.0/0 [1/0] via 203.0.113.254
+
+RemoteS#show ip route 198.18.250.0
+Routing entry for 198.18.250.0/24
+  Known via "static", distance 1, metric 0
+  Routing Descriptor Blocks:
+  * 203.0.113.250
+      Route metric is 0, traffic share count is 1
+      
+C:\>tracert 192.0.2.69
+Tracing route to 192.0.2.69 over a maximum of 30 hops:
+
+  1    0 ms    0 ms    0 ms  10.250.1.2
+  2    0 ms    0 ms    0 ms  198.18.250.1
+  3    0 ms    0 ms    0 ms  203.0.113.254
+  4    0 ms    0 ms    0 ms  192.0.2.69
+
+Trace complete.
+```
+
+
+##### **Part B — What to submit (paste these blocks)**
+
 Run these commands on **EDGE** and **CORE**, then from the **PC**:
 
 ```bash
-# Prove defaults (EDGE & CORE)
-EDGE# show ip route | begin Gateway
-CORE# show ip route | begin Gateway
+# -- EDGE - CORE
+show ip route static
 
-# Prove internal summary on EDGE
-EDGE# show ip route 10.U.0.0
-
+# -- REMOTE
 # Prove return routes on REMOTE
-REMOTE# show ip route 198.18.U.0
-REMOTE# show ip route 10.U.0.0
+show ip route 198.18.U.0
+show ip route 10.U.0.0
 
 # Connectivity tests
-PC> ping 192.0.2.69                    # TFTP server behind REMOTE (end-to-end)
-EDGE# ping 10.U.2.10 source g0/0/1     # to VM (validates EDGE→CORE→VM)
-# (optional)
-REMOTE# ping 10.U.3.2                  # to CORE LoopbackU (validates return paths)
-CORE# traceroute 192.0.2.69            # should traverse EDGE, then REMOTE
-
+# -- EDGE
+ping 10.U.2.10       
+# -- PC
+PC> tracert 192.0.2.69                   # TFTP server behind REMOTE (end-to-end)
 ```
 
 ✅ **What to Include:**
 
-| Requirement               | Details                                                                                            |
-| ------------------------- | -------------------------------------------------------------------------------------------------- |
-| 🖥️ Device prompts        | Include device + command (e.g., `ayalac-EDGE# show ip route \| begin Gateway`)                     |
-| 🌐 Defaults (EDGE & CORE) | Snippet showing **S*** `0.0.0.0/0` as **fully specified** on **both** routers                      |
-| 🧭 EDGE internal summary  | `show ip route 10.U.0.0` showing **S 10.U.0.0/16 via 198.18.U.2, <internal-if>**                   |
-| 🔁 REMOTE return routes   | `show ip route 198.18.U.0` and `show ip route 10.U.0.0` showing **next-hop 203.0.113.U**           |
-| 💻 PC → REMOTE test       | PC ping to **192.0.2.69** (paste result; should succeed with return routes in place)               |
-| 🔧 EDGE → VM test         | EDGE ping to **10.U.2.10** (source **g0/0/1**)                                                     |
-| 🗒️ Comment               | Add: `!-- Fully specified defaults + EDGE /16 summary + REMOTE return routes verified; tests run.` |
-
-📘 **Sample Output Block** _(example uses `U=7`; your values will differ)_
-
-```bash
-=== CO2 – Static Routing & REMOTE Reachability ===
-!-- Fully specified defaults + EDGE /16 summary + REMOTE return routes verified; tests run.
-
-ayalac-EDGE#show ip route | begin Gateway
-Gateway of last resort is 203.0.113.254 to network 0.0.0.0
-S*   0.0.0.0/0 [1/0] via 203.0.113.254, GigabitEthernet0/0
-
-ayalac-CORE#show ip route | begin Gateway
-Gateway of last resort is 198.18.7.1 to network 0.0.0.0
-S*   0.0.0.0/0 [1/0] via 198.18.7.1, GigabitEthernet0/1
-
-ayalac-EDGE#show ip route 10.7.0.0
-Routing entry for 10.7.0.0/16
-  Known via "static", distance 1, metric 0
-  * 198.18.7.2, GigabitEthernet0/1
-
-ayalac-REMOTE#show ip route 198.18.7.0
-Routing entry for 198.18.7.0/24
-  Known via "static", distance 1, metric 0
-  * 203.0.113.7, GigabitEthernet0/0
-
-ayalac-REMOTE#show ip route 10.7.0.0
-Routing entry for 10.7.0.0/16
-  Known via "static", distance 1, metric 0
-  * 203.0.113.7, GigabitEthernet0/0
-
-PC> ping 192.0.2.69
-Pinging 192.0.2.69 with 32 bytes of data:
-Reply from 192.0.2.69: bytes=32 time<1ms TTL=63
-Reply from 192.0.2.69: bytes=32 time<1ms TTL=63
-Reply from 192.0.2.69: bytes=32 time<1ms TTL=63
-Reply from 192.0.2.69: bytes=32 time<1ms TTL=63
-Ping statistics for 192.0.2.69:
-    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
-
-ayalac-EDGE#ping 10.7.2.10 source g0/0/1
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.7.2.10, timeout is 2 seconds:
-Packet sent with a source address of 198.18.7.1
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/2/3 ms
-
-ayalac-REMOTE#ping 10.7.3.2
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.7.3.2, timeout is 2 seconds:
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 2/3/4 ms
-
-ayalac-CORE#traceroute 192.0.2.69
-Type escape sequence to abort.
-Tracing the route to 192.0.2.69
-  1  198.18.7.1  1 msec  1 msec  1 msec
-  2  203.0.113.254  2 msec  2 msec  2 msec
-  3  192.0.2.69  3 msec  3 msec  3 msec
-
-```
-
+| Requirement               | Details                                                                                   |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| 🖥️ Device prompts        | Include device + command (e.g., `ayalac-EDGE# show ip route \| begin Gateway`)            |
+| 🌐 Defaults (EDGE & CORE) | Snippet showing **S*** `0.0.0.0/0` on **both** routers                                    |
+| 🧭 EDGE internal summary  | `show ip route 10.U.0.0` showing **S 10.U.0.0/16 via 198.18.U.2, <internal-if>**          |
+| 🔁 REMOTE return routes   | `show ip route 198.18.U.0` and `show ip route 10.U.0.0` showing **next-hop 203.0.113.U**  |
+| 💻 PC → REMOTE test       | PC traceroute to **192.0.2.69** (paste result)                                            |
+| 🔧 EDGE → VM test         | EDGE ping to **10.U.2.10**                                                                |
+| 🗒️ Comment               | Add: `!-- defaults routes + EDGE /16 summary + REMOTE return routes verified; tests run.` |
 
 ---
 ### Task 3 — Secure Remote Access (SSHv2)
-- [ ] Create a local **admin** user (privileged), with password **cisco**
-- [ ] Set a **domain name** to `cnap.cst` (for key generation)
-- [ ] Generate an RSA key modulus 1024 bits. 
-- [ ] Ensure **SSHv2** is enabled (keys generated).
-- [ ] **VTY** uses **login local** and **SSH-only** (no Telnet).
-- [ ] Set a reasonable **exec-timeout** on VTY.
+
+- [ ] Create a local **admin** user with **privilege level 15** and **secret password `cisco`** (hashed).
+- [ ] Set the device **domain name** to **`cnap.cst`** (needed for key generation).
+- [ ] Generate an **RSA host key** with **modulus 1024 bits**.
+- [ ] Enforce **SSH version 2 only**.
+- [ ] SSH hardening: **authentication retries = 3** and **authentication timeout = 60 seconds**.
+- [ ] VTY lines **0–4**: **login local**, **SSH-only** (no Telnet), and **exec-timeout = 10 minutes**.
+- [ ] Set an **enable secret** for privileged mode if you haven't done it yet.
+
+> Note: Ensure the **hostname** was set in Task 1 **before** generating RSA keys.
+
 
 #### 🔍 C03 — Verification & Collection of Information
 📝 In your `w01-pt-base-<username>.txt` file, create a section labelled:
@@ -291,13 +338,37 @@ Tracing the route to 192.0.2.69
 === CO3 – Secure Remote Access (SSHv2) ===
 ```
 
-Run these checks:
+##### **Part A — Verify (run these first)**
+
+1. **From the SSH target (example: CORE)**
 ```bash
 # From the Packet Tracer PC to CORE (replace U):
 ssh -l admin 198.18.U.2
+# Once in CORE:
+ayalac-CORE# show tcp brief
+TCB            Local Address         Foreign Address        (state)
+7F9862587110   198.18.250.2.22       10.250.1.10.1027       ESTABLISHED
+```
+- 198.18.250.2.22 = SSH server on port 22 (device you connected to).
+- 10.250.1.10.1027 = PC source IP with an ephemeral port (1027).
+- ESTABLISHED = SSH handshake completed; session is live.
 
+2.  **From EDGE, prove the settings:**
+
+```bash
+ayalac-EDGE# show ip ssh
+SSH Enabled - version 2.0
+Authentication timeout: 60 secs; Authentication retries: 3
+```
+- Confirms SSHv2 only, plus your hardening values (timeout 60s, retries 3).
+
+> Packet Tracer vs. real gear: PT’s show ip ssh output is minimal.
+>On real IOS, you’ll typically also use show ssh (session table) and can verify RSA key details with show crypto key mypubkey rsa.
+
+##### **Part B — What to submit (paste these blocks)**
+
+```bash
 # On CORE (verify the session landed)
-show ssh
 show tcp brief
 
 # On EDGE (prove SSH server settings)
@@ -310,70 +381,32 @@ show ip ssh
 | ----------------------- | ------------------------------------------------------------------------------------------------ |
 | 🖥️ Device prompt       | Include device name + command (e.g., `ayalac-CORE# show ssh`)                                    |
 | 🔐 Version proof        | From **EDGE**: `show ip ssh` showing **SSH Enabled – version 2.0**                               |
-| 🌐 Domain name          | From **EDGE**: `show ip ssh` showing domain-name cnap.cst`                                       |
-| 🔑 Key size             | From **EDGE**: `show ip ssh` showing  → include the **RSA modulus/key size**                     |
 | 📡 Live session on CORE | From **CORE**: `show ssh` and `show tcp brief` showing the **active SSH connection**             |
-| 💻 PC proof             | From **PC**: the `ssh -l admin 198.18.U.2` attempt (username prompt and success banner if shown) |
 | 🗒️ Comment             | Add: `!-- SSHv2 enforced, domain & RSA key present, live session verified.`                      |
-
-> **Full marks require**: SSH **version 2 only**, **domain name set**, **RSA keys present**, **VTY is SSH-only**, and a **successful SSH test** from the PC to CORE.
-
-📘 **Sample Output Block** _(example uses `U=7`; your values will differ)_
-=== CO3 – Secure Remote Access (SSHv2) ===
-!-- SSHv2 enforced, domain & RSA key present, live session verified.
-
-```bash
-PC> ssh -l admin 198.18.7.2
-Open
-Password: ******
-ayalac-CORE>           # (login success banner may vary)
-
-ayalac-CORE#show ssh
-Connection Version Mode  Encryption  Hmac        State        Username
-0          2.0     IN    aes128-cbc  hmac-sha1   SESSION_OK   admin
-%No SSHv1 server connections running.
-
-ayalac-CORE#show tcp brief
-TCP    10.7.1.10:51124    198.18.7.2:22       ESTAB
-
-ayalac-EDGE#show ip ssh
-SSH Enabled - version 2.0
-Authentication timeout: 120 secs; Authentication retries: 3
-Minimum expected Diffie-Hellman key size : 1024 bits
-
-
-ayalac-EDGE#show crypto key mypubkey rsa
-% Key pair was generated at: 12:34:56 UTC Aug 28 2025
-Key name: TP_self_signed_rsa_key
-Storage: non-volatile
-Key type: RSA KEYS
-****    Key size: 1024 bits    ****
-```
 
 ---
 
 ### Task 4 — NTP (time synchronization)
 - [ ] On **EDGE**: act as an **NTP server of stratum 4**.
 - [ ] On **CORE**: **sync time from EDGE**.
-- [ ] Use the **internal link** as the NTP source on both devices.
 - [ ] First, **set the clock** on EDGE so clients have a sane initial time.
 
 **Suggested commands (copy/paste with your U value):**
 
 ```plaintext
 ! ----- EDGE -----
-clock set 14:00:00 28 Aug 2025        ! set the current time
-! (optional) clock timezone EST -5 0   ! or your local TZ
-
+# On privileged EXEC
+clock set 14:00:00 28 Aug 2025         ! set the current time
+# On global configuration
 ntp master 4                           ! serve as stratum-4 master
-ntp source g0/0/1                      ! source NTP from the CORE-facing link
 
 ! ----- CORE -----
+# On global configuration
 ntp server 198.18.U.1                  ! EDGE's CORE-facing IP
-ntp source g0/0/1                      ! source from the EDGE-facing link
 ```
 
-> ⏱️ **Tip:** NTP may take ~10–60s to show as reachable/selected. In Packet Tracer it can be quicker, but give it a moment.
+> ⏱️ **Tip:** NTP may take ~10–60s to show as reachable/selected. 
+> In Packet Tracer you can forward the time.
 
 #### 🔍 CO4 — Verification & Collection of Information
 
@@ -381,65 +414,52 @@ ntp source g0/0/1                      ! source from the EDGE-facing link
 
 `=== CO4 – NTP (time synchronization) ===`
 
-Run these checks:
+##### **Part A — Verify (run these first)**
+
+1. **From EDGE, verify settings**:
+```bash
+ayalac-EDGE#show ntp status
+# Clock is synchronized with stratum 4 as configured
+Clock is synchronized, stratum 4, reference is 127.127.1.1
+nominal freq is 250.0000 Hz, actual freq is 249.9990 Hz, precision is 2**24
+# Note the time in ( )
+reference time is FFFFFFFFEC3093DD.00000164 (12:2:37.356 UTC Fri Aug 29 2025)
+clock offset is 0.00 msec, root delay is 0.00  msec
+root dispersion is 0.00 msec, peer dispersion is 0.12 msec.
+loopfilter state is 'CTRL' (Normal Controlled Loop), drift is - 0.000001193 s/s system poll interval is 5, last update was 4 sec ago.
+```
+
+2. **From CORE**:
+```bash
+ayalac-CORE#show ntp status
+# Clock is sync, stratum 5 ( EDGE is 4 + 1 ); reference is EDGE
+Clock is synchronized, stratum 5, reference is 198.18.250.1
+nominal freq is 250.0000 Hz, actual freq is 249.9990 Hz, precision is 2**24
+# Time is correct
+reference time is FFFFFFFFEC30A21C.000002FF (13:3:24.767 UTC Fri Aug 29 2025)
+```
+
+##### **Part B — What to submit (paste these blocks)**
 
 ```bash
-# On EDGE (prove it is the server/master)
+# On EDGE and CORE
 show ntp status
-show ntp associations
-
-# On CORE (prove it syncs to EDGE)
-show ntp associations
-show clock detail
 ```
 
 ✅ **What to Include:**
 
-|Requirement|Details|
-|---|---|
-|🖥️ Device prompt|Include device name + command (e.g., `ayalac-EDGE# show ntp status`)|
-|🕰️ EDGE master proof|From **EDGE**: `show ntp status` indicating **master clock** (stratum **4**)|
-|🔗 Association view|From **EDGE**: `show ntp associations` (reference clock “.MASTER.” or reach > 0)|
-|📡 CORE peer to EDGE|From **CORE**: `show ntp associations` where EDGE appears as **sys.peer** or reachable|
-|⏱️ CORE clock source|From **CORE**: `show clock detail` showing **Time source is NTP**|
-|🗒️ Comment|Add: `!-- EDGE serving stratum-4; CORE synced to EDGE (reach/peer confirmed).`|
-
-📘 **Sample Output Block** _(example uses `U=7`; your values will differ)_
-
-```bash
-=== CO4 – NTP (time synchronization) ===
-!-- EDGE serving stratum-4; CORE synced to EDGE (reach/peer confirmed).
-
-ayalac-EDGE#show ntp status
-Clock is synchronized, stratum 4, reference is .MASTER.
-nominal freq is 250.0000 Hz, actual freq is 250.0000 Hz
-reference time is DFB4A1A1.3A2B1C1C (14:00:33.226 UTC Thu Aug 28 2025)
-
-ayalac-EDGE#show ntp associations
-  address         ref clock     st  when  poll reach  delay  offset   disp
-*~127.127.1.1     .MASTER.       4     4    64   377  0.0    0.00     1.0
- * master (synced), ~ configured, .MASTER. indicates local master
-
-ayalac-CORE#show ntp associations
-  address         ref clock     st  when  poll reach  delay  offset   disp
-*198.18.7.1       .MASTER.       5     6    64   377  1.0    0.12     1.0
- * sys.peer = EDGE (reachable)
-
-ayalac-CORE#show clock detail
-14:00:40.123 UTC Thu Aug 28 2025
-Time source is NTP
-
-```
-
+| Requirement           | Details                                                                          |
+| --------------------- | -------------------------------------------------------------------------------- |
+| 🖥️ Device prompt     | Include device name + command (e.g., `ayalac-EDGE# show ntp status`)             |
+| 🕰️ EDGE master proof | From **EDGE**: `show ntp status` indicating stratum **4**                        |
+| 📡 CORE peer to EDGE  | From **CORE**: `show ntp status` indicating stratum **5** y reference clock EDGE |
+| 🗒️ Comment           | Add: `!-- EDGE serving stratum-4; CORE synced to EDGE.`                          |
 
 ---
 
 ### Task 5 — Syslog (remote logging)
 - [ ] Use the **VM (Packet Tracer Server)** as the Syslog server.
 - [ ] Send Syslog from **CORE** and **EDGE** to the **VM**.
-- [ ] **Source interface** for Syslog:
-  - **CORE:** `LoopbackU`
-  - **EDGE:** `GigabitEthernet0/0/0` (WAN/REMOTE)
 
 **A) Prepare the VM (Packet Tracer Server)**
 - Services → **Syslog** → **On** (no filters needed)
@@ -449,14 +469,10 @@ Time source is NTP
 ```plaintext
 ! ----- CORE -----
 logging host 10.U.2.10                       ! VM IP
-logging trap informational
-logging source-interface LoopbackU           ! LoopbackU (created earlier)
 !
 
 ! ----- EDGE -----
 logging host 10.U.2.10                       ! VM IP (reachable via static route above)
-logging trap informational
-logging source-interface GigabitEthernet0/0  ! use WAN/REMOTE as source per spec
 !
 ```
 
@@ -474,69 +490,20 @@ logging source-interface GigabitEthernet0/0  ! use WAN/REMOTE as source per spec
 Run these checks:
 
 ```plaintext
-# On CORE
-show logging | include 10\.|Trap|source-interface
-show running-config | include logging host|logging source-interface
+# On CORE - EDGE
+show running-config | include logging
 
-# On EDGE
-show logging | include 10\.|Trap|source-interface
-show running-config | include logging host|logging source-interface
-
-
-# (Optional) On VM's Syslog pane
+# On VM's Syslog pane
 # confirm you see entries from CORE and EDGE
 ```
 
 ✅ **What to Include:**
 
-|Requirement|Details|
-|---|---|
-|🖥️ Device prompt|Include device + command (e.g., `ayalac-CORE# show logging \| include ...`)|
-|🎯 Remote host line|Show the **logging host** = `10.U.2.10` on **both** routers|
-|🔊 Trap level|Show the **trap level = informational** on **both** routers|
-|🧭 Source interface|Show **CORE → Loopback0** and **EDGE → G0/0/0** as the **logging source-interface**|
-|🛣️ Edge reachability note|Include the `show ip route 10.U.2.0` from **EDGE** (route via CORE present)|
-|🗒️ Comment|Add: `!-- Syslog to VM configured; source-if per spec; EDGE route to VM LAN confirmed.`|
-
-📘 **Sample Output Block** _(example uses `U=7`; your values will differ)_
-```plaintext
-=== CO5 – Syslog (remote logging) ===
-!-- Syslog to VM configured; source-if per spec; EDGE route to VM LAN confirmed.
-
-ayalac-CORE#show logging | include 10\.|Trap|source-interface
-Syslog logging: enabled (0 messages dropped, 0 messages rate-limited)
-Logging to 10.7.2.10
-Trap logging: level informational, 102 messages logged
-Source interface is Loopback0
-
-ayalac-CORE#show running-config | include logging host|logging source-interface
-logging host 10.7.2.10
-logging source-interface Loopback0
-
-ayalac-EDGE#show logging | include 10\.|Trap|source-interface
-Syslog logging: enabled (0 messages dropped, 0 messages rate-limited)
-Logging to 10.7.2.10
-Trap logging: level informational, 88 messages logged
-Source interface is GigabitEthernet0/0
-
-ayalac-EDGE#show running-config | include logging host|logging source-interface
-logging host 10.7.2.10
-logging source-interface GigabitEthernet0/0
-
-ayalac-EDGE#show ip route 10.7.2.0
-Routing entry for 10.7.2.0/26
-  Known via "static", distance 1, metric 0
-  * 198.18.7.2
-
-ayalac-EDGE#ping 10.7.2.10 source g0/0/1
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.7.2.10, timeout is 2 seconds:
-Packet sent with a source address of 198.18.7.1
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/2/3 ms
-
-```
-
+| Requirement                | Details                                                                                 |
+| -------------------------- | --------------------------------------------------------------------------------------- |
+| 🖥️ Device prompt          | Include device + command (e.g., `ayalac-CORE# show run \| include ...`)                 |
+| 🎯 Remote host line        | Show the **logging host** = `10.U.2.10` on **both** routers                             |
+| 🗒️ Comment                | Add: `!-- Syslog to VM configured; source-if per spec; EDGE route to VM LAN confirmed.` |
 
 ---
 
@@ -545,7 +512,6 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 1/2/3 ms
 - [ ] Confirm CDP on the **CORE ↔ EDGE** interfaces.
 
 > ℹ️ **Nothing to configure:** CDP is **enabled by default**. If someone disabled it, re-enable globally with `cdp run` (no need to include that in evidence).
-
 
 #### 🔍 CO6 — Verification & Collection of Information
 
@@ -572,36 +538,46 @@ show cdp neighbors
 |⏳ Timing note|CDP entries can take up to ~60s to appear in PT—wait briefly if the table is empty|
 |🗒️ Comment|Add: `!-- CDP up on internal link; CORE visible from EDGE as expected.`|
 
-📘 **Sample Output Block** _(your interfaces may differ)_
-```plaintext
-=== CO6 – CDP Neighbour Discovery ===
-!-- CDP up on internal link; CORE visible from EDGE as expected.
+---
 
-ayalac-EDGE#show cdp neighbors
-Capability Codes: R - Router, S - Switch, H - Host, I - IGMP, r - Repeater, B - Bridge
-Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
-CORE             Gig 0/0/1         153        R           ISR       Gig 0/0/1
+## 🗒️ Documentation (for your Lab Book)
 
-```
+Keep a concise record of what you built in W01—this becomes your quick-reference for later labs and the physical gear.
 
+**Do these two things:**
+1) **Update your lab book** with:
+   - **Topology** sketch (label device names and key interfaces)
+   - **Addressing** plan used (replace `U` everywhere)
+   - **Accounts & security**: admin user, SSH settings (v2, retries=3, timeout=60), VTY policy
+   - **Services**: NTP (who’s master/peer), Syslog (server IP + source-if), CDP notes
+   - **Routing choices**: default routes, the `10.U.0.0/16` summary, REMOTE return routes
+
+2) **Create a personal reference file** (plain text):
+   - File name suggestion: `w01-baseline-notes-<username>.txt`
+   - For each area below, list **the minimal config you used**, **the verification command**, and the **expected evidence line(s)**:
+     - **Basic config:** hostname, user/secret, domain name  
+       _Verify:_ `show running-config | include ^hostname|^username|^ip domain-name`
+     - **IP addressing:** key interfaces/loopback  
+       _Verify:_ `show ip route | inc C|L`
+     - **Static routes:** defaults, summary, return routes  
+       _Verify:_ `show ip route static`
+     - **SSH/VTY:** v2 only, retries=3, timeout=60, SSH-only on VTY  
+       _Verify:_ `show ip ssh`, `show tcp brief` (ESTABLISHED on :22)
+     - **NTP:** EDGE master (stratum 4), CORE peered  
+       _Verify:_ `show ntp status` (EDGE), `show ntp associations` (CORE)
+     - **Syslog:** server IP + source interface  
+       _Verify:_ `show running-config | include ^logging`
+     - **CDP:** neighbour on internal link  
+       _Verify:_ `show cdp neighbors`
+     - **Connectivity tests:** `tracert 192.0.2.69` (PC), `ping 10.U.2.10 source g0/0/1` (EDGE)
+
+> **Heads-up for Week 2 (physical lab):** Some details will change on real equipment because Packet Tracer has limitations. Expect to use **fully specified static routes** (next-hop **and** exit interface), optionally set **`ntp source …`**, and adjust interface names. Your W01 notes should make those swaps easy.
 
 ---
 
 ## 📤 Submission Checklist (Brightspace)
 
 - [ ] **File name:** `w01-pt-base-<username>.txt` (plain text, UTF-8)
-- [ ] **Include all CO sections (in order):**
-  - `=== CO1 – IP Addressing & Interface State ===`
-  - `=== CO2 – Static Routing & REMOTE Reachability ===`
-  - `=== CO3 – Secure Remote Access (SSHv2) ===`
-  - `=== CO4 – NTP (time synchronization) ===`
-  - `=== CO5 – Syslog (remote logging) ===`
-  - `=== CO6 – CDP Neighbour Discovery ===`
-- [ ] **Evidence style:** device prompt + command + minimal output only (no full running-configs, no screenshots)
-- [ ] **CO2 note:** default routes must be **fully specified** (next-hop **and** exit interface) for full marks; include PC → `192.0.2.69` ping result
-- [ ] **CO3 note:** prove SSHv2, domain `cnap.cst`, RSA key size, and a live SSH session from PC → CORE
-- [ ] **CO4 note:** EDGE shows **stratum 4** master; CORE shows **peer** to EDGE and `Time source is NTP`
-- [ ] **CO5 note:** both routers log to VM (`10.U.2.10`); **CORE source = LoopbackU**, **EDGE source = G0/0/0**
-- [ ] **CO6 note:** `show cdp neighbors` from **EDGE** lists **CORE** with matching ports
-- [ ] **Replace all `U`** with your assigned number throughout
-- [ ] **Submit to Brightspace:** *Assignments → W01 PT Base Proof (5 pts)* by **Friday 3:30 PM**
+- [ ] **Include all CO sections (in order)**
+- [ ] **Submit** to Brightspace.
+
