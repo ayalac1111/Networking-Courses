@@ -8,11 +8,11 @@ This course focuses on scalable network design, IPv6, NAT, routing protocols, AC
 
 ## 📅 Week by Week Activity Index
 
-
-| Week | Title                                                                | Type            | Description                                                                                                                                                                                | Due                     |
-| ---- | -------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------- |
-| 01   | [01-PT: Base Configuration for IPv4](labs/w01-pt-base/01-PT-Base.md) | ✅ Lab           | Packet Tracer baseline: SSHv2-only access, Syslog to server, NTP sync, CDP/LLDP verify, minimal IPv4 static. Starter file: [`starter.pkt`](labs/w01-pt-base/starter.pkt).                  | **Fri Sep 5 @ 4:00 PM** |
-| 01   | [W01 Audit — Stranger Config (analysis)](challenges/w01-audit/w01-audit.md)      | ✅ Apply         | Read a provided running-config (variant). Submit a tiny text file: **three findings**, **minimal fix commands**, and **three one-line verifications** (e.g., “`show ip ssh → Version 2`”). | **Fri Sep 5 @ 3:45 PM** |
+| Week | Title                                                             | Type       | Description                                                                                                                                                     | Due                     |
+| ---- | ----------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| 01   | [01-PT: Base Configuration for IPv4](labs/w01-PT-Base.md)         | ✅ Practice | Packet Tracer baseline: SSHv-only access, Syslog to server, NTP sync, CDP verify, minimal IPv4 static. Starter file: [`w01-pt-base.pkt`](labs/w01-pt-base.pkt). | **Fri Sep 5 @ 3:30 PM** |
+| 01   | [W01 Audit — Stranger Config (analysis)](challenges/w01-audit.md) | ✅ Audit    | Read the provided running-config. Submit a tiny text file: **three findings**, **minimal fix commands**, and **three one-line verifications**.                  | **Fri Sep 5 @ 3:30 PM** |
+| 01   | 01-Reflect                                                        | ✅ Reflect  | Brightspace survey                                                                                                                                              | **Fri Sep 5 @ 3:30 PM** |
 
 > More activities will be added weekly as the course progresses.
 ##### **Legend**: 
@@ -36,8 +36,8 @@ This course focuses on scalable network design, IPv6, NAT, routing protocols, AC
 ---
 ### Notes
 - **Release cadence:** New week materials generally publish **Fri @ 4 PM** for the coming week.  
-- **File naming:** Save files as `WNN-username.extension`  
-- Brightspace quick links (Checklist, Audit submission, Reflection survey) are live in links/w01-links.md and embedded into `weekly/w01.html` when ready.
+- **Delivery cadence:** All deliveries are to be done on **Fri @ 3:30 PM**.  
+- **Pattern**: Week  **N** closes Friday 3:30 PM; Week **N+1** opens Friday 4:00 PM.
 
 
 ---
