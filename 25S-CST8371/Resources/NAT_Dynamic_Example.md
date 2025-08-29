@@ -52,7 +52,7 @@ A NAT pool is a range of public IP addresses provided by an Internet Service Pro
 R2(config)# ip nat pool NAT_POOL 209.165.200.229 209.165.200.230 netmask 255.255.255.252
 ```
 
-***Question***: What will happen if more than 2 devices attempt to access the internet?
+***Question***: What happens if more than two devices attempt to access the internet?
 
 If more than 2 devices attempt to access the internet simultaneously, the third and subsequent devices will not be able to access the internet because there are only two addresses available in the NAT pool.
 

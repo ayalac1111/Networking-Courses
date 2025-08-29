@@ -582,13 +582,13 @@ show access-lists 18
 
 ✅ **What to Include:**
 
-| Requirement                 | Details                                                                                                     |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 🖥️ Device prompt & command | Include device name and exact command for each, e.g., `ayalac-RA# show ip nat translations`                 |
-| 📜 Full command output      | Copy the entire output of each command without truncation                                                   |
-| 🔍 Translation entries      | In `show ip nat translations`, confirm: • An ICMP entry for `192.0.2.53` • A UDP entry for port `69` (TFTP) |
-| 🔍 ACL hit count            | From `show access-lists 18`, verify `permit 10.U.18.0 0.0.0.15` shows a hit count ≥ 2                     |
-| 🗒️ Comment                 | e.g., `!-- Dynamic PAT pool NAT_POOL functioning; ICMP and TFTP translations verified.`                     |
+| Requirement                 | Details                                                                                                             |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| 🖥️ Device prompt & command | Include device name and exact command for each, e.g., `ayalac-RA# show ip nat translations`                         |
+| 📜 Full command output      | Copy the entire output of each command without truncation                                                           |
+| 🔍 Translation entries      | In `show ip nat translations`, confirm:<br> • An ICMP entry for `192.0.2.53` <br>• A UDP entry for port `69` (TFTP) |
+| 🔍 ACL hit count            | From `show access-lists 18`:<br>verify `permit 10.U.18.0 0.0.0.15` shows a matches count ≥ 2                        |
+| 🗒️ Comment                 | e.g., `!-- Dynamic PAT pool NAT_POOL functioning; ICMP and TFTP translations verified.`                             |
 > This confirms that inside hosts in `10.U.18.0/28` are translating via addresses in pool `NAT_POOL`, for both standard ICMP and UDP/TFTP traffic.
 
 ### 📤 Submit Verification File
@@ -670,14 +670,14 @@ To safeguard the PC subnet (`10.U.18.0/28`) from unsolicited ping probes and una
 2. Use at least **5 ACEs**, numbered 10, 20, 30, … in canonical order.
 3. Include a final **`deny ip any any`** to catch all remaining traffic.
 4. **Test the ACL:**
-    -  **PC → Internet ping**: ping 192.0.2.69` should **succeed**.
+    -  **PC → Internet ping**: ping `192.0.2.69` should **succeed**.
     -  **PC DNS lookup**: `nslookup www.cnap.cst` should **succeed** (server `192.0.2.53`).
     -  **VM → PC ping**: `ping 10.U.18.14` should **fail** (echo-requests denied).
     -  **VM → PC HTTP**: `http://10.U.18.1` should **fail**.  You need to enable HTTP in RB!
 
 ### 🔍 CO7 – Extended ACL #2 Verification
 
-📝 In your `11-ACL-<username>.txt` file, add this section:
+📝 In your `11-ACL-username.txt` file, add this section:
 
 ```diff
 === CO7 – Extended ACL #2 Verification ===
@@ -705,7 +705,6 @@ show ip interface GigabitEthernet0/0/0
 | 🔍 Hit counts               | In `show access-lists`, confirm all lines have hits                                                                                                                       |
 | 🔍 ACL binding              | In `show ip interface GigabitEthernet0/0/0`, confirm `PROTECT-PC` is applied `in`                                                                                         |
 | 🗒️ Comment                 | e.g., `!-- ACL: PROTECT-PC.  External pings blocked; PC-initiated ICMP and DNS responses allowed; HTTP to PC blocked. ACL verified.`                                      |
-
 ## 📤 Submission Checklist
 
 - [ ] `11-ACL-username.txt` uploaded via TFTP.  
@@ -717,6 +716,9 @@ show ip interface GigabitEthernet0/0/0
 ssh cisco@192.0.2.22
 ls -l /var/tftp/*username*
 ```
+
+>**NOTE**
+>If you are unable to TFTP to the server, ensure your ACLs are not blocking the TFTP traffic.
 
 If you haven't done it before, ensure
 - [ ] `11-OSPF-username.txt` uploaded via TFTP.  

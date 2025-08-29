@@ -62,9 +62,9 @@ Standard IP access list 1
 
 Then, he verifies the NAT rules by using the following command:
 
-```plaintext
+```bash
 R2r# show run | include nat
-ip nat pool R2POOL 209.165.202.129 209.165.202.129 netmask 255.255.255.252
+ip nat pool R2POOL 209.165.202.129 209.165.202.130 netmask 255.255.255.252
 ip nat inside source list R2NAT pool R2POOL overload
 ip nat inside source static 192.168.20.254 209.165.202.130
 ```
