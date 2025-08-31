@@ -90,12 +90,11 @@ By the end of this lab, you should be able to:
 ### Create Submission File
 - [ ] On your desktop, create **`w01-pt-base-<username>.txt`**. You will submit this file to Brightspace.
 - [ ] **Avoid double extensions:** Many editors (Notepad, TextEdit) add `.txt` automatically.
-	  - In **Notepad (Windows)**: either type the name **without** `.txt` (Notepad adds it), **or** choose **Save as type: All Files (*.*)** if you include `.txt` yourself.
-	  - In **TextEdit (macOS)**: use **Format → Make Plain Text**, then save as `w01-pt-base-<username>.txt`.
-	  - **Check the final name** is exactly: `w01-pt-base-<username>.txt`
-	    - ✅ `w01-pt-base-ayalac.txt`
-	    - ❌ `w01-pt-base-ayalac.txt.txt`
-
+- In **Notepad (Windows)**: either type the name **without** `.txt` (Notepad adds it), **or** choose **Save as type: All Files (*.*)** if you include `.txt` yourself.
+- In **TextEdit (macOS)**: use **Format → Make Plain Text**, then save as `w01-pt-base-<username>.txt`.
+- **Check the final name** is exactly: `w01-pt-base-<username>.txt`
+	- ✅ `w01-pt-base-ayalac.txt`
+	- ❌ `w01-pt-base-ayalac.txt.txt`
 ### Task  0 — Basic Configuration (CORE & EDGE)
 - [ ] Set **hostname** (CORE / EDGE) as `username-<devicename>` (eg: *ayal0014-EDGE*)
 - [ ] Disable **DNS lookup**.
@@ -142,7 +141,7 @@ ayalac-CORE#show ip interface brief | ex una
 Interface              IP-Address      OK? Method Status                Protocol
 GigabitEthernet0/0/0     10.250.1.2      YES manual up                    up
 GigabitEthernet0/0/2     10.250.2.2      YES manual up                    up
-Loopback250            10.250.3.2      YES manual up                    up
+Loopback250              10.250.3.2      YES manual up                    up
 GigabitEthernet0/0/1     198.18.250.2    YES manual up                    up
 
 ayalac-CORE#show ip route | inc C|L
@@ -154,7 +153,7 @@ C       10.250.2.0/26 is directly connected, GigabitEthernet0/0/2
 L       10.250.2.2/32 is directly connected, GigabitEthernet0/0/2
 C       10.250.3.0/24 is directly connected, Loopback250
 L       10.250.3.2/32 is directly connected, Loopback250
-C       198.18.250.0/24 is directly connected, GigabitEthernet0/0/1
+C       198.18.250.0/29 is directly connected, GigabitEthernet0/0/1
 L       198.18.250.2/32 is directly connected, GigabitEthernet0/0/1
 ```
 
