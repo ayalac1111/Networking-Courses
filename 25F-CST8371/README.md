@@ -5,21 +5,21 @@ Welcome to the lab repository for **CST8371: Introduction to Enterprise Networki
 This course focuses on scalable network design, IPv6, NAT, routing protocols, ACLs, and network management using Cisco equipment and simulation tools.
 
 ---
+### What you’ll learn (course objectives)
+- Implement dynamic routing protocols to optimize network design.
+- Implement Access Control Lists (ACLs) to filter traffic.
+- Implement Network Address Translation (NAT) services to scale IPv4 addressing schemes.
+- Explain, configure, and troubleshoot IPv6 addressing.
+- Monitor and troubleshoot networks using network management protocols and tools.
 
-## 📅 Week by Week Activity Index
+---
+### How to use this repo
+1. **Start with the Lab** in `labs/` for the week you’re working on.
+2. **Practice reading configs** by doing the Audit in `challenges/`.
+3. **Try the Challenge** to apply and demonstrate a working solution.
+4. **Reflect** using the prompt in `reflections/` to lock in one improvement for next week.
 
-| Week | Title                                                             | Type       | Description                                                                                                                                    | Due                     |
-| ---- | ----------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| 01   | [01-PT: Base Configuration for IPv4](labs/w01-pt-base.md)         | ✅ Practice | Packet Tracer baseline: SSHv-only access, Syslog to server, NTP sync, CDP verify, minimal IPv4 static. Starter file in Brightspace.            | **Fri Sep 5 @ 3:30 PM** |
-| 01   | [W01 Audit — Stranger Config (analysis)](challenges/w01-audit.md) | ✅ Audit    | Read the provided running-config. Submit a tiny text file: **three findings**, **minimal fix commands**, and **three one-line verifications**. | **Fri Sep 5 @ 3:30 PM** |
-| 01   | 01-Reflect                                                        | ✅ Reflect  | Brightspace survey.                                                                                                                            | **Fri Sep 5 @ 3:30 PM** |
-
-> More activities will be added weekly as the course progresses.
-##### **Legend**: 
-✅ Required & Graded  
-👩🏽‍🏫 In-Class Example
-✏️ In-Class Participation  
-🟡 Optional / Self-Guided
+> **Tip**: Keep your own notes and commands beside each activity so you can reuse good patterns later.
 
 ---
 
@@ -30,10 +30,20 @@ This course focuses on scalable network design, IPv6, NAT, routing protocols, AC
 ├── weekly/               # Weekly important information
 ├── labs/                 # Weekly labs
 ├── challenges/           # Audit and challeges
+├── reflections/          # Weekly reflection prompts to consolidate learning
 └── README.md             # This file
 ```
 
 ---
+
+### Activity Types (at a glance)
+- **Lab** — Guided, hands-on configuration to build command fluency and reliable habits.
+- **Audit** — Read a provided running-config, find baseline gaps → propose the minimal fix → provide one verify command.
+- **Challenge** — Time-boxed scenario (design and/or live troubleshooting) to apply concepts under realistic constraints.
+- **Reflections** — Evidence-backed debrief: codify your mental model, add two Always-True rules, and record Claim→Evidence→Reasoning with operational proof lines.
+
+---
+
 ### Notes
 - **Release cadence:** New week materials generally publish **Fri @ 4 PM** for the coming week.  
 - **Delivery cadence:** All deliveries are to be done on **Fri @ 3:30 PM**.  
