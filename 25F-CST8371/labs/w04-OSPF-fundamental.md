@@ -111,10 +111,12 @@ router ospf U
 # Enable OSPF under the loopback interface
 interface loopback100
  ip ospf U area 0
+```
 
 **Verify**
 - `show ip ospf | include Router ID`
 - `show ip route | include 10.U.100.1|10.U.100.2|10.U.100.3`
+
 </details>
 
 #### Checkpoint
