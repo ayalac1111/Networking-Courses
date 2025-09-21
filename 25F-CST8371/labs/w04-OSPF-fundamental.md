@@ -352,7 +352,7 @@ show tcp brief                 # Must be sshed into CORE
 
 ---
 ## Submission checklist
-- [ ] **Filename:** `w04-ospf-foundations-<username>.txt` (UTF‑8, plain text)
+- [ ] **Filename:** `w04-ospf-{username}.txt` (UTF‑8, plain text)
 - [ ] CO sections present and in order
 - [ ] Evidence shows neighbour **Full** and default learned
 - [ ] Submitted to *TFTP* within the window
