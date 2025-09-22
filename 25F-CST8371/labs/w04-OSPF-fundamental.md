@@ -240,6 +240,7 @@ show ip ospf interface vlan 20 | include Passive|Process ID|Area
 
 <details>
 <summary><strong>Example — EDGE (config summary)</strong></summary>
+
 ```bash
 ip route 0.0.0.0 0.0.0.0 g0/0/0 203.0.113.254
 !
