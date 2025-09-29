@@ -168,7 +168,7 @@ CORE(config-if)# ip ospf cost N             ! example: makes CORE totals to Lo1 
 ```
 ```bash
 # Reference-bandwidth evidence (all routers)
-show ip protocol | inc Reference
+show ip ospf | inc Reference
 
 
 # Route to EDGE Lo1 after Reference (CORE + DIST)
