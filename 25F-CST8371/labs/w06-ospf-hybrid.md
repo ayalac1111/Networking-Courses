@@ -160,11 +160,14 @@ python x_remote.py w06-tsk01.yaml
 
 **Transit Optimization**
 _Improve convergence and control DR/BDR elections across transit networks._
+
 On **EDGE–CORE**:
 - [ ] Change the OSPF **network type** to `point-to-point` for faster convergence.
+
 On **EDGE–DIST**:
 - [ ] Set `DIST-Gi0/0/1` **priority to {U}** to win the DR election.
 - [ ] Reduce OSPF timers: set **Hello = 3** and **Dead = 10** (confirm these are compatible with the neighbour).
+
 On **CORE–DIST**:
 - [ ] CORE `Gi0/0/2` priority to **0** (to opt out of DR/BDR election),
 - [ ] DIST `Gi0/0/2` priority to **{U}** (to win the election).
