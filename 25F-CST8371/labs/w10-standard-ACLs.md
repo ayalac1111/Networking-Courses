@@ -1,4 +1,4 @@
-# Lab 09 – Securing Your Network with Standard ACLs
+# Lab 10 – Securing Your Network with Standard ACLs
 
 ## Overview
 
@@ -39,7 +39,7 @@ Mastering these ACL techniques will equip you to enforce policy, limit attack su
 ---
 ## Network Topology
 
-![Lab Topology](w10-Topology.png)
+![Lab Topology](img/w10-Topology.png)
 
 ## Addressing Table
 
@@ -133,7 +133,7 @@ Break the policy into its key elements:
 
 ### ACL Placement
 
-![Figure 2: Policy-1 ACL Placement on EDGE --> VM](w10-Policy-1.png)
+![Figure 2: Policy-1 ACL Placement on EDGE --> VM](img/w10-Policy-1.png)
 
 
 To decide exactly where and how to apply our **PROTECT-VM** standard ACL, follow these three steps:
@@ -310,7 +310,7 @@ Break down **Policy #2 – Protect the PC Network** into its core components.  F
 
 ## 3. ACL Placement
 
-![Figure 3: Policy-2 ACL Placement](w10-Policy-2.png)
+![Figure 3: Policy-2 ACL Placement](img/w10-Policy-2.png)
 
 Use the table below to plan exactly where to apply `PROTECT-PC`.  Then answer the reflection questions to confirm your choices.
 
