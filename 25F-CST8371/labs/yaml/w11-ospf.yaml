@@ -1,0 +1,54 @@
+# 25F-CST8371 - Week 11 - CO1 OSPF Configuration
+# Collect verification commands after completing OSPF setup
+# Used with x-remote.py
+# https://github.com/ayalac1111/x-remote
+#
+# Replace {USERNAME} with your username
+# Replace {U} with your U number
+
+output_file: w11-ospf-{USERNAME}.txt
+
+devices:
+  - device_info:
+      device_type: cisco_xe
+      ip: 198.18.{U}.17        # RA
+      username: admin
+      password: cisco
+    commands:
+      # --- OSPF Global Configs
+      - show ip protocols
+      - show ip ospf | include Reference
+      # --- OSPF Neighbour, DR election and interface enable
+      - show ip ospf neighbor
+      - show ip ospf interface brief
+      # --- Default Route Configuration
+      - show ip route static | begin Gateway
+      # --- OSPF Interface Configuration
+      - show ip ospf interface g0/0/1 | include Timer|Router ID
+      # --- OSPF Routes
+      - show ip route ospf
+      # --- Services
+      - show ip ssh
+      - show ntp associations
+      - show logging | include Logging to|udp
+
+  - device_info:
+      device_type: cisco_xe
+      ip: 198.18.{U}.22        # RB
+      username: admin
+      password: cisco
+    commands:
+      # --- OSPF Global Configs
+      - show ip protocols
+      - show ip ospf | include Reference
+      # --- OSPF interface enable
+      - show ip ospf interface brief
+      # --- OSPF Interface Configuration
+      - show ip ospf interface g0/0/1 | include Timer
+      - show ip ospf interface g0/0/0 | include Priority
+      # --- OSPF Routes
+      - show ip route ospf
+      # --- Services
+      - show tcp brief
+      - show ntp associations
+      - show logging | include Logging to|udp
