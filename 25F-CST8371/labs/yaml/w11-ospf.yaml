@@ -12,7 +12,7 @@ devices:
   - device_info:
       device_type: cisco_xe
       ip: 198.18.{U}.17        # RA
-      username: admin
+      username: cisco
       password: cisco
     commands:
       # --- OSPF Global Configs
@@ -35,7 +35,7 @@ devices:
   - device_info:
       device_type: cisco_xe
       ip: 198.18.{U}.22        # RB
-      username: admin
+      username: cisco
       password: cisco
     commands:
       # --- OSPF Global Configs
