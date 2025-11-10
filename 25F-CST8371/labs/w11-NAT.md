@@ -366,11 +366,11 @@ Copy and paste the outputs (including device prompts) of the following commands 
 === CO3 – Port-Forwarding Verification ===
 !-- Static port-forward for Telnet to 172.16.9.33:23 verified; TCP listener and sessions present.
 
-ayalac-RB# show ip nat translations
+ayalac-RA# show ip nat translations
 Pro Inside global          Inside local         Outside local        Outside global
 tcp 220.0.0.U:2323        172.16.9.33:23       10.P.18.14:54321  10.P.18.14:54321
 
-ayalac-RB# show tcp brief | include 2323
+ayalac-RB# show tcp brief
 TCB     Local Address         Foreign Address      (state)
 0xABC   220.0.0.U.2323       10.P.18.14.56789     LISTEN
 
