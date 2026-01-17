@@ -132,5 +132,4 @@ $ PC> tracert 2001:db8:192::69
 ---
 ## 📤 Submission
 - Upload your file **w02-challenge-username.txt** to **W02-Challenge** on Brightspace.
-- **Due:** **Friday, Sept 12 @ 3:30 PM.**
 
