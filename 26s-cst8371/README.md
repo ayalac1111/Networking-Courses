@@ -14,7 +14,6 @@ This repo section is used to organize student-facing labs, challenge/audit files
 26s-cst8371/
 ├── challenges
 ├── examples
-├── infographics
 └── labs
 ```
 
@@ -22,12 +21,11 @@ This repo section is used to organize student-facing labs, challenge/audit files
 
 ## Directory Purpose
 
-| Directory | Purpose |
-|---|---|
-| `challenges/` | Apply / audit / troubleshooting challenge instructions |
-| `examples/` | Sample outputs, reference configs, command examples, and instructor-provided examples |
-| `infographics/` | Visual references used by labs, weekly pages, or lab-book support |
-| `labs/` | Student-facing Practice lab instructions |
+| Directory       | Purpose                                                                               |
+| --------------- | ------------------------------------------------------------------------------------- |
+| `challenges/`   | Apply / audit / troubleshooting challenge instructions                                |
+| `examples/`     | Sample outputs, reference configs, command examples, and instructor-provided examples |
+| `labs/`         | Student-facing Practice lab instructions                                              |
 
 ---
 
@@ -39,16 +37,6 @@ Use sequence-based names instead of week-bound names.
 l01-activity-name.md
 l02-activity-name.md
 a01-audit-name.md
-```
-
-Recommended examples:
-
-```text
-labs/l01-be-ready-alpine-tool-readiness.md
-labs/l02-ipv4-management-baseline.md
-challenges/a02-ipv4-evidence-audit.md
-examples/l02-sample-evidence.txt
-infographics/lab-book-template.png
 ```
 
 ---
