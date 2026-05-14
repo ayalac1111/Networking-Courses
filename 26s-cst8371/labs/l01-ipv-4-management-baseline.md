@@ -572,6 +572,12 @@ Address or name of remote host []? 192.0.2.69
 Destination filename [<username>-CORE-confg]? l01-<username>-CORE-config.txt
 ```
 
+If you get an  `ERROR`during the copy to the TFTP server, configure your routers with:
+
+```plaintext
+no ip tftp source
+```
+
 ### D4 — Validate Submission on the Server
 
 Submission is not complete until you confirm the files are on the server.
@@ -587,16 +593,7 @@ Use password `cisco`
 Check that your files exist:
 
 ```
-ls -l l01-<username>*
-```
-
-Optional content check:
-
-```
-head l01-<username>.txt
-head l01-<username>-CORE-config.txt
-head l01-<username>-EDGE-config.txt
-head l01-<username>-syslog.txt
+ls -l /var/tftp/l01-<username>*
 ```
 
 ### D5 — Student Responsibility
