@@ -156,14 +156,16 @@ Include the command lines and outputs.
 Use restricted commands in the submitted evidence file so the file stays readable:
 
 ```plaintext
-FROM All routers/swich
-show ip ospf interface brief | exclude una|down
-show ip route ospf | begin Gateway
-show ip route ospf | begin Gateway
+From all routers/switches:
+show ip interface brief | exclude unassigned|down
+show ip ssh
 
-From CORE
-show ip ospf interface vlan 20 | include Passive|Process ID|Area
+CORE:
+show vlan brief
 show tcp brief
+
+PC:
+ping 10.U.20.2
 ```
 
 Add this comment line:
