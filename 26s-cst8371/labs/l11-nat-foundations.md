@@ -30,7 +30,7 @@ This hands-on exercise builds critical skills in conserving IPv4 address space a
 | Dynamic PAT pool | `ip nat pool <name> <start_ip> <end_ip> <mask>` then `ip nat inside source list <ACL> pool <name> overload` | matched hosts share the pool addresses |
 | View NAT translations | `show ip nat translations` | EXEC mode |
 | View NAT statistics | `show ip nat statistics` | EXEC mode |
-| View ACL hit counts | `show ip access-lists <ACL>` | EXEC mode |
+| View ACL hit counts | `show ip access-lists <ACL>` | EXEC mode — informational only; not reliable across all platforms/IOS versions as NAT verification evidence, see C01 |
 
 ### A1.2 — Evidence Collection
 
@@ -195,6 +195,12 @@ Your PC and VM only have private addresses at this point, so neither can reach t
     scp cisco@192.0.2.69:YAML/l11-ospf.yaml .
     ```
 - [ ] Once the file is retrieved, move the VM back onto its normal network (the VM network, `172.16.9.32/28`) and reassign its usual address, `172.16.9.46/28` (see B2).
+- [ ] On **RA**, bounce the outside interface to force a fresh ARP announcement. This clears any stale ARP binding left on the REMOTE segment from Alpine's temporary use of `203.0.113.U`, which would otherwise block return traffic once NAT is configured in C01:
+    ```bash
+    RA(config)# interface GigabitEthernet0/0/0
+    RA(config-if)# shutdown
+    RA(config-if)# no shutdown
+    ```
 
 #### Verification
 
@@ -296,10 +302,10 @@ Command explanation:
 
 **Testing NAT with TFTP and ICMP**
 
-1. From VM: **Ping the TFTP server**, `192.0.2.69`.
-2. From VM: **Transfer a file to the TFTP server**, to generate UDP/69 traffic through the PAT translation:
+1. From **Alpine**: **Ping the TFTP server**, `192.0.2.69`.
+2. From **Alpine**: **Transfer a file to the TFTP server**, to generate UDP/69 traffic through the PAT translation:
 	```bash
-	VM# tftp -p -l l11-ospf-{USERNAME}.txt 192.0.2.69
+	Alpine# tftp 192.0.2.69 -c put l11-ospf-{USERNAME}.txt
 	```
 3. **Inspect the NAT translation table**:
 	```bash
@@ -335,13 +341,14 @@ Command explanation:
   </tbody>
 </table>
 
-4. **Verify ACL and statistics**:
+4. **Verify NAT statistics** (authoritative evidence):
 ```bash
-RA# show access-lists 16
 RA# show ip nat statistics
+RA# show access-lists 16
 ```
-- **ACL 16** should report ≥ 2 hits.
 - **Total active translations** should be ≥ 2.
+- **Hits** in `show ip nat statistics` should be ≥ 2. This counter increments for every packet NAT handles and is reliable regardless of platform or IOS/IOS-XE version.
+- **ACL 16** hit count is informational only. Depending on platform and NAT switching path, the ACL counter may not increment even when NAT is translating correctly — do not treat 0 ACL hits as a failure if NAT statistics and translations confirm the rule is working.
 
 #### Success Indicator / Failure Signal
 
@@ -349,8 +356,9 @@ RA# show ip nat statistics
 |---|---|---|
 | TFTP transfer | File transfer to `192.0.2.69` completes | Transfer fails or times out |
 | NAT translations | ICMP and UDP/69 entries for `172.16.9.46` present | No translation entries |
-| ACL 16 hits | ≥ 2 hits | 0 hits |
+| NAT statistics — Hits | ≥ 2 (from `show ip nat statistics`) | 0 hits |
 | Total active translations | ≥ 2 | 0 |
+| ACL 16 hits (informational only) | May show ≥ 2 hits | 0 hits is **not** by itself a failure — platform/IOS-dependent; verify against NAT statistics instead |
 
 #### Troubleshooting
 
@@ -369,8 +377,8 @@ Under this header, perform the following steps and include the outputs as descri
 | Step                         | Command(s)                 | What to Include                                                                                        |
 | ---------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------ |
 | **1. Show NAT translations** | `show ip nat translations` | Full translation table, showing ICMP and UDP/69 (TFTP) entries for `172.16.9.46` → `203.0.113.U` to `192.0.2.69` |
-| **2. Verify ACL hits**       | `show ip access-lists 16`  | The ACL 16 permit statement; hit count ≥ 2 indicating both flows were matched                          |
-| **3. Show NAT statistics**   | `show ip nat statistics`   | Total active translations ≥ 2; hits/misses summary for inside source translations                    |
+| **2. Show NAT statistics** | `show ip nat statistics` | Total active translations ≥ 2; Hits ≥ 2 — this is the authoritative pass/fail evidence for translation activity |
+| **3. Show ACL (informational)** | `show ip access-lists 16` | The ACL 16 permit statement and its hit count. Include for completeness, but a 0 hit count here does not indicate failure — see note above |
 
 **What to Include:**
 
@@ -379,7 +387,8 @@ Under this header, perform the following steps and include the outputs as descri
 | Device prompt & command | Include device name and exact command |
 | Full command output | Capture the entire output of each command without truncation |
 | NAT translation entries | In `show ip nat translations`, confirm ICMP and UDP/69 entries mapping `172.16.9.46` → `203.0.113.U` → `192.0.2.69` |
-| Comment | e.g., `!-- PAT to exit interface functioning; ICMP and TFTP translations and ACL verified.` |
+| NAT statistics | In `show ip nat statistics`, confirm Total active translations ≥ 2 and Hits ≥ 2 |
+| Comment | e.g., `!-- PAT to exit interface functioning; ICMP and TFTP translations and NAT statistics verified.` |
 
 #### Sample Output Block
 
@@ -550,9 +559,10 @@ show access-lists 18
 
 | Verification Item | Success Indicator | Failure Signal |
 |---|---|---|
-| ICMP translation | Entry for `192.0.2.53`/`192.0.2.69` present | Entry missing |
+| ICMP translation | Entry for `192.0.2.69` present | Entry missing |
 | TFTP (UDP 69) translation | Entry for port 69 present | Entry missing |
-| ACL 18 hit count | `permit 10.U.18.0 0.0.0.15` shows matches ≥ 2 | 0 matches |
+| NAT statistics — Hits | ≥ 2 (from `show ip nat statistics`) | 0 hits |
+| ACL 18 hit count (informational only) | May show matches ≥ 2 | 0 matches is **not** by itself a failure — platform/IOS-dependent; verify against NAT statistics instead |
 
 #### Troubleshooting
 
@@ -572,9 +582,10 @@ In your `l11-nat-{USERNAME}.txt` file, create a section labelled:
 |---|---|
 | Device prompt & command | Include device name and exact command for each, e.g., `ayalac-RA# show ip nat translations` |
 | Full command output | Copy the entire output of each command without truncation |
-| Translation entries | In `show ip nat translations`, confirm an ICMP entry for `192.0.2.53`/`192.0.2.69` and a UDP entry for port `69` (TFTP) |
-| ACL hit count | From `show access-lists 18`: verify `permit 10.U.18.0 0.0.0.15` shows a matches count ≥ 2 |
-| Comment | e.g., `!-- Dynamic PAT pool NAT_POOL functioning; ICMP and TFTP translations verified.` |
+| Translation entries | In `show ip nat translations`, confirm an ICMP entry for `192.0.2.69` and a UDP entry for port `69` (TFTP) |
+| NAT statistics | In `show ip nat statistics`, confirm Total active translations and Hits ≥ 2 — this is the authoritative pass/fail evidence |
+| ACL hit count (informational) | From `show access-lists 18`: include the `permit 10.U.18.0 0.0.0.15` statement for completeness; a 0 matches count does not by itself indicate failure |
+| Comment | e.g., `!-- Dynamic PAT pool NAT_POOL functioning; ICMP and TFTP translations and NAT statistics verified.` |
 
 > This confirms that inside hosts in `10.U.18.0/28` are translating via addresses in pool `NAT_POOL`, for both standard ICMP and UDP/TFTP traffic.
 
