@@ -1,0 +1,57 @@
+# CST8371 Fall 2026 — Foundation Lab 01 baseline collection
+#
+# Validate without connecting:
+#   python3 x_remote.py --check l01-xremote.yaml
+#
+# The training password (cisco) is written directly below. x_remote has
+# no environment-variable substitution for this lab's use — do not add
+# export/ENV instructions for this file.
+#
+# The two ip: fields below are placeholders, not real addresses — replace
+# {W01-EDGE-DHCP-address} and {Alpine-DHCP-address} with the DHCP
+# addresses EXTERNAL-Bridge (the CML external connector, BRIDGE mode)
+# actually assigned, which you verified in the CML lab notes (show ip
+# interface brief on W01-EDGE, ip addr show on Alpine) before running
+# this command file.
+#
+# x_remote does not support filename templating — output_file below is
+# used as a literal filename. x_remote always writes this exact
+# filename. After collection, rename the file to l01-{username}.txt
+# before submitting it to Brightspace.
+#
+# Both devices are renamed by the student in C02 (W01-EDGE-{username},
+# Alpine-{username} — see l01-course-tools.md). "show version | include
+# uptime" is W01-EDGE's live, standards-compliant identity proof (no
+# show running-config); it is generated fresh at execution time and
+# reflects the C02 rename. Alpine's identity proof is its own
+# "hostname" command, already in this list.
+#
+# The last W01-EDGE command captures C02's Loopback0 (addressed using
+# the student's U value as-is — see l01-course-tools.md). Students
+# configure Loopback0 in C02; this single collection run captures that
+# evidence together with the C02 rename and SSH/reachability proof.
+output_file: l01-{username}.txt
+
+devices:
+  - device_info:
+      device_type: cisco_xe
+      ip: "{W01-EDGE-DHCP-address}"
+      username: admin
+      password: cisco
+    commands:
+      - show ip interface brief
+      - show ip ssh
+      - show version | include uptime
+      - show users
+      - show tcp brief
+      - show ip interface brief | include Loopback0
+  - device_info:
+      device_type: linux
+      ip: "{Alpine-DHCP-address}"
+      username: admin
+      password: cisco
+    commands:
+      - hostname
+      - ip addr show
+      - ip route
+      - ping -c 2 172.16.1.1

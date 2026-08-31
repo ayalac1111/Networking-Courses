@@ -1,0 +1,309 @@
+annotations: []
+smart_annotations:
+  - tag: external
+    is_on: true
+    padding: 35
+    label: external
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#5F85BE80'
+    border_color: '#00000080'
+    z_index: 1
+  - tag: internal
+    is_on: true
+    padding: 35
+    label: internal
+    tag_offset_x: 0
+    tag_offset_y: 0
+    tag_size: 14
+    group_distance: 400
+    thickness: 1
+    border_style: ''
+    fill_color: '#00B14080'
+    border_color: '#00000080'
+    z_index: 2
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: |-
+          ! CST8371 Fall 2026 — Week 1 CML readiness demo
+          hostname W01-EDGE
+          no ip domain lookup
+
+          interface Ethernet0/0
+           description TO-ALPINE
+           ip address 172.16.1.1 255.255.255.0
+           no shutdown
+
+          interface Ethernet0/1
+           description TO-NAT0-EXTERNAL
+           ip address dhcp
+           ip dhcp client broadcast-flag clear
+           no shutdown
+
+          ip domain name cst8371.local
+          username admin privilege 15 secret cisco
+          crypto key generate rsa modulus 2048
+          ip ssh version 2
+
+          line vty 0 4
+           login local
+           transport input ssh
+           exec-timeout 10 0
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: W01-EDGE
+    node_definition: iol-xe
+    parameters: {}
+    ram: null
+    tags:
+      - internal
+    x: 200
+    y: -80
+    interfaces:
+      - id: i0
+        label: Loopback0
+        mac_address: null
+        type: loopback
+      - id: i1
+        label: Ethernet0/0
+        mac_address: null
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet0/1
+        mac_address: null
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet0/2
+        mac_address: null
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet0/3
+        mac_address: null
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: node.cfg
+        content: |-
+          # CST8371 Fall 2026 — Week 1 CML readiness demo
+          hostname Alpine
+          USERNAME=admin
+          PASSWORD=cisco
+          ip addr add 172.16.1.10/24 dev eth0
+          ip link set eth0 up
+          ip route add default via 172.16.1.1
+          ip link set eth1 up
+          udhcpc -i eth1
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: Alpine
+    node_definition: alpine
+    parameters: {}
+    ram: null
+    tags:
+      - internal
+    x: -120
+    y: -80
+    interfaces:
+      - id: i0
+        label: eth0
+        mac_address: null
+        slot: 0
+        type: physical
+      - id: i1
+        label: eth1
+        mac_address: null
+        slot: 1
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: default
+        content: System Bridge
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: null
+    label: EXTERNAL-Bridge
+    node_definition: external_connector
+    parameters: {}
+    ram: null
+    tags:
+      - external
+    x: -280
+    y: -280
+    interfaces:
+      - id: i0
+        label: port
+        mac_address: null
+        slot: 0
+        type: physical
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: null
+    label: EXTERNAL-Sw
+    node_definition: unmanaged_switch
+    parameters: {}
+    ram: null
+    tags:
+      - external
+    x: -120
+    y: -280
+    interfaces:
+      - id: i0
+        label: port0
+        mac_address: null
+        slot: 0
+        type: physical
+      - id: i1
+        label: port1
+        mac_address: null
+        slot: 1
+        type: physical
+      - id: i2
+        label: port2
+        mac_address: null
+        slot: 2
+        type: physical
+      - id: i3
+        label: port3
+        mac_address: null
+        slot: 3
+        type: physical
+links:
+  - id: l0
+    n1: n1
+    n2: n0
+    i1: i0
+    i2: i1
+    conditioning: {}
+    label: Alpine-eth0<->W01-EDGE-Ethernet0/0
+  - id: l1
+    n1: n3
+    n2: n2
+    i1: i0
+    i2: i0
+    conditioning: {}
+    label: EXTERNAL-Sw-port0<->EXTERNAL-Bridge-port
+  - id: l2
+    n1: n3
+    n2: n0
+    i1: i1
+    i2: i2
+    conditioning: {}
+    label: EXTERNAL-Sw-port1<->W01-EDGE-Ethernet0/1
+  - id: l3
+    n1: n3
+    n2: n1
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: EXTERNAL-Sw-port2<->Alpine-eth1
+lab:
+  description: ''
+  notes: |-
+    # CST8371 — Week 1 Tool Readiness
+
+    This small topology is for CML, Alpine, SSH, and x_remote onboarding.
+    It is not a configuration exercise, apart from the rename and
+    Loopback0 steps below. Do not otherwise change the supplied
+    startup configuration.
+
+    | Node | Address | Role |
+    |---|---|---|
+    | Alpine | eth0: 172.16.1.10/24 (static, to W01-EDGE) — eth1: DHCP (to EXTERNAL-Sw/EXTERNAL-Bridge) | Operations host |
+    | W01-EDGE | Ethernet0/0: 172.16.1.1/24 (static, to Alpine) — Ethernet0/1: DHCP (to EXTERNAL-Sw/EXTERNAL-Bridge) | SSH target and collection target |
+    | EXTERNAL-Sw | unmanaged switch | Bridges EXTERNAL-Bridge to one interface each on W01-EDGE and Alpine (CML links are point-to-point) |
+    | EXTERNAL-Bridge | Assigned by CML host's real network | External connector in **BRIDGE** mode (System Bridge) — hands out a real, host-network DHCP address to anything bridged behind it, so you can reach W01-EDGE and Alpine directly from your own host machine and run x_remote from there |
+
+    ## Student instructions
+
+    1. **Before starting any node**, note the IP address your own host is
+       using to reach this CML-Free web UI — that's the network
+       EXTERNAL-Bridge will hand DHCP addresses out on.
+
+    2. **Start all four nodes**: W01-EDGE, Alpine, EXTERNAL-Bridge, and
+       EXTERNAL-Sw.
+
+    3. **Verify interfaces before changing anything.**
+       - On W01-EDGE:
+         ```
+         show ip int brief | ex una
+         ```
+         Ethernet0/0 is the static 172.16.1.1 internal link. Ethernet0/1
+         should show a DHCP address on the same network you noted in
+         step 1.
+       - On Alpine:
+         ```
+         ip address
+         ```
+         eth0 is the static 172.16.1.10/24 internal link. eth1 should
+         show a DHCP address on the same bridge network as W01-EDGE's
+         Ethernet0/1.
+
+    4. **Test connectivity.**
+       - From your own host (not a console): `ping` both DHCP addresses,
+         and `ssh admin@<device-DHCP-address>` (password `cisco`) to
+         both W01-EDGE and Alpine.
+       - From the Alpine console: `ping -c 2 172.16.1.1` should show
+         2 packets transmitted, 2 received, 0% packet loss.
+
+    5. **Run an x_remote collection from your host.** After downloading
+       x_remote, edit the x_remote manifest (`l01-xremote.yaml`)
+       and replace the `{W01-EDGE-DHCP-address}` and `{Alpine-DHCP-address}`
+       placeholders with the DHCP-assigned addresses you verified in
+       step 3, then run a collection against both devices.
+
+    6. **Now make changes — start with W01-EDGE, then Alpine.**
+
+       Rename W01-EDGE:
+       ```
+       W01-EDGE# configure terminal
+       W01-EDGE(config)# hostname W01-EDGE-<username>
+       W01-EDGE-<username>(config)# end
+       ```
+
+       Add a Loopback0 using your U value (find it in Brightspace Grades,
+       grade item **U** — use it as-is, no calculation):
+       ```
+       W01-EDGE-<username># configure terminal
+       W01-EDGE-<username>(config)# interface Loopback0
+       W01-EDGE-<username>(config-if)# ip address 203.0.113.<U> 255.255.255.255
+       W01-EDGE-<username>(config-if)# end
+       ```
+       Verify: `show ip interface brief | include Loopback0`
+
+       Rename Alpine:
+       ```
+       hostname Alpine-<username>
+       ```
+
+    7. **Re-run the x_remote collection** (step 5) so it captures the
+       rename and Loopback0 evidence, then submit per the lab
+       instructions.
+  title: L01-Tool-Readiness
+  version: 0.3.0
