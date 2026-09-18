@@ -1,0 +1,37 @@
+# CST8371 — Lab 03, C05 automated collection
+#
+# Run from VM's home directory:
+#   x_remote.py ./l03-ndp-xremote.yaml
+# Check the file without connecting:
+#   x_remote.py --check ./l03-ndp-xremote.yaml
+#
+# Before running, replace:
+#   U           your assigned value (both ip: lines)
+#   {username}  your username (output_file: line)
+#
+# EDGE is reached at its Gi0/0/1 address. VM (this host) is reached at its
+# own SLAAC address — the last group is your U followed by 09, from the
+# MAC you forced in C02 (U = 15 gives ...:fe00:1509).
+output_file: l03-c05-{username}.txt
+
+devices:
+  - device_info:
+      device_type: cisco_xe
+      ip: "2010:acad:U:aa::U"
+      username: admin
+      password: cisco
+    commands:
+      - show ipv6 interface brief
+      - show ipv6 neighbors
+      - show ipv6 route static
+      - show tcp brief
+  - device_info:
+      device_type: linux
+      ip: "2010:acad:U:aa:0:ff:fe00:U09"
+      username: admin
+      password: cisco
+    commands:
+      - ip link show eth0
+      - ip -6 addr show dev eth0
+      - ip -6 route
+      - ping -c 2 2001:db8:192::69
