@@ -55,8 +55,8 @@ Rules that apply to every checkpoint:
 - **Re-test after every repair.** A correct fix with no new post-fix evidence earns no evidence credit.
 - **Successful baseline and post-repair pings must show 100 percent success / 0% loss.** A first ping can lose a packet while the neighbour resolves; repeat it before collecting successful proof. Keep the failed **before-repair** pings required by each ticket—they are evidence of the fault, not successful reachability.
 - **Widen your terminal before capturing** (`terminal length 0` and `terminal width 0` on the devices; disable line wrap in your SSH client). A wrapped line splits addresses and breaks grading.
-- **Save each checkpoint immediately on PC-A’s Desktop.** Upload C00, C01, and C02 over IPv6 once C02 restores PC-A-to-server reachability. Upload C03 after completing its tests (D2).
-- `show running-config` is not accepted as evidence.
+- **Save each checkpoint immediately on PC-A’s Desktop.** Upload C00, C01, and C02 over IPv6 once C02 restores PC-A-to-server reachability. Upload C03 and both device configurations after completing its tests and restoring PRIMARY (C03 submission).
+- A running-configuration file does not replace operational evidence. Submit both final device configurations separately at C03.
 
 ### A2 — Why This Lab Is Important
 
@@ -130,7 +130,7 @@ CORE uses host ID `::2` and R{U} uses host ID `::U` on their listed global addre
 | Pushed by `day0_provision.py` (CORE and R{U}) | Hostnames, SSH (version 2), `admin` / `cisco` with `enable` password `class`, IPv6 routing, every interface address in B2 (GUA and link-local), and the static routes |
 | Built by you at C00 | PC-A and Alpine addressing and default gateways from B2 |
 | Injected faults | Three, all in **static routing** (route selection, next-hop usability, backup path). Confirm cabling, addressing, SSH, and interface state at C00. If those checks fail, raise your hand before starting C01. |
-| Student scope | Cable and provision your assigned pod and configure host addressing at C00. During the tickets, add/remove static IPv6 routes on CORE and R{U}; shut and restore CORE `GiX/0/12` in C03 only. Perform the supplied cleanup in D3 after submission. |
+| Student scope | Cable and provision your assigned pod and configure host addressing at C00. During the tickets, add/remove static IPv6 routes on CORE and R{U}; shut and restore CORE `GiX/0/12` in C03 only. Perform the supplied cleanup in D4 after submission. |
 | Protected scope | Do not change RemoteSw or the TFTP server. Do not manually change CORE/R{U} addressing, SSH, users, or other interface settings to repair tickets. Do not run `erase`, `reload`, or `write erase`. |
 
 ### B4 — Intended Routing Design
@@ -220,7 +220,7 @@ Complete the numbered actions in order. Use the checkboxes to track the subactio
 
 4. **Cable the lab network.**
 
-   ![CORE switch cabling: PC-A BLUE NIC to port 10; Alpine through BLACK NIC and VMnet0 to port 20; green PRIMARY from port 12 to router Gi0/0/1; purple SECONDARY from port 21 to router Gi0/0/2.](../images/ch01-switch-cable.png)
+   <img src="../images/ch01-switch-cable.png" alt="CORE switch cabling: PC-A BLUE NIC to port 10; Alpine through BLACK NIC and VMnet0 to port 20; green PRIMARY from port 12 to router Gi0/0/1; purple SECONDARY from port 21 to router Gi0/0/2." width="75%">
 
    - [ ] Cable the topology as in **B1**.  Follow the diagram for the four CORE connections, moving PC-A's BLUE NIC cable from the white jack to port 10. Cable Alpine to port 20. Then cable the two links from CORE to R.
    - [ ] Connect R{U} `Gi0/0/0` to the **white jack** toward RemoteSw (shown in topology B1).
@@ -419,7 +419,7 @@ Alpine$ ping -6 -c 4 2010:acad:U:b::2
 
 > **Save locally; upload later:** 
 > You cannot upload it yet. 
-> Upload C00–C02 together after C02 restores the IPv6 path to the server (D2). Rerunning x_remote overwrites its output file; save a copy first if you have already appended router evidence.
+> Upload C00–C02 together after C02 restores the IPv6 path to the server (C02 submission). Rerunning x_remote overwrites its output file; save a copy first if you have already appended router evidence.
 
 ---
 
@@ -636,7 +636,7 @@ Return traffic needs a route to the source address used by the test. The CORE-so
 
    - [ ] Confirm R{U}'s return route matches the PRIMARY design in B4 and both hosts reach the server with zero packet loss. CORE's forward route was verified in C01.
 
-   - [ ] Save `ch01-c02-{username}.txt`, then upload C00–C02 as described in D2 before starting C03.
+   - [ ] Save `ch01-c02-{username}.txt`, then upload C00–C02 using the commands in C02’s Submission of Evidence before starting C03.
 
 #### Success Indicator / Failure Signal
 
@@ -650,7 +650,19 @@ Return traffic needs a route to the source address used by the test. The CORE-so
 
 - [ ] Check `ch01-c02-{username}.txt` against the template prepared in step 0. It must contain the required raw output, the PROBLEM and SOLUTION comments, and completed before-and-after sections.
 - [ ] Remove all angle-bracket placeholders; keep the headings and actual command output. Save the completed file.
-- [ ] Upload C00, C01, and C02 after the server tests succeed. Follow D2 and confirm the files arrived before starting C03.
+- [ ] **Upload now from PC-A’s Desktop**, after the server tests succeed. Use the PowerShell window where `$username` is defined. As in Lab 03, send the completed checkpoint files together:
+
+  ```powershell
+  scp -6 "ch01-c00-$username.txt" "ch01-c01-$username.txt" "ch01-c02-$username.txt" "cisco@[2001:db8:192::69]:/var/tftp/"
+  ```
+
+- [ ] Enter the server password `cisco`. Confirm all three files arrived before starting C03:
+
+  ```powershell
+  ssh -6 cisco@2001:db8:192::69 "ls -la /var/tftp/ch01-c0[012]-$username.txt"
+  ```
+
+  Check that C00, C01, and C02 are listed and each has a non-zero size. Keep the local copies.
 
 ---
 
@@ -793,7 +805,29 @@ A backup route that has never carried traffic is an untested claim. It enters th
 
 - [ ] Check `ch01-c03-{username}.txt` against the template prepared in step 0. It must contain the required raw output, the PROBLEM and SOLUTION comments, and completed before-and-after sections.
 - [ ] Remove all angle-bracket placeholders; keep the headings and actual command output. Save the completed file.
-- [ ] After restoring PRIMARY and verifying normal operation, upload C03 and confirm it arrived as described in D2.
+- [ ] **Submit both final running configurations after restoring PRIMARY.** As in Lab 03, use TFTP from each Cisco device; use SCP for the text files on PC-A. In privileged EXEC mode, run the appropriate command below. Replace `{username}` with your actual course username; Cisco cannot read PowerShell variables.
+
+  On CORE:
+
+  ```text
+  copy running-config tftp://[2001:db8:192::69]/ch01-config-core-{username}.txt
+  ```
+
+  On R{U}:
+
+  ```text
+  copy running-config tftp://[2001:db8:192::69]/ch01-config-r-{username}.txt
+  ```
+
+  Confirm the destination prompts and wait for `bytes copied` on **each** device. If a transfer fails, retain your work and ask the instructor before cleanup.
+
+- [ ] **Upload C03 from PC-A’s Desktop**, using the PowerShell window where `$username` is defined:
+
+  ```powershell
+  scp -6 "ch01-c03-$username.txt" "cisco@[2001:db8:192::69]:/var/tftp/"
+  ```
+
+  Enter the server password `cisco`. Complete the six-file validation in D3 before cleaning up.
 
 ---
 
@@ -807,32 +841,27 @@ A backup route that has never carried traffic is an untested claim. It enters th
 | `ch01-c01-{username}.txt` | Ticket C01, before and after | PC-A's Desktop |
 | `ch01-c02-{username}.txt` | Ticket C02, before and after | PC-A's Desktop |
 | `ch01-c03-{username}.txt` | Ticket C03, before and after | PC-A's Desktop |
+| `ch01-config-core-{username}.txt` | CORE final running configuration, PRIMARY restored | Server, sent directly from CORE by TFTP at C03 |
+| `ch01-config-r-{username}.txt` | R{U} final running configuration, PRIMARY restored | Server, sent directly from R{U} by TFTP at C03 |
 
-Each checkpoint file must contain the full header shown in its C00 collection section or ticket step 0 template, device identification, commands, and raw command output. Include the short `!-- [PROBLEM]:` and `!-- [SOLUTION]:` comments for C01–C03. In C01–C03, keep before-repair output followed by after-repair output, labelled with `!-- BEFORE REPAIR` and `!-- AFTER REPAIR` comments. C00 contains baseline evidence only. Do not edit command output.
+Each of the four checkpoint evidence files must contain the full header shown in its C00 collection section or ticket step 0 template, device identification, commands, and raw command output. Include the short `!-- [PROBLEM]:` and `!-- [SOLUTION]:` comments for C01–C03. In C01–C03, keep before-repair output followed by after-repair output, labelled with `!-- BEFORE REPAIR` and `!-- AFTER REPAIR` comments. C00 contains baseline evidence only. Do not edit command output.
 
-### D2 — Submit / Validate
+### D2 — Submission Workflow
 
-Submission uses **IPv6 through your lab network** to the remote server at `2001:db8:192::69`. The BLUE NIC remains connected to CORE during uploads.
+Follow the upload commands in the tickets: submit C00–C02 at C02, then submit C03 and both final running configurations after restoring PRIMARY at C03. Use SCP from PC-A and TFTP directly from CORE and R{U}, as in Lab 03. The BLUE NIC remains connected to CORE during uploads.
 
-Save every checkpoint file on PC-A’s Desktop as you work. Once C02's PC-A-to-server tests succeed, upload **C00, C01, and C02**. After completing C03's tests and restoring PRIMARY, upload **C03**.
+### D3 — Validate Submissions
 
-On PC-A, open PowerShell in the Desktop folder containing your evidence files. Replace `N` with `0`, `1`, `2`, or `3`, and `{username}` with your username. Run once per file:
-
-```powershell
-scp -6 ch01-c0N-{username}.txt "cisco@[2001:db8:192::69]:/var/tftp/"
-```
-
-Confirm the files landed:
+From PC-A’s PowerShell window, confirm all six files landed. Use the `$username` defined at C00; if you opened a new window, set it again first.
 
 ```powershell
-ssh -6 cisco@2001:db8:192::69 "ls -l /var/tftp/*{username}*"
+ssh -6 cisco@2001:db8:192::69 "ls -la /var/tftp/ch01-*$username*.txt"
 ```
 
-A complete submission lists four files, `ch01-c00` through `ch01-c03`, each non-zero size. Keep the local copies until submission is confirmed.
+Compare the listing against **all six filenames in D1**: four checkpoint evidence files and two running configurations. Each must have a non-zero size.
+Do not erase your work or claim a successful submission without checking the server.
 
-If an unresolved fault prevents uploading by the end of the session, retain all collected evidence, raise your hand, and show the instructor the saved files before cleanup. Do not erase your work or claim a successful submission without checking the server.
-
-### D3 — Save Your Work and Clean Up Devices
+### D4 — Clean Up Devices
 
 After submission is confirmed, clean up CORE and R{U} with the provided script:
 
