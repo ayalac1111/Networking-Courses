@@ -192,7 +192,16 @@ Complete the numbered actions in order. Use the checkboxes to track the subactio
    - [ ] In **T113**, select **Obtain an IP address automatically** and **Obtain DNS server address automatically**. Run `ipconfig` and verify that BLUE is on **203.0.113.0/24**, with address **203.0.113.2xx**, where `xx` is your two-digit station number (station 5 → `203.0.113.205`; station 12 → `203.0.113.212`). 
    - [ ] If you are in another lab, configure that address manually with subnet mask **255.255.255.0** and default gateway **203.0.113.254**. 
 
-3. **Download and extract the Day0 package.**
+3. **Open PowerShell, then download and extract the Day0 package.**
+
+   - [ ] Click **Start**, type **PowerShell**, right-click **Windows PowerShell**, and select **Run as administrator**. Select **Yes** at the permission prompt. Confirm the title starts with **Administrator: Windows PowerShell**.
+   - [ ] Set the working folder once. This lets Python find the scripts and YAML files and places generated evidence on your Desktop:
+
+     ```powershell
+     Set-Location "$env:USERPROFILE\Desktop"
+     ```
+
+   > **Keep this PowerShell window open for the rest of the setup.** Actions 5 and 6 and the C00 collection all run in this same window.
 
    - [ ] Download to your Desktop over the IPv4 course-network connection:
 
@@ -228,14 +237,7 @@ Complete the numbered actions in order. Use the checkboxes to track the subactio
 
 5. **Set your identity and provision from PC-A.**
 
-   - [ ] Click **Start**, type **PowerShell**, right-click **Windows PowerShell**, and select **Run as administrator**. Select **Yes** at the permission prompt. Confirm the title starts with **Administrator: Windows PowerShell**.
-   - [ ] Set the working folder once. This lets Python find the scripts and YAML files and places generated evidence on your Desktop:
-
-     ```powershell
-     Set-Location "$env:USERPROFILE\Desktop"
-     ```
-
-   - [ ] Enter your values once when prompted.
+   - [ ] Return to the **Administrator: Windows PowerShell** window you opened in action 3. Enter your values once when prompted.
 
      ```powershell
      $username = (Read-Host "Course username").Trim()
@@ -255,7 +257,7 @@ Complete the numbered actions in order. Use the checkboxes to track the subactio
      }
      ```
 
-   > **Keep this PowerShell window open** for provisioning, manifest generation, and collection. Variables belong to this window. If you close it, reopen PowerShell as administrator and repeat the working-folder and identity commands. Use separate windows for interactive SSH. Commands on Cisco devices and Alpine still use your actual U and switch member; they cannot read these PowerShell variables.
+   > **Keep this PowerShell window open** for provisioning, manifest generation, and collection. Variables belong to this window. If you close it, reopen PowerShell as administrator and repeat the working-folder command from action 3 and the identity commands above. Use separate windows for interactive SSH. Commands on Cisco devices and Alpine still use your actual U and switch member; they cannot read these PowerShell variables.
 
    > **CONSOLE PORT — ONE APPLICATION AT A TIME:** Close PuTTY before running Day0. Do not reopen it until Day0 finishes. The operating system gives one application exclusive access to the serial port. If PuTTY holds it open, Day0 cannot open it to send commands or read device replies.
 
@@ -287,13 +289,34 @@ Complete the numbered actions in order. Use the checkboxes to track the subactio
      python day0_provision.py --config day0-c01.yaml --device CORE --u $u --username $username --core-member $coreMember --port $consolePort
      ```
 
-   - [ ] Wait for completion and check the verification results on both devices.
+   - [ ] Wait for completion and check the verification results on both devices. Each device should show ✔ for SSH, IPv6 routing (`ipv6 unicast-routing`), and every interface.
+
+   **Troubleshooting — if a verification check fails:**
+
+   - [ ] **An interface shows down/down.** Check your cabling against the topology in **B1** and the picture in action 4. You can fix cabling after provisioning; you do not need to rerun Day0. Recheck with `show ipv6 interface brief`.
+   - [ ] **`ipv6 unicast-routing` is missing.** The line was lost during the push. Type it manually on that device:
+
+     ```text
+     configure terminal
+     ipv6 unicast-routing
+     end
+     ```
+
+   - [ ] **A switch interface is still down with correct cabling.** Reset the port by bringing the interface down and up at **both ends**: on CORE and on the connected R{U} interface (Gi0/0/1 for port 12, Gi0/0/2 for port 21). Replace `GiX/0/NN` with the interface that is down:
+
+     ```text
+     configure terminal
+     interface GiX/0/NN
+     shutdown
+     no shutdown
+     end
+     ```
 
    - [ ] Move the console cable back to **R{U}** and keep it there during the challenge. Once Day0 has finished, open PuTTY on that port.
 
 6. **Configure PC-A’s IPv6 address.**
 
-   - [ ] Return to the same **Administrator: Windows PowerShell** window. If `New-NetIPAddress` reports **Access is denied**, reopen PowerShell as administrator and repeat the working-folder and identity commands from action 5.
+   - [ ] Return to the same **Administrator: Windows PowerShell** window. If `New-NetIPAddress` reports **Access is denied**, reopen PowerShell as administrator and repeat the working-folder command from action 3 and the identity commands from action 5.
    - [ ] Find the Windows name of the BLUE NIC connected to CORE `GiX/0/10`:
 
      ```powershell
@@ -393,7 +416,7 @@ Alpine$ ping -6 -c 4 2010:acad:U:b::2
      (Get-Content .\x-remote-c00.yaml -Raw).
          Replace('{U}', "$u").
          Replace('{USERNAME}', $username) |
-         Set-Content .\x-remote-c00-personal.yaml -Encoding UTF8
+         Set-Content .\x-remote-c00-personal.yaml -Encoding ascii
      ```
 
    - [ ] Keep the original `x-remote-c00.yaml` unchanged. If your identity values change, regenerate the personal copy.
@@ -653,7 +676,7 @@ Return traffic needs a route to the source address used by the test. The CORE-so
 - [ ] **Upload now from PC-A’s Desktop**, after the server tests succeed. Use the PowerShell window where `$username` is defined. As in Lab 03, send the completed checkpoint files together:
 
   ```powershell
-  scp -6 "ch01-c00-$username.txt" "ch01-c01-$username.txt" "ch01-c02-$username.txt" "cisco@[2001:db8:192::69]:/var/tftp/"
+  scp -6 "ch01-c0*-$username.txt" "cisco@[2001:db8:192::69]:/var/tftp/"
   ```
 
 - [ ] Enter the server password `cisco`. Confirm all three files arrived before starting C03:
