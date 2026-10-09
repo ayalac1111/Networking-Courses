@@ -1,0 +1,962 @@
+annotations:
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 203.0.113.0/24
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -460.0
+  y1: -30.0
+  z_index: 0
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 10.U.12.0/29
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -200.0
+  y1: -110.0
+  z_index: 1
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 10.U.13.0/29
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -200.0
+  y1: 90.0
+  z_index: 2
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 10.U.234.0/29 (switch segment)
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 20.0
+  y1: -10.0
+  z_index: 3
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 'ACCESS Ethernet0/3: user LAN 10.U.20.0/24 (no link). Supplied with U=0: change to your U in the node Config tab before starting the lab'
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 200.0
+  y1: 50.0
+  z_index: 4
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 'MGMT: Ethernet0/0 on every router, DHCP, VRF MGMT'
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -200.0
+  y1: -440.0
+  z_index: 5
+smart_annotations:
+- tag: external
+  is_on: true
+  padding: 35
+  label: external
+  tag_offset_x: 0
+  tag_offset_y: 0
+  tag_size: 14
+  group_distance: 400
+  thickness: 1
+  border_style: ''
+  fill_color: '#5F85BE80'
+  border_color: '#00000080'
+  z_index: 1
+- tag: ISP
+  is_on: true
+  padding: 35
+  label: ISP (outside OSPF)
+  tag_offset_x: 0
+  tag_offset_y: 0
+  tag_size: 14
+  group_distance: 400
+  thickness: 1
+  border_style: ''
+  fill_color: '#005C9980'
+  border_color: '#00000080'
+  z_index: 2
+- tag: AREA-0
+  is_on: true
+  padding: 35
+  label: OSPF Area 0
+  tag_offset_x: 0
+  tag_offset_y: 0
+  tag_size: 14
+  group_distance: 400
+  thickness: 1
+  border_style: ''
+  fill_color: '#00B14080'
+  border_color: '#00000080'
+  z_index: 3
+nodes:
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: |-
+      ! CST8371 Fall 2026 - Lab 06 (CML-Free) baseline: ISP. Addressing only, no OSPF. Supplied with U=0.
+      hostname ISP
+      !
+      no ip domain lookup
+      ip domain name cst8371.local
+      username admin privilege 15 secret cisco
+      enable secret class
+      !
+      vrf definition MGMT
+       address-family ipv4
+       exit-address-family
+      !
+      interface Ethernet0/0
+       description MGMT-TO-EXTERNAL-SW
+       vrf forwarding MGMT
+       ip address dhcp
+       ip dhcp client broadcast-flag clear
+       no shutdown
+      !
+      interface Ethernet0/1
+       description TO-EDGE
+       ip address 203.0.113.254 255.255.255.0
+       no shutdown
+      !
+      interface Loopback69
+       description COURSE-SERVER
+       ip address 192.0.2.69 255.255.255.255
+      !
+      ip route 10.0.0.0 255.0.0.0 203.0.113.1
+      !
+      crypto key generate rsa modulus 2048
+      ip ssh version 2
+      !
+      line con 0
+       exec-timeout 0 0
+       logging synchronous
+      line vty 0 4
+       login local
+       transport input ssh
+       exec-timeout 30 0
+      end
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n0
+  image_definition: null
+  label: ISP
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - ISP
+  x: -520
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i4
+    label: Ethernet0/3
+    mac_address: null
+    slot: 3
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: |-
+      ! CST8371 Fall 2026 - Lab 06 (CML-Free) baseline: EDGE. Addressing only, no OSPF. Supplied with U=0.
+      hostname EDGE
+      !
+      no ip domain lookup
+      ip domain name cst8371.local
+      username admin privilege 15 secret cisco
+      enable secret class
+      !
+      vrf definition MGMT
+       address-family ipv4
+       exit-address-family
+      !
+      interface Ethernet0/0
+       description MGMT-TO-EXTERNAL-SW
+       vrf forwarding MGMT
+       ip address dhcp
+       ip dhcp client broadcast-flag clear
+       no shutdown
+      !
+      interface Ethernet0/1
+       description TO-ISP-UPSTREAM
+       bandwidth 1000000
+       ip address 203.0.113.1 255.255.255.0
+       no shutdown
+      !
+      interface Ethernet0/2
+       description TO-CORE
+       bandwidth 1000000
+       ip address 10.0.12.1 255.255.255.248
+       no shutdown
+      !
+      interface Ethernet0/3
+       description TO-DIST
+       bandwidth 1000000
+       ip address 10.0.13.1 255.255.255.248
+       no shutdown
+      !
+      interface Loopback100
+       description ROUTER-ID-SOURCE
+       ip address 10.0.100.1 255.255.255.255
+      !
+      ip route 0.0.0.0 0.0.0.0 Ethernet0/1 203.0.113.254
+      !
+      crypto key generate rsa modulus 2048
+      ip ssh version 2
+      !
+      line con 0
+       exec-timeout 0 0
+       logging synchronous
+      line vty 0 4
+       login local
+       transport input ssh
+       exec-timeout 30 0
+      end
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n1
+  image_definition: null
+  label: EDGE
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - AREA-0
+  - edge
+  x: -280
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i4
+    label: Ethernet0/3
+    mac_address: null
+    slot: 3
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: |-
+      ! CST8371 Fall 2026 - Lab 06 (CML-Free) baseline: CORE. Addressing only, no OSPF. Supplied with U=0.
+      hostname CORE
+      !
+      no ip domain lookup
+      ip domain name cst8371.local
+      username admin privilege 15 secret cisco
+      enable secret class
+      !
+      vrf definition MGMT
+       address-family ipv4
+       exit-address-family
+      !
+      interface Ethernet0/0
+       description MGMT-TO-EXTERNAL-SW
+       vrf forwarding MGMT
+       ip address dhcp
+       ip dhcp client broadcast-flag clear
+       no shutdown
+      !
+      interface Ethernet0/1
+       description TO-EDGE
+       bandwidth 1000000
+       ip address 10.0.12.2 255.255.255.248
+       no shutdown
+      !
+      interface Ethernet0/2
+       description TO-SEGMENT-SWITCH
+       bandwidth 1000000
+       ip address 10.0.234.2 255.255.255.248
+       no shutdown
+      !
+      interface Loopback100
+       description ROUTER-ID-SOURCE
+       ip address 10.0.100.2 255.255.255.255
+      !
+      crypto key generate rsa modulus 2048
+      ip ssh version 2
+      !
+      line con 0
+       exec-timeout 0 0
+       logging synchronous
+      line vty 0 4
+       login local
+       transport input ssh
+       exec-timeout 30 0
+      end
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n2
+  image_definition: null
+  label: CORE
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - AREA-0
+  - core
+  x: 0
+  y: -160
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i4
+    label: Ethernet0/3
+    mac_address: null
+    slot: 3
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: |-
+      ! CST8371 Fall 2026 - Lab 06 (CML-Free) baseline: DIST. Addressing only, no OSPF. Supplied with U=0.
+      hostname DIST
+      !
+      no ip domain lookup
+      ip domain name cst8371.local
+      username admin privilege 15 secret cisco
+      enable secret class
+      !
+      vrf definition MGMT
+       address-family ipv4
+       exit-address-family
+      !
+      interface Ethernet0/0
+       description MGMT-TO-EXTERNAL-SW
+       vrf forwarding MGMT
+       ip address dhcp
+       ip dhcp client broadcast-flag clear
+       no shutdown
+      !
+      interface Ethernet0/1
+       description TO-EDGE
+       bandwidth 1000000
+       ip address 10.0.13.3 255.255.255.248
+       no shutdown
+      !
+      interface Ethernet0/2
+       description TO-SEGMENT-SWITCH
+       bandwidth 1000000
+       ip address 10.0.234.3 255.255.255.248
+       no shutdown
+      !
+      interface Loopback100
+       description ROUTER-ID-SOURCE
+       ip address 10.0.100.3 255.255.255.255
+      !
+      interface Loopback30
+       description SERVER
+       ip address 10.0.30.1 255.255.255.255
+      !
+      crypto key generate rsa modulus 2048
+      ip ssh version 2
+      !
+      line con 0
+       exec-timeout 0 0
+       logging synchronous
+      line vty 0 4
+       login local
+       transport input ssh
+       exec-timeout 30 0
+      end
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n3
+  image_definition: null
+  label: DIST
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - AREA-0
+  - dist
+  x: 0
+  y: 160
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i4
+    label: Ethernet0/3
+    mac_address: null
+    slot: 3
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: |-
+      ! CST8371 Fall 2026 - Lab 06 (CML-Free) baseline: ACCESS. Addressing only, no OSPF. Supplied with U=0.
+      hostname ACCESS
+      !
+      no ip domain lookup
+      ip domain name cst8371.local
+      username admin privilege 15 secret cisco
+      enable secret class
+      !
+      vrf definition MGMT
+       address-family ipv4
+       exit-address-family
+      !
+      interface Ethernet0/0
+       description MGMT-TO-EXTERNAL-SW
+       vrf forwarding MGMT
+       ip address dhcp
+       ip dhcp client broadcast-flag clear
+       no shutdown
+      !
+      interface Ethernet0/1
+       description TO-SEGMENT-SWITCH
+       bandwidth 1000000
+       ip address 10.0.234.4 255.255.255.248
+       no shutdown
+      !
+      interface Ethernet0/3
+       description USER-LAN
+       bandwidth 1000000
+       ip address 10.0.20.1 255.255.255.0
+       no shutdown
+      !
+      interface Loopback100
+       description ROUTER-ID-SOURCE
+       ip address 10.0.100.4 255.255.255.255
+      !
+      crypto key generate rsa modulus 2048
+      ip ssh version 2
+      !
+      line con 0
+       exec-timeout 0 0
+       logging synchronous
+      line vty 0 4
+       login local
+       transport input ssh
+       exec-timeout 30 0
+      end
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n4
+  image_definition: null
+  label: ACCESS
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - AREA-0
+  - access
+  x: 280
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i4
+    label: Ethernet0/3
+    mac_address: null
+    slot: 3
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: default
+    content: System Bridge
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n5
+  image_definition: null
+  label: EXTERNAL-Bridge
+  node_definition: external_connector
+  parameters: {}
+  ram: null
+  tags:
+  - external
+  x: 360
+  y: -400
+  interfaces:
+  - id: i0
+    label: port
+    mac_address: null
+    slot: 0
+    type: physical
+- boot_disk_size: null
+  configuration: []
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n6
+  image_definition: null
+  label: EXTERNAL-Sw
+  node_definition: unmanaged_switch
+  parameters: {}
+  ram: null
+  tags:
+  - external
+  x: 120
+  y: -400
+  interfaces:
+  - id: i0
+    label: port0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i1
+    label: port1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i2
+    label: port2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i3
+    label: port3
+    mac_address: null
+    slot: 3
+    type: physical
+  - id: i4
+    label: port4
+    mac_address: null
+    slot: 4
+    type: physical
+  - id: i5
+    label: port5
+    mac_address: null
+    slot: 5
+    type: physical
+  - id: i6
+    label: port6
+    mac_address: null
+    slot: 6
+    type: physical
+- boot_disk_size: null
+  configuration: []
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n7
+  image_definition: null
+  label: SEGMENT-Sw
+  node_definition: unmanaged_switch
+  parameters: {}
+  ram: null
+  tags:
+  - AREA-0
+  x: 140
+  y: 0
+  interfaces:
+  - id: i0
+    label: port0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i1
+    label: port1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i2
+    label: port2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i3
+    label: port3
+    mac_address: null
+    slot: 3
+    type: physical
+links:
+- id: l0
+  n1: n0
+  n2: n1
+  i1: i2
+  i2: i2
+  conditioning: {}
+  label: ISP-Ethernet0/1<->EDGE-Ethernet0/1
+- id: l1
+  n1: n1
+  n2: n2
+  i1: i3
+  i2: i2
+  conditioning: {}
+  label: EDGE-Ethernet0/2<->CORE-Ethernet0/1
+- id: l2
+  n1: n1
+  n2: n3
+  i1: i4
+  i2: i2
+  conditioning: {}
+  label: EDGE-Ethernet0/3<->DIST-Ethernet0/1
+- id: l3
+  n1: n2
+  n2: n7
+  i1: i3
+  i2: i0
+  conditioning: {}
+  label: CORE-Ethernet0/2<->SEGMENT-Sw-port0
+- id: l4
+  n1: n3
+  n2: n7
+  i1: i3
+  i2: i1
+  conditioning: {}
+  label: DIST-Ethernet0/2<->SEGMENT-Sw-port1
+- id: l5
+  n1: n4
+  n2: n7
+  i1: i2
+  i2: i2
+  conditioning: {}
+  label: ACCESS-Ethernet0/1<->SEGMENT-Sw-port2
+- id: l6
+  n1: n5
+  n2: n6
+  i1: i0
+  i2: i0
+  conditioning: {}
+  label: EXTERNAL-Bridge-port<->EXTERNAL-Sw-port0
+- id: l7
+  n1: n6
+  n2: n0
+  i1: i1
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port1<->ISP-Ethernet0/0
+- id: l8
+  n1: n6
+  n2: n1
+  i1: i2
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port2<->EDGE-Ethernet0/0
+- id: l9
+  n1: n6
+  n2: n2
+  i1: i3
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port3<->CORE-Ethernet0/0
+- id: l10
+  n1: n6
+  n2: n3
+  i1: i4
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port4<->DIST-Ethernet0/0
+- id: l11
+  n1: n6
+  n2: n4
+  i1: i5
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port5<->ACCESS-Ethernet0/0
+lab:
+  description: CST8371 Lab 06 - OSPF design, elections, and path selection (CML-Free)
+  notes: |-
+    # Lab 06 — OSPF Path Selection and Network Operations (CML-Free)
+
+    Four OSPF routers (**EDGE, CORE, DIST, ACCESS**) and an **ISP** router (instructor scope, outside OSPF). They start with addresses for **U = 0** and no OSPF. **Before you start any node**, put your username in each hostname and your **U** in each address (C00). Console configuration and captures only; `x_remote` runs once, at the end of C04. The full handout, `l06-ospf-paths-cml.md`, explains why each step matters and has the troubleshooting.
+
+    ```text
+                    .---- CORE ----.
+      ISP --- EDGE                  [SEGMENT-Sw] ---- ACCESS --- user LAN (Ethernet0/3)
+                    '---- DIST ----'
+    ```
+
+    Login `admin` / `cisco`, enable secret `class`. Every `Ethernet0/0` is the management network (DHCP, VRF MGMT, never in OSPF): it is only for SSH from your host and `x_remote`.
+
+    | Link | Subnet | Domain |
+    |---|---|---|
+    | EDGE–ISP | `203.0.113.0/24` (EDGE .1, ISP .254) | Outside OSPF |
+    | EDGE–CORE | `10.U.12.0/29` (EDGE .1, CORE .2) | Area 0 |
+    | EDGE–DIST | `10.U.13.0/29` (EDGE .1, DIST .3) | Not in OSPF until C02 |
+    | Segment | `10.U.234.0/29` (CORE .2, DIST .3, ACCESS .4) | Area 0, broadcast |
+    | User LAN | `10.U.20.0/24` (ACCESS Ethernet0/3 .1) | Area 0, passive (from C01 Part B) |
+    | Loopback100 | `10.U.100.1` to `.4` (EDGE to ACCESS) | Area 0 |
+
+    Rules: do not clear OSPF unless a step says so; do not Wipe a node after C00.
+
+    **To pause and continue later:** finish the step you are in, run `write memory` on all four routers, then **Stop** the lab (never Wipe). When you start it again, wait about three minutes and check your addresses and `show running-config | section ospf`. The `Ethernet0/0` DHCP addresses can change: update `l06-xremote.yaml` before C04.
+
+    Evidence: paste each capture, with the device prompt, under its router sub-header in your renamed file `l06-c01-<username>.txt` … `l06-c04-<username>.txt`. Reasoning and calculations stay in your lab book.
+
+    ---
+
+    # C00 — Prepare and prove access (0 points)
+
+    1. Do not start any node. Find your **U** in Brightspace Grades (grade item **U**).
+    2. In the **Config** tab of EDGE, CORE, DIST, and ACCESS (not ISP), save these changes:
+       - `hostname <username>-EDGE` (and `-CORE`, `-DIST`, `-ACCESS`).
+       - Change the second octet `0` to your U on 13 addresses (`10.0.12.1` becomes `10.17.12.1` for U = 17):
+         - EDGE: `Ethernet0/2` `10.U.12.1`, `Ethernet0/3` `10.U.13.1`, `Loopback100` `10.U.100.1`
+         - CORE: `Ethernet0/1` `10.U.12.2`, `Ethernet0/2` `10.U.234.2`, `Loopback100` `10.U.100.2`
+         - DIST: `Ethernet0/1` `10.U.13.3`, `Ethernet0/2` `10.U.234.3`, `Loopback100` `10.U.100.3`, `Loopback30` `10.U.30.1`
+         - ACCESS: `Ethernet0/1` `10.U.234.4`, `Ethernet0/3` `10.U.20.1`, `Loopback100` `10.U.100.4`
+       - Leave ISP, every `Ethernet0/0`, and EDGE `Ethernet0/1` alone.
+    3. Start all eight nodes and wait about three minutes.
+    4. On each router, run `show ip interface brief | exclude unassigned`: the 13 addresses carry your U and are up/up, and `Ethernet0/0` has an address from your host's network. Record the five `Ethernet0/0` addresses.
+    5. Pings from the consoles, each `100 percent (5/5)`: EDGE to `10.U.12.2`, `10.U.13.3`, and `192.0.2.69`; CORE to `10.U.234.3` and `10.U.234.4`.
+    6. From your own host, ping and `ssh admin@<Ethernet0/0 address>` to a router.
+    7. Rename the four templates to `l06-c0N-<username>.txt` and fill in `STUDENT:` and `U:`. Copy `l06-xremote.yaml` into the folder with your `x_remote.py` and edit it (four DHCP addresses, every `{U}`, `{USERNAME}` in `output_file`) and run `python3 x_remote.py --check l06-xremote.yaml`.
+
+    If an address still starts with `10.0.`: stop the node, Wipe it (allowed in C00 only), fix its Config tab, and start it again. If a router has no DHCP address: toggle `ip dhcp client broadcast-flag clear` on `Ethernet0/0`, then `shutdown` / `no shutdown`.
+
+    ---
+
+    # C01 — Unplanned OSPF, then best practices (3 points)
+
+    Sections `C01 FOUND` and `C01 STANDARD`. EDGE–DIST stays out of OSPF on purpose: with one way in, the routes are predictable. It joins in C02. `Ethernet0/0` (VRF `MGMT`) is never in OSPF and is ignored for the Router ID, even when it is the highest address: see it with `show ip vrf interfaces` and `show ip route`.
+
+    **Capture set** (all four routers):
+
+    ```text
+    show ip ospf | include Routing Process|Router ID
+    show ip ospf neighbor
+    show ip ospf interface brief
+    show ip route ospf | begin Gateway
+    ```
+
+    ## Part A — An unplanned network
+
+    Networks without a plan look like this: a process number per router, Router IDs from whichever rule applied, an active interface facing hosts. It works, but it is hard to read and troubleshoot.
+
+    1. Create the process and the manual Router ID *before* enabling interfaces (`ip ospf <process> area 0`; no `network` command):
+
+       | Device | Process | Router ID | Interfaces in OSPF |
+       |---|---|---|---|
+       | EDGE | `1` | manual `0.0.0.1` | Loopback100, `Ethernet0/2` |
+       | DIST | `10` | not set | Loopback100, Loopback30, `Ethernet0/2` |
+       | ACCESS | `20` | not set | Loopback100, `Ethernet0/1`, `Ethernet0/3` |
+       | CORE | `100` | not set; delete Loopback100 first | `Ethernet0/1`, `Ethernet0/2` |
+
+    2. Predict in your lab book, before any `show` command: each Router ID and why, whether different process numbers neighbour, the DR on the segment, and what CORE knows about `10.U.13.0/29`.
+    3. Wait about 60 seconds, verify with the unfiltered capture set, then capture `C01 FOUND`: the capture set, plus CORE `show ip route 10.U.13.0 255.255.255.248` and ACCESS `show ip ospf interface Ethernet0/3 | include Network Type|State|Passive|No Hellos`.
+
+    ## Part B — OSPF best practices
+
+    4. Remove all OSPF on all four: each `no ip ospf <old> area 0` first, then `no router ospf <old>`.
+    5. Configure on all four: CORE Loopback100 `10.U.100.2/32` restored; process **U**; `router-id` = Loopback100 address; ACCESS `passive-interface Ethernet0/3` *before* the LAN is activated; Area 0 on Loopback100 (all), Loopback30 (DIST), ACCESS `Ethernet0/3`, EDGE–CORE, and the segment; EDGE `default-information originate` (no `always`). Network types stay default.
+    6. Predict in your lab book, then wait about 60 seconds and capture `C01 STANDARD`: the capture set, plus ACCESS `show ip ospf interface Ethernet0/3 | include Network Type|State|Passive|No Hellos`, `ping 192.0.2.69 source Ethernet0/3 repeat 3 timeout 1`, and `ping 10.U.100.1 source Ethernet0/3 repeat 3 timeout 1`.
+
+    **Expect FOUND:** `"ospf 1" with ID 0.0.0.1` (EDGE), `"ospf 100" with ID 10.U.234.2` (CORE), `"ospf 10"` / `10.U.100.3` (DIST), `"ospf 20"` / `10.U.100.4` (ACCESS); segment neighbours `FULL`; EDGE routes via `10.U.12.2`; CORE `Gateway of last resort is not set` and `% Network not in table` for `10.U.13.0/29`; ACCESS LAN active (not passive).
+    **Expect STANDARD:** `"ospf U" with ID 10.U.100.N` on all four; ACCESS `Ethernet0/3` `No Hellos (Passive interface)`; an `O*E2` default on CORE, DIST, ACCESS; ACCESS pings `100 percent (3/3)`. If a ping is below 3/3, repeat it (first-packet ARP loss) and paste the passing run.
+
+    ---
+
+    # C02 — Elections and the point-to-point rule (5 points)
+
+    Sections `C02 INCUMBENT`, `PRIORITY`, `DR-FAILED`, `PRIORITY-ZERO`, `P2P`. Priority ranks candidates; it does not evict a healthy incumbent. Two routers on a link: point-to-point. More than two: broadcast with an election. Never `shutdown` a link to fail the DR: remove the OSPF activation.
+
+    **Segment capture** (CORE and DIST use `Ethernet0/2`, ACCESS uses `Ethernet0/1`):
+
+    ```text
+    show ip ospf neighbor
+    show ip ospf interface Ethernet0/2 | include not enabled|State|Priority|[Dd]esignated
+    ```
+
+    1. Predict the DR (lab book). On CORE, DIST, ACCESS: `no ip ospf U area 0` on the segment interface; wait 45 s.
+    2. Activate CORE, then DIST, then ACCESS (`ip ospf U area 0`), 40 s after each. Capture `C02 INCUMBENT`.
+    3. ACCESS `Ethernet0/1`: `ip ospf priority 200`; wait about a minute. Capture `C02 PRIORITY`.
+    4. CORE `Ethernet0/2`: `no ip ospf U area 0`; wait at least 45 s. Capture `C02 DR-FAILED`.
+    5. CORE: `ip ospf priority 0`, then `ip ospf U area 0`; wait about 40 s. DIST `Ethernet0/2`: `no ip ospf U area 0`; wait 45 s. Capture `C02 PRIORITY-ZERO`.
+    6. Restore: DIST `ip ospf U area 0`; `no ip ospf priority` on CORE and ACCESS; wait about 45 s.
+    7. Set `ip ospf network point-to-point` on both ends of EDGE–CORE (EDGE `Ethernet0/2`, CORE `Ethernet0/1`) and, with `ip ospf U area 0`, on both ends of EDGE–DIST (EDGE `Ethernet0/3`, DIST `Ethernet0/1`). The segment stays broadcast; the user LAN stays passive. Wait about 45 s.
+    8. Capture `C02 P2P` on all four routers: `show ip ospf neighbor` and `show ip ospf interface brief`; on ACCESS also `ping 192.0.2.69 source Ethernet0/3 repeat 3 timeout 1`.
+
+    **Expect:**
+
+    | State | CORE | DIST | ACCESS |
+    |---|---|---|---|
+    | INCUMBENT | `State DR, Priority 1` | `State BDR, Priority 1` | `State DROTHER, Priority 1` |
+    | PRIORITY | `State DR` | `State BDR` | `State DROTHER, Priority 200` |
+    | DR-FAILED | `OSPF not enabled on Ethernet0/2` | `State DR` | `State BDR, Priority 200` |
+    | PRIORITY-ZERO | `State DROTHER, Priority 0` | `OSPF not enabled on Ethernet0/2` | `State DR`, `No backup designated router` |
+
+    P2P: EDGE lists CORE and DIST `FULL/-` and the brief shows `P2P`; segment neighbours `FULL` with a role, never `FULL/-`; ping `100 percent (3/3)`.
+
+    ---
+
+    # C03 — Default costs and reference bandwidth (3 points)
+
+    Sections `C03 BEFORE` and `C03 AFTER`. Capture on all four routers:
+
+    ```text
+    show ip ospf | include Reference
+    show ip ospf interface brief
+    ```
+
+    and on CORE and ACCESS `show ip route 10.U.100.1 255.255.255.255`.
+
+    1. Capture `C03 BEFORE`.
+    2. Lab book: `A` = CORE `Ethernet0/1` cost, `B` = CORE `Ethernet0/2` cost, `C` = DIST `Ethernet0/1` cost, `L` = EDGE Loopback100 cost. Direct = A + L; alternate = B + C + L. The lower total equals CORE's route metric.
+    3. On all four routers: `router ospf U`, then `auto-cost reference-bandwidth 10000`; wait about 10 s.
+    4. Capture `C03 AFTER`. Note how many next hops ACCESS has in each state.
+
+    **Expect (1-Gbps preset):** `100 mbps` BEFORE and `10000 mbps` AFTER on all four; costs 1, then 10; EDGE Loopback100 stays 1; CORE route `metric 2`, then `11` via `10.U.12.1`; ACCESS two next hops (`10.U.234.2`, `10.U.234.3`), `metric 3`, then `21`; EDGE links `P2P`.
+
+    ---
+
+    # C04 — ECMP, failure and recovery, final network (4 points)
+
+    Sections `C04 ECMP`, `LINK-DOWN`, `RESTORED`, `FINAL`. **Path capture:**
+
+    ```text
+    CORE:   show ip ospf neighbor
+            show ip route 10.U.100.1 255.255.255.255
+            show ip cef 10.U.100.1
+    EDGE:   show ip interface brief | include Ethernet0/2
+    ACCESS: show ip route 10.U.100.1 255.255.255.255
+            ping 192.0.2.69 source Ethernet0/3 repeat 3 timeout 1
+            ping 10.U.100.1 source Ethernet0/3 repeat 3 timeout 1
+    ```
+
+    1. Lab book: **N = B + C** from C03 AFTER.
+    2. CORE `Ethernet0/1`: `ip ospf cost N`; wait about 10 s. Capture `C04 ECMP`.
+    3. EDGE `Ethernet0/2`: `shutdown` (this link only); wait about 60 s. Capture `C04 LINK-DOWN`. CORE keeps `10.U.234.3` only.
+    4. EDGE: `no shutdown`; wait for the adjacency and both next hops. Capture `C04 RESTORED`.
+    5. CORE `Ethernet0/1`: `no ip ospf cost` (keep reference bandwidth 10000); wait about 10 s. Capture `C04 FINAL`.
+    6. Check the four DHCP addresses in your manifest; if one changed, edit it and re-run `--check`. Run `python3 x_remote.py l06-xremote.yaml` once. It writes `l06-xremote-<username>.txt`.
+
+    **Expect:** ECMP: CORE `metric 21`, next hops `10.U.12.1` and `10.U.234.3`; ACCESS one next hop `10.U.234.3`, `metric 21`. LINK-DOWN: EDGE `Ethernet0/2` `administratively down`; CORE route and CEF only `10.U.234.3`, `metric 21`. RESTORED: EDGE `FULL/-` on CORE, both next hops back. FINAL: CORE `metric 11` via `10.U.12.1` only; ACCESS two next hops, `metric 21`. Repeat any ping below 3/3 and paste the passing run.
+
+    ---
+
+    # Submission (Brightspace)
+
+    Upload five files to **L06-Dropbox**: `l06-c01-<username>.txt` to `l06-c04-<username>.txt`, and `l06-xremote-<username>.txt` as written by the tool. Check the names, that each file is non-zero, and that the `x_remote` file shows output for all four routers. No running configurations or screenshots. Never assemble a capture by hand. Stop the lab afterwards and keep your local files until your grade is posted.
+  title: L06-OSPF-Path-Selection
+  version: 0.3.0
