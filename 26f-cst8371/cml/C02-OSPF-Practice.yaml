@@ -1,0 +1,629 @@
+annotations:
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 203.0.113.0/24
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -330.0
+  y1: -30.0
+  z_index: 0
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: Link 1  10.0.12.0/29 (broadcast)
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -60.0
+  y1: -110.0
+  z_index: 1
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: Link 2  10.0.21.0/29 (point-to-point)
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -60.0
+  y1: 70.0
+  z_index: 2
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: User LAN 10.0.20.0/24 (Alpine .10)
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 340.0
+  y1: -60.0
+  z_index: 3
+smart_annotations:
+- tag: ISP
+  is_on: true
+  padding: 35
+  label: ISP (outside OSPF)
+  tag_offset_x: 0
+  tag_offset_y: 0
+  tag_size: 14
+  group_distance: 400
+  thickness: 1
+  border_style: ''
+  fill_color: '#005C9980'
+  border_color: '#00000080'
+  z_index: 2
+- tag: AREA-0
+  is_on: true
+  padding: 35
+  label: OSPF Area 0
+  tag_offset_x: 0
+  tag_offset_y: 0
+  tag_size: 14
+  group_distance: 400
+  thickness: 1
+  border_style: ''
+  fill_color: '#00B14080'
+  border_color: '#00000080'
+  z_index: 3
+nodes:
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: "! CST8371 Fall 2026 - Challenge 02 practice (CML-Free): ISP. Outside\
+      \ OSPF. Supplied with U = 0.\nhostname ISP\nno ip domain lookup\nusername admin\
+      \ privilege 15 secret cisco\nenable secret class\n!\ninterface Ethernet0/0\n\
+      \ description TO-EDGE\n ip address 203.0.113.254 255.255.255.0\n no shutdown\n\
+      !\ninterface Loopback69\n description COURSE-SERVER-STAND-IN\n ip address 192.0.2.69\
+      \ 255.255.255.255\n!\nip route 10.0.0.0 255.0.0.0 203.0.113.1\n!\nline con 0\n\
+      \ exec-timeout 0 0\n logging synchronous\nend"
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n0
+  image_definition: null
+  label: ISP
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - ISP
+  x: -440
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: "! CST8371 Fall 2026 - Challenge 02 practice (CML-Free): EDGE. Supplied\
+      \ with U = 0.\nhostname EDGE\nno ip domain lookup\nusername admin privilege\
+      \ 15 secret cisco\nenable secret class\n!\ninterface Ethernet0/0\n description\
+      \ TO-ISP-UPSTREAM\n bandwidth 1000000\n ip address 203.0.113.1 255.255.255.0\n\
+      \ no shutdown\n!\ninterface Ethernet0/1\n description LINK-1-TO-DIST\n bandwidth\
+      \ 1000000\n ip address 10.0.12.1 255.255.255.248\n ip ospf 1 area 0\n ip ospf\
+      \ priority 100\n no shutdown\n!\ninterface Ethernet0/2\n description LINK-2-TO-DIST\n\
+      \ bandwidth 1000000\n ip address 10.0.21.1 255.255.255.248\n ip ospf network\
+      \ point-to-point\n ip ospf 1 area 0\n no shutdown\n!\ninterface Loopback100\n\
+      \ description ROUTER-ID-SOURCE\n ip address 10.0.100.1 255.255.255.255\n ip\
+      \ ospf 1 area 0\n!\nrouter ospf 1\n router-id 10.0.100.1\n auto-cost reference-bandwidth\
+      \ 10000\n!\nip route 0.0.0.0 0.0.0.0 Ethernet0/0 203.0.113.254\n!\nline con\
+      \ 0\n exec-timeout 0 0\n logging synchronous\nend"
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n1
+  image_definition: null
+  label: EDGE
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - AREA-0
+  - edge
+  x: -120
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: "! CST8371 Fall 2026 - Challenge 02 practice (CML-Free): DIST. Supplied\
+      \ with U = 0.\nhostname DIST\nno ip domain lookup\nusername admin privilege\
+      \ 15 secret cisco\nenable secret class\n!\ninterface Ethernet0/0\n description\
+      \ USER-LAN\n bandwidth 1000000\n ip address 10.0.20.1 255.255.255.0\n ip ospf\
+      \ 1 area 0\n no shutdown\n!\ninterface Ethernet0/1\n description LINK-1-TO-EDGE\n\
+      \ bandwidth 1000000\n ip address 10.0.12.2 255.255.255.240\n ip ospf 1 area\
+      \ 0\n no shutdown\n!\ninterface Ethernet0/2\n description LINK-2-TO-EDGE\n bandwidth\
+      \ 1000000\n ip address 10.0.21.2 255.255.255.248\n ip ospf network point-to-point\n\
+      \ ip ospf 1 area 0\n no shutdown\n!\ninterface Loopback100\n description ROUTER-ID-SOURCE\n\
+      \ ip address 10.0.100.2 255.255.255.255\n ip ospf 1 area 0\n!\ninterface Loopback30\n\
+      \ description SERVER\n ip address 10.0.30.1 255.255.255.255\n ip ospf 1 area\
+      \ 0\n!\nrouter ospf 1\n router-id 10.0.100.2\n auto-cost reference-bandwidth\
+      \ 10000\n!\nline con 0\n exec-timeout 0 0\n logging synchronous\nend"
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n2
+  image_definition: null
+  label: DIST
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - AREA-0
+  - dist
+  x: 240
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: node.cfg
+    content: '# CST8371 Fall 2026 - Challenge 02 practice: user host on DIST Ethernet0/0
+
+      hostname Alpine
+
+      USERNAME=admin
+
+      PASSWORD=cisco
+
+      ip addr add 10.0.20.10/24 dev eth0
+
+      ip link set eth0 up
+
+      ip route add default via 10.0.20.1'
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n3
+  image_definition: null
+  label: Alpine
+  node_definition: alpine
+  parameters: {}
+  ram: null
+  tags:
+  - user
+  x: 560
+  y: 0
+  interfaces:
+  - id: i0
+    label: eth0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i1
+    label: eth1
+    mac_address: null
+    slot: 1
+    type: physical
+links:
+- id: l0
+  n1: n0
+  n2: n1
+  i1: i1
+  i2: i1
+  conditioning: {}
+  label: ISP-Ethernet0/0<->EDGE-Ethernet0/0
+- id: l1
+  n1: n1
+  n2: n2
+  i1: i2
+  i2: i2
+  conditioning: {}
+  label: EDGE-Ethernet0/1<->DIST-Ethernet0/1
+- id: l2
+  n1: n1
+  n2: n2
+  i1: i3
+  i2: i3
+  conditioning: {}
+  label: EDGE-Ethernet0/2<->DIST-Ethernet0/2
+- id: l3
+  n1: n2
+  n2: n3
+  i1: i1
+  i2: i0
+  conditioning: {}
+  label: DIST-Ethernet0/0<->Alpine-eth0
+lab:
+  description: CST8371 Challenge 02 practice - OSPF troubleshooting (CML-Free); guide
+    in lab notes
+  notes: '# Challenge 02 Practice - OSPF Troubleshooting
+
+
+    Practice for Challenge Lab 02. **Not graded: nothing is collected or submitted.**
+    You are handed a network that looks finished but has **three problems, one per
+    ticket**: a missing neighbour, a network that is not reachable as expected, and
+    a configuration that works but differs from the approved design. Find each problem
+    from operational output, make the smallest change that repairs it, and check the
+    repair.
+
+
+    > Work the tickets in order (C01, C02, C03). Each assumes the earlier ones are
+    repaired.
+
+
+    Login on every router: `admin` / `cisco`, enable secret `class`. Alpine host:
+    `admin` / `cisco`. Use each node''s console tab.
+
+
+    ## Addressing
+
+
+    Supplied with `U = 0`: every `10.0.` address stays as supplied. Do not change
+    any address.
+
+
+    | Device | Interface | Address | Notes |
+
+    |---|---|---|---|
+
+    | ISP | Ethernet0/0 | `203.0.113.254/24` | Outside OSPF; static `10.0.0.0/8` return
+    route via EDGE |
+
+    | ISP | Loopback69 | `192.0.2.69/32` | Course server stand-in |
+
+    | EDGE | Ethernet0/0 | `203.0.113.1/24` | Upstream; outside OSPF |
+
+    | EDGE | Ethernet0/1 | `10.0.12.1/29` | Link 1 |
+
+    | DIST | Ethernet0/1 | `10.0.12.2/29` | Link 1 |
+
+    | EDGE | Ethernet0/2 | `10.0.21.1/29` | Link 2 |
+
+    | DIST | Ethernet0/2 | `10.0.21.2/29` | Link 2 |
+
+    | DIST | Ethernet0/0 | `10.0.20.1/24` | User LAN |
+
+    | Alpine | eth0 | `10.0.20.10/24` | User host (static), gateway `10.0.20.1` |
+
+    | EDGE | Loopback100 | `10.0.100.1/32` | |
+
+    | DIST | Loopback100 | `10.0.100.2/32` | |
+
+    | DIST | Loopback30 | `10.0.30.1/32` | Stands in for a server network |
+
+
+    ## Scope
+
+
+    - Supplied: hostnames, users, every address above, the EDGE static default, and
+    an OSPF configuration on EDGE and DIST.
+
+    - You may change OSPF and routing configuration on EDGE and DIST. `clear ip ospf
+    process` is allowed if a repair needs it.
+
+    - Do not change interface addresses, ISP, Alpine, or the links. Do not rebuild
+    the whole OSPF configuration: restore only the value that is wrong.
+
+    - **Wipe** on a node returns it to the supplied baseline, problems included. Use
+    it to retry the practice, never to repair a ticket.
+
+
+    ## Mini quick-ref
+
+
+    | Question | Command |
+
+    |---|---|
+
+    | Which neighbours, in what state and role? | `show ip ospf neighbor` |
+
+    | Which interfaces run OSPF, in which area, at what cost? | `show ip ospf interface
+    brief` |
+
+    | Network type, timers, priority, role, passive? | `show ip ospf interface [<interface>]`
+    |
+
+    | Router ID and reference bandwidth? | `show ip ospf` |
+
+    | Which interfaces are passive? | `show ip protocols` |
+
+    | Which route and next hops are installed? | `show ip route <destination>` |
+
+    | Does a destination answer? | `ping <destination> source <interface>` |
+
+    | Interfaces up and addressed? | `show ip interface brief \| exclude unassigned`
+    |
+
+    | Remove a setting | repeat the command with `no` in front |
+
+
+    ## Intended design
+
+
+    You cannot recognise a deviation if you do not know what correct looks like. This
+    is the approved design; it does not say where your lab differs.
+
+
+    **OSPF process**
+
+    - Process `1`, Area 0 everywhere.
+
+    - Router ID is the device''s own Loopback100 address, set manually: EDGE `10.0.100.1`,
+    DIST `10.0.100.2`.
+
+    - `auto-cost reference-bandwidth 10000` on both routers, so a 1 Gbps link has
+    cost 10.
+
+
+    **Link 1** (`10.0.12.0/29`)
+
+    - Area 0 on both ends, mask `/29` on both ends.
+
+    - Network type **broadcast** on both ends (DR/BDR elected).
+
+    - Cost 10, hello 10, dead 40.
+
+    - EDGE priority 100, DIST priority 1 (default): **EDGE is the DR, DIST the BDR.**
+
+
+    **Link 2** (`10.0.21.0/29`)
+
+    - Area 0 on both ends.
+
+    - Network type **point-to-point** on both ends.
+
+    - Cost 10, hello 10, dead 40, no overrides.
+
+
+    **Interfaces in OSPF**
+
+    - EDGE: Ethernet0/1, Ethernet0/2, Loopback100. EDGE Ethernet0/0 is not in OSPF.
+
+    - DIST: Ethernet0/0, Ethernet0/1, Ethernet0/2, Loopback100, Loopback30.
+
+    - Passive interface: DIST Ethernet0/0 only.
+
+
+    **Default and static routes**
+
+    - EDGE has a static default to `203.0.113.254` and `default-information originate`.
+
+    - DIST learns the default through OSPF as `O*E2`.
+
+    - The only static route is the EDGE default. The ISP holds the return route.
+
+
+    **Paths**
+
+    - Two equal-cost paths in each direction between DIST and EDGE.
+
+
+    ## Reachability table
+
+
+    Every row must work on a healthy network. Each destination is learned through
+    OSPF over **both** links, so the route shows two next hops.
+
+
+    | From | To | Address | Route should be | Next hops |
+
+    |---|---|---|---|---|
+
+    | EDGE | DIST Loopback30 | `10.0.30.1` | `O` | 2 |
+
+    | EDGE | DIST Loopback100 | `10.0.100.2` | `O` | 2 |
+
+    | EDGE | DIST user LAN gateway | `10.0.20.1` | `O` | 2 |
+
+    | DIST | EDGE Loopback100 | `10.0.100.1` | `O` | 2 |
+
+    | DIST | Course server | `192.0.2.69` | `O*E2` (the default route `0.0.0.0`) |
+    2 |
+
+    | Alpine | Course server | `192.0.2.69` | End-to-end ping through DIST, EDGE,
+    ISP | n/a |
+
+
+    The Alpine row is a host check: `ping 192.0.2.69` from the Alpine console must
+    show 0% packet loss once all three tickets are repaired.
+
+
+    ---
+
+
+    ## C00 - Start and check the baseline
+
+
+    - [ ] **Start** the lab (all four nodes) and wait about three minutes for the
+    routers to boot.
+
+    - [ ] On EDGE and DIST: `show ip interface brief | exclude unassigned`. Every
+    address above is up/up.
+
+    - [ ] Ping across each link. Each must show `Success rate is 100 percent (5/5)`:
+    `EDGE# ping 10.0.12.2`, `EDGE# ping 10.0.21.2`, `EDGE# ping 203.0.113.254`.
+
+    - [ ] On Alpine: `ip addr show eth0` shows `10.0.20.10/24`, and `ping -c 3 10.0.20.1`
+    answers.
+
+
+    If an interface is down or a ping fails here, stop: stop the lab, **Wipe** each
+    node and start again. These checks separate the platform from OSPF.
+
+
+    ## C01 - Trouble ticket: one OSPF neighbour missing
+
+
+    *"Operations reports that EDGE and DIST should have two OSPF neighbours. Only
+    one is established."*
+
+
+    - [ ] Verify the OSPF neighbour state on EDGE and DIST.
+
+    - [ ] Confirm the state of both links between EDGE and DIST.
+
+    - [ ] Test connectivity between the two ends of each link.
+
+    - [ ] Confirm the OSPF interface parameters and the addressing on both ends of
+    the link that has no neighbour.
+
+    - [ ] Confirm the repair by re-checking neighbour state and the routes toward
+    the peer.
+
+
+    | Success indicator | Failure signal |
+
+    |---|---|
+
+    | `show ip ospf neighbor` on **both** EDGE and DIST lists two neighbours, each
+    `FULL`. `DIST# ping 10.0.100.1` is 100 percent. | Only one neighbour on either
+    device, or a state other than `FULL`. Any ping loss. |
+
+
+    ## C02 - Trouble ticket: not every network is reachable
+
+
+    *"Operations reports that not every network is reachable from EDGE and DIST as
+    expected. Test each device against the reachability table and correct what does
+    not match."*
+
+
+    - [ ] Test each router row of the table with `ping <address> source Loopback100`.
+
+    - [ ] Verify the route each device holds for every destination, and how many next
+    hops it has.
+
+    - [ ] Confirm which source installed any route that does not match the table.
+
+    - [ ] Confirm the routing parameters on the device that has the wrong or missing
+    route.
+
+    - [ ] Confirm the repair by re-testing every row, including the Alpine host check.
+
+
+    | Success indicator | Failure signal |
+
+    |---|---|
+
+    | Every router row: `show ip route <address>` shows the expected source with **two**
+    next hops. Every ping is 100 percent, and Alpine reaches `192.0.2.69`. | A destination
+    has no route, comes from the wrong source, or has one next hop. Any loss. |
+
+
+    ## C03 - Trouble ticket: configuration differs from the approved design
+
+
+    *"A routine audit reports that the EDGE and DIST routing configuration differs
+    from the approved design in one place. Traffic is flowing normally."*
+
+
+    - [ ] Compare the OSPF interface parameters on both ends of each link against
+    the design.
+
+    - [ ] Compare the router identities and the neighbour roles on each link against
+    the design.
+
+    - [ ] Compare the protocol-wide OSPF settings and the passive interfaces on both
+    routers against the design.
+
+    - [ ] Confirm that neighbours and routes are unchanged after the repair.
+
+    - [ ] Confirm that the repaired value matches the design on every device you changed.
+
+
+    | Success indicator | Failure signal |
+
+    |---|---|
+
+    | Every design value matches on both devices in `show ip ospf`, `show ip ospf
+    interface`, `show ip ospf neighbor` and `show ip protocols`. Both neighbours `FULL`;
+    routes still show two next hops; Alpine still reaches `192.0.2.69`. | A value
+    still differs from the design, or a neighbour or route was lost during the repair.
+    |
+
+
+    ## Save and stop
+
+
+    - To pause: on EDGE and DIST run `write memory`, then **Stop** the lab. Do not
+    Wipe a node.
+
+    - To continue: **Start** the lab, wait about three minutes, and check `show running-config
+    | section ospf` on both routers.
+
+    - To try again from the beginning: **Stop** the lab, **Wipe** every node, and
+    start again.
+
+    '
+  title: C02-OSPF-Practice
+  version: 0.3.0
