@@ -1,0 +1,464 @@
+annotations:
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: '198.18.U.0/30'
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 20
+  y1: -40
+  z_index: 0
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 'Engineering 198.18.U.32/28'
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -300
+  y1: -150
+  z_index: 1
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 'Accounting 198.18.U.64/28'
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -300
+  y1: 150
+  z_index: 2
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 'Payroll 198.18.U.96/28'
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 300
+  y1: 50
+  z_index: 3
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: 'Supplied with U=0: change to your U in each node Config tab before starting the lab'
+  text_font: monospace
+  text_italic: false
+  text_size: 12
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -300
+  y1: 330
+  z_index: 4
+smart_annotations:
+- tag: Transit
+  is_on: true
+  padding: 35
+  label: Transit
+  tag_offset_x: 0
+  tag_offset_y: 0
+  tag_size: 14
+  group_distance: 400
+  thickness: 1
+  border_style: ''
+  fill_color: '#9E9E9E80'
+  border_color: '#00000080'
+  z_index: 1
+- tag: Engineering
+  is_on: true
+  padding: 35
+  label: Engineering
+  tag_offset_x: 0
+  tag_offset_y: 0
+  tag_size: 14
+  group_distance: 400
+  thickness: 1
+  border_style: ''
+  fill_color: '#4A7FB580'
+  border_color: '#00000080'
+  z_index: 1
+- tag: Accounting
+  is_on: true
+  padding: 35
+  label: Accounting
+  tag_offset_x: 0
+  tag_offset_y: 0
+  tag_size: 14
+  group_distance: 400
+  thickness: 1
+  border_style: ''
+  fill_color: '#D9534F80'
+  border_color: '#00000080'
+  z_index: 1
+- tag: Payroll
+  is_on: true
+  padding: 35
+  label: Payroll
+  tag_offset_x: 0
+  tag_offset_y: 0
+  tag_size: 14
+  group_distance: 400
+  thickness: 1
+  border_style: ''
+  fill_color: '#3C9A5F80'
+  border_color: '#00000080'
+  z_index: 1
+nodes:
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: |-
+      ! CST8371 Fall 2026 - Lab 09 (CML) baseline: R1. Addressing and OSPF, no ACLs. Supplied with U=0.
+      hostname R1
+      !
+      no ip domain lookup
+      ip domain name cst8371.net
+      username admin privilege 15 secret cisco
+      enable secret class
+      !
+      interface Ethernet0/0
+       description Transit to R2
+       ip address 198.18.0.1 255.255.255.252
+       ip ospf network point-to-point
+       no shutdown
+      !
+      interface Ethernet0/1
+       description Engineering (PC1)
+       ip address 198.18.0.33 255.255.255.240
+       no shutdown
+      !
+      interface Ethernet0/2
+       description Accounting (PC2)
+       ip address 198.18.0.65 255.255.255.240
+       no shutdown
+      !
+      router ospf 1
+       router-id 1.1.1.1
+       passive-interface Ethernet0/1
+       passive-interface Ethernet0/2
+       network 198.18.0.0 0.0.255.255 area 0
+      !
+      crypto key generate rsa modulus 2048
+      ip ssh version 2
+      !
+      line con 0
+       exec-timeout 0 0
+       logging synchronous
+      line vty 0 4
+       transport input telnet ssh
+       login local
+       exec-timeout 30 0
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n0
+  image_definition: null
+  label: R1
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - Transit
+  x: -100
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i4
+    label: Ethernet0/3
+    mac_address: null
+    slot: 3
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: |-
+      ! CST8371 Fall 2026 - Lab 09 (CML) baseline: R2. Addressing and OSPF, no ACLs. Supplied with U=0.
+      hostname R2
+      !
+      no ip domain lookup
+      ip domain name cst8371.net
+      username admin privilege 15 secret cisco
+      enable secret class
+      !
+      interface Ethernet0/0
+       description Transit to R1
+       ip address 198.18.0.2 255.255.255.252
+       ip ospf network point-to-point
+       no shutdown
+      !
+      interface Ethernet0/1
+       description Payroll (SRV)
+       ip address 198.18.0.97 255.255.255.240
+       no shutdown
+      !
+      router ospf 1
+       router-id 2.2.2.2
+       passive-interface Ethernet0/1
+       network 198.18.0.0 0.0.255.255 area 0
+      !
+      crypto key generate rsa modulus 2048
+      ip ssh version 2
+      !
+      line con 0
+       exec-timeout 0 0
+       logging synchronous
+      line vty 0 4
+       transport input telnet ssh
+       login local
+       exec-timeout 30 0
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n1
+  image_definition: null
+  label: R2
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - Transit
+  x: 150
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i4
+    label: Ethernet0/3
+    mac_address: null
+    slot: 3
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: node.cfg
+    content: |-
+      # this is a shell script which will be sourced at boot
+      # CST8371 Fall 2026 - Lab 09 (CML) baseline: PC1. Supplied with U=0.
+      hostname PC1
+      # configurable user account
+      USERNAME=cisco
+      PASSWORD=cisco
+
+      # Set the IP address (change 0 to your U)
+      ip address add 198.18.0.46/28 dev eth0
+
+      # Bring the interface UP
+      ip link set dev eth0 up
+
+      # Add the default route (change 0 to your U)
+      ip route add default via 198.18.0.33
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n2
+  image_definition: null
+  label: PC1-Engineering
+  node_definition: alpine
+  parameters: {}
+  ram: null
+  tags:
+  - Engineering
+  x: -320
+  y: -100
+  interfaces:
+  - id: i0
+    label: eth0
+    mac_address: null
+    slot: 0
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: node.cfg
+    content: |-
+      # this is a shell script which will be sourced at boot
+      # CST8371 Fall 2026 - Lab 09 (CML) baseline: PC2. Supplied with U=0.
+      hostname PC2
+      # configurable user account
+      USERNAME=cisco
+      PASSWORD=cisco
+
+      # Set the IP address (change 0 to your U)
+      ip address add 198.18.0.78/28 dev eth0
+
+      # Bring the interface UP
+      ip link set dev eth0 up
+
+      # Add the default route (change 0 to your U)
+      ip route add default via 198.18.0.65
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n3
+  image_definition: null
+  label: PC2-Accounting
+  node_definition: alpine
+  parameters: {}
+  ram: null
+  tags:
+  - Accounting
+  x: -320
+  y: 100
+  interfaces:
+  - id: i0
+    label: eth0
+    mac_address: null
+    slot: 0
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: node.cfg
+    content: |-
+      # this is a shell script which will be sourced at boot
+      # CST8371 Fall 2026 - Lab 09 (CML) baseline: SRV. Supplied with U=0.
+      hostname SRV
+      # configurable user account
+      USERNAME=cisco
+      PASSWORD=cisco
+
+      # Set the IP address (change 0 to your U)
+      ip address add 198.18.0.110/28 dev eth0
+
+      # Bring the interface UP
+      ip link set dev eth0 up
+
+      # Add the default route (change 0 to your U)
+      ip route add default via 198.18.0.97
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n4
+  image_definition: null
+  label: SRV-Payroll
+  node_definition: alpine
+  parameters: {}
+  ram: null
+  tags:
+  - Payroll
+  x: 360
+  y: 0
+  interfaces:
+  - id: i0
+    label: eth0
+    mac_address: null
+    slot: 0
+    type: physical
+links:
+- id: l0
+  n1: n0
+  n2: n1
+  i1: i1
+  i2: i1
+  conditioning: {}
+  label: R1-Ethernet0/0<->R2-Ethernet0/0
+- id: l1
+  n1: n0
+  n2: n2
+  i1: i2
+  i2: i0
+  conditioning: {}
+  label: R1-Ethernet0/1<->PC1-Engineering-eth0
+- id: l2
+  n1: n0
+  n2: n3
+  i1: i3
+  i2: i0
+  conditioning: {}
+  label: R1-Ethernet0/2<->PC2-Accounting-eth0
+- id: l3
+  n1: n1
+  n2: n4
+  i1: i2
+  i2: i0
+  conditioning: {}
+  label: R2-Ethernet0/1<->SRV-Payroll-eth0
+lab:
+  description: 'CST8371 Lab 09 (bonus) - Standard ACLs: follow the traffic (CML-Free)'
+  notes: |-
+    # Lab 09 — Standard ACLs: Follow the Traffic (Bonus, CML-Free)
+
+    **Full lab text:** https://github.com/ayalac1111/Networking-Courses/blob/main/26f-cst8371/labs/l09-standard-acl-policies.md
+
+    This is the short guide. The full instructions (placement reasoning, expected results, troubleshooting) are on the page above. Read it before you start.
+
+    Optional bonus lab: 5 points, worth 1% of the course, added on top of 100%. Five nodes: **R1** and **R2** (routers), **PC1**, **PC2** and **SRV** (Alpine hosts). Consoles only. Addressing and OSPF are supplied.
+
+    Login `admin` / `cisco`, enable secret `class` (hosts: `cisco` / `cisco`).
+
+    The coloured groups on the canvas identify the networks: **Engineering** (PC1), **Accounting** (PC2), **Payroll** (SRV) and **Transit** (R1 and R2, the link between the routers).
+
+    **C00 (0 pts):** find your U (Brightspace Grades, item U). Before starting any node, edit each Config tab: add `<username>-` to the hostname, and replace the `0` with your U on the 11 address lines. Start the lab, wait about three minutes, and prove OSPF is FULL and every host reaches every other host.
+
+    **C01 (2 pts):** Accounting must not reach Payroll. Named standard ACL on R2. Follow a PC2 packet and a PC1 packet to SRV.
+
+    **C02 (2 pts):** PC1 only must not reach Accounting. Named standard ACL on R1 using the `host` keyword. Follow PC1, SRV, and the reply from PC1 to PC2.
+
+    **C03 (1 pt):** only PC1 may open a VTY session to R2. Named standard ACL, `access-class` on `line vty 0 4`.
+
+    Evidence: paste each capture, with the device prompt and unedited output, under its device sub-header in `l09-c01-<username>.txt` to `l09-c03-<username>.txt`. Each checkpoint also asks for a one-line prediction and a one-line result.
+
+    To pause: `write memory` on R1 and R2, then **Stop** the lab (never Wipe after C00).
+  title: L09-Standard-ACLs
+  version: 0.3.1
