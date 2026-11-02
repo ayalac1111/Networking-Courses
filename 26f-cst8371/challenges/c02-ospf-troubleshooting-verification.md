@@ -57,7 +57,7 @@ Rules that apply to every checkpoint:
 - **Capture before you change anything.** Every ticket requires the state *before* your fix and the state *after* it. Evidence captured only after a repair cannot show what was wrong.
 - **Re-test after every repair.** A correct fix with no new post-fix evidence earns no evidence credit.
 - **Successful baseline and post-repair pings must show 100 percent success.** A first ping can lose a packet while the neighbour resolves; repeat it before collecting successful proof. Keep the failed **before-repair** pings required by a ticket: they are evidence of the fault, not successful reachability.
-- **Capture from the live device.** The prompt must be visible in the captured output. Provisioning template files and configuration listings are not evidence. `show running-config` is not accepted as evidence.
+- **Capture from the live device.** The prompt must be visible in the captured output. The one exception is C00, where `x_remote` writes the file: it identifies each router by its `Device:` banner and `|Command:` lines. Provisioning template files and configuration listings are not evidence. `show running-config` is not accepted as evidence.
 - **Widen your terminal before capturing** (`terminal length 0` and `terminal width 0` on the devices; disable line wrap in your SSH client). A wrapped line splits addresses and breaks grading.
 - **Save each checkpoint immediately on the PC's Desktop, and upload it as soon as the checkpoint is confirmed.** The upload path is described in D2.
 
@@ -303,7 +303,7 @@ DIST# ping 10.U.21.1
 #### C00 — Collection of Information
 
 
-**Collect both devices automatically with `x_remote`.** The supplied manifest `x-remote-c00.yaml` lists the commands below for EDGE and DIST. The PC needs no evidence of its own: its lease shows in DIST's `show ip dhcp binding`, and its LAN is tested from the routers.
+**`x_remote` collects C00 for you. You type none of the commands below.** The supplied manifest `x-remote-c00.yaml` connects to EDGE and DIST over SSH and runs them; the list is only what the file will contain, so you can check it.
 
 - [ ] In the PowerShell window where your identity is defined, generate your personal copy. It replaces the U and username placeholders, including the output filename:
 
@@ -320,16 +320,10 @@ DIST# ping 10.U.21.1
   python x_remote.py x-remote-c00-personal.yaml
   ```
 
-- [ ] Confirm `ch02-c00-{username}.txt` holds every command below with its output under the device heading. A file with a footer alone does not prove collection succeeded.
-- [ ] End the file with one comment line stating what the evidence proves.
+- [ ] Open `ch02-c00-{username}.txt` and check it. The file has one `Device:` banner per router (its address), a `|Command:` line above each output, and ends with `END OF DATA COLLECTION`. Confirm that every command in the list below appears with its output. A file with only the ending line does not prove collection succeeded.
+- [ ] Do not edit the file. If a command is missing or failed, fix the cause and run the collection again.
 
-The file opens with its own header:
-
-```diff
-=== C00 – Cable the Pod, Provision the Baseline, and Confirm Access ===
-```
-
-Required commands:
+The file must contain these commands, EDGE (`203.0.113.U`) first, then DIST (`10.U.20.1`):
 
 ```text
 EDGE: show ip interface brief | exclude unassigned
@@ -346,7 +340,7 @@ DIST: show ip ssh
 DIST: show tcp brief
 ```
 
-> **Save locally and upload:** save `ch02-c00-{username}.txt` on the Desktop, then upload it as described in D2. Rerunning `x_remote` overwrites its output file; save a copy first if you have already added your comment line.
+> **Save locally and upload:** save `ch02-c00-{username}.txt` on the Desktop, then upload it as described in D2. Rerunning `x_remote` overwrites its output file.
 
 ---
 
@@ -545,7 +539,7 @@ Complete the one-line comment in the file, stating what was wrong and what you c
 | `ch02-c02-{username}.txt` | Ticket C02, before and after | PC's Desktop, then the server |
 | `ch02-c03-{username}.txt` | Ticket C03, before and after | PC's Desktop, then the server |
 
-Each file must contain the header shown in its checkpoint's Collection of Information, device identification, commands, and raw command output. For C01–C03, keep the supplied before-repair and after-repair headings and slots, and complete the `!-- [PROBLEM]:` / `[SOLUTION]:` comment. C00 contains baseline evidence only. Do not edit command output.
+C01–C03: each file must contain the header shown in its Collection of Information, device identification, commands, and raw command output. C00 is the unedited `x_remote` output. For C01–C03, keep the supplied before-repair and after-repair headings and slots, and complete the `!-- [PROBLEM]:` / `[SOLUTION]:` comment. Do not edit command output.
 
 ### D2 — Submit and Validate
 
