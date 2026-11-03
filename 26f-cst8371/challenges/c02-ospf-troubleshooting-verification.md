@@ -452,7 +452,7 @@ Required on **DIST**, before and after the repair:
 ping 10.U.100.1 source Loopback100
 ping 192.0.2.69
 show ip route 10.U.100.1
-show ip route 192.0.2.69
+show ip route ospf
 show ip ospf interface brief
 show ip ospf interface
 ```
