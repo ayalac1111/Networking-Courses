@@ -195,7 +195,7 @@ Get the pre-built (faulted) configuration onto EDGE and DIST, bring the PC onto 
 
 #### Action
 
-Work through the groups from top to bottom. The procedure is the shared [Day0 provisioning guide](../../resources/day0-provision-guide.md); this checkpoint gives only this lab's values.
+Work through the groups from top to bottom. The procedure is the shared [Day0 provisioning guide](../resources/day0-provision-guide.md); this checkpoint gives only this lab's values.
 
 **Prepare the PC**
 
