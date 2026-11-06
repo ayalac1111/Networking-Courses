@@ -6,7 +6,7 @@
 
 - A lab PC with PowerShell, Python, the BLUE NIC, a console cable, and the lab's pod hardware.
 - The handout for your lab, open: it gives the `lab` value, the topology, and the port table.
-- Your course username, assigned U number, CORE switch member number, and console COM port.
+- Your course username, assigned U number, and console COM port. If the handout lists a switch, also your CORE switch member number.
 
 ## Checklist
 
@@ -21,7 +21,7 @@
    - [ ] Click **Start**, type **PowerShell**, right-click **Windows PowerShell**, select **Run as administrator**, and select **Yes**. The title must start with **Administrator: Windows PowerShell**.
    - [ ] Keep this window open for the whole Day0 procedure. Variables belong to the window.
 
-3. **Download and extract the package.** The lab handout gives you this block with your lab value filled in. `l05` below is an example.
+3. **Download and extract the package.** Set `$lab` to the lab value the handout gives, then run the block as written. `l05` below is an example.
 
    - [ ] Download over the course network. Enter the server password `cisco` when prompted:
 
@@ -40,13 +40,20 @@
        day0_provision.py
        day0-$lab.yaml
        package-info.yaml
+       requirements.txt      (when the package has one)
        templates/
+     ```
+
+   - [ ] If the package has `requirements.txt`, install the tool requirements once. `day0_provision.py` needs them before the first push:
+
+     ```powershell
+     pip install -r requirements.txt
      ```
 
    - [ ] Anything else the package holds (extra files, host setup, per-lab checks) is described in the lab handout.
    - [ ] If the package has no `lab_setup.ps1`, use **Manual setup** at the end of this guide for steps 3b and 4, then continue at step 5.
 
-4. **Run the setup script.** It asks for your username, U number, CORE member number, and console port, checks each value against the lab's limits, confirms the package is complete, and creates your evidence files from the package templates.
+4. **Run the setup script.** It asks for your username, U number, console port, and (only when the lab has a switch) your CORE switch member number. It checks each value against the lab's limits, confirms the package is complete, and creates your evidence files from the package templates.
 
    - [ ] Allow scripts in this window only. This changes nothing else on the PC:
 
@@ -84,13 +91,30 @@
      $device = "EDGE"
      ```
 
-   - [ ] **[Optional]** Preview. A preview sends nothing:
+   - [ ] Pick the command form for the device. **Router:** use the command exactly as shown. **Switch** (only when the handout lists a switch and setup asked for a member number): add `--core-member $coreMember` before `--port` (or before `--dry-run`).
+   - [ ] **[Optional]** Preview. A preview sends nothing.
+
+     Router:
+
+     ```powershell
+     python day0_provision.py --config day0-$lab.yaml --device $device --u $u --username $username --dry-run
+     ```
+
+     Switch:
 
      ```powershell
      python day0_provision.py --config day0-$lab.yaml --device $device --u $u --username $username --core-member $coreMember --dry-run
      ```
 
-   - [ ] Push the configuration:
+   - [ ] Push the configuration.
+
+     Router:
+
+     ```powershell
+     python day0_provision.py --config day0-$lab.yaml --device $device --u $u --username $username --port $consolePort
+     ```
+
+     Switch:
 
      ```powershell
      python day0_provision.py --config day0-$lab.yaml --device $device --u $u --username $username --core-member $coreMember --port $consolePort
@@ -100,7 +124,15 @@
    - [ ] Stop for anything else: a configuration line the device rejected, a failed SSH check, a routing process the handout says must be absent, or a wrong address. Do not re-push and do not add routing. Keep the error output and raise your hand.
    - [ ] A down row that the handout does not list, or whose neighbour is already provisioned, is a cabling problem: fix the cabling and check again with the handout's read-only check, not with another push. If it stays down, raise your hand.
    - [ ] Move the console cable to the next device in the handout's list, change `$device`, and repeat from the preview. Stop when every listed device is provisioned.
-   - [ ] **Final check, when the handout gives one.** After every device is provisioned, run the handout's read-only check on each device. Every line must now show ✔ with no exceptions. Never re-push Day0 to clear a link row.
+   - [ ] **Final check, when the handout gives one.** After every device is provisioned, run the read-only check on each device: the push command for that device (router or switch form) with `--verify-only` in place of the push. It sends no configuration. Every line must now show ✔ with no exceptions. Never re-push Day0 to clear a link row.
+
+     Router:
+
+     ```powershell
+     python day0_provision.py --config day0-$lab.yaml --device $device --u $u --username $username --port $consolePort --verify-only
+     ```
+
+     Switch: add `--core-member $coreMember` as above.
 
 ## Manual setup
 
@@ -113,7 +145,7 @@ Set-Location "$env:USERPROFILE\Desktop"
 $lab = (Read-Host "Lab package name, exactly as in the handout (example: l05)").Trim()
 $username = (Read-Host "Course username").Trim()
 $u = (Read-Host "Assigned U number").Trim()
-$coreMember = (Read-Host "CORE switch member number").Trim()
+$coreMember = (Read-Host "CORE switch member number (press Enter if the lab has no switch)").Trim()
 $consolePort = (Read-Host "Console port, for example COM3").Trim()
 "lab=$lab  username=$username  U=$u  coreMember=$coreMember  port=$consolePort"
 ```
@@ -179,4 +211,4 @@ Check each row before moving on. A failure on any row stops the procedure: fix t
 | Stale configuration from a previous session | Ask the instructor for a reset; do not proceed with stale state |
 | Variable lost (new PowerShell window) | Open it as administrator, set `$lab = "l05"` (your lab value), and run `. .\lab_setup.ps1` again; it keeps existing evidence files |
 
-Revision: October 2, 2026 — lab-independent; uses `$lab`, `$lab.zip`, and `lab_setup.ps1`.
+Revision: November 6, 2026 — router and switch command forms (`--core-member` for a switch only); `pip install` step; `--verify-only` check; `$lab` set from the handout. Earlier: October 2, 2026 — lab-independent; uses `$lab`, `$lab.zip`, and `lab_setup.ps1`.
