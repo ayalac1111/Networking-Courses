@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Case B Guided Solution</title>
+<!-- DRAFT (instructor): evidence lines are the expected shapes from NAT-Cases-Guide.md section 3, not captured output. Replace with real captures after one run of NAT-Case-B.yaml. -->
+<style>
+/* Layout: one column, three stacked sections (question, answer sheet, guide) that mirror the printed quiz and sheet. */
+:root {
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --panel: #f9fafb;
+  --fg: #111827;
+  --muted: #4b5563;
+  --line: #d1d5db;
+  --code-bg: #f3f4f6;
+  --accent: #65846f;          /* course sage */
+  --accent-strong: #365b40;   /* course dark green: text, buttons, header band */
+  --accent-soft: #e6ebe8;
+  --accent-line: #b7c9bd;
+  --on-strong: #ffffff;
+  --badge-bg: #fef3c7;
+  --badge-fg: #92400e;
+  --ok: #15803d;
+  --ok-bg: #dcfce7;
+  --bad: #b91c1c;
+  --bad-bg: #fee2e2;
+  --warn: #92400e;
+  --warn-bg: #fef3c7;
+  --mark: #fde68a;
+  --mark-fg: #78350f;
+  --sans: Arial, Helvetica, "Liberation Sans", sans-serif;
+  --mono: Menlo, "DejaVu Sans Mono", Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12161d; --surface: #1a202a; --panel: #202733; --fg: #e6eaf1; --muted: #9aa5b7; --line: #333d4d;
+    --code-bg: #232b38; --accent: #8fb09a; --accent-strong: #a9c6b3; --accent-soft: #243329; --accent-line: #3f5547; --on-strong: #0f1a13; --badge-bg: #4a3a12; --badge-fg: #f3d188;
+    --ok: #62d394; --ok-bg: #173a29; --bad: #ff8f86; --bad-bg: #44201e; --warn: #f0c86a; --warn-bg: #433512;
+    --mark: #6b5a10; --mark-fg: #fff3c0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12161d; --surface: #1a202a; --panel: #202733; --fg: #e6eaf1; --muted: #9aa5b7; --line: #333d4d;
+  --code-bg: #232b38; --accent: #8fb09a; --accent-strong: #a9c6b3; --accent-soft: #243329; --accent-line: #3f5547; --on-strong: #0f1a13; --badge-bg: #4a3a12; --badge-fg: #f3d188;
+  --ok: #62d394; --ok-bg: #173a29; --bad: #ff8f86; --bad-bg: #44201e; --warn: #f0c86a; --warn-bg: #433512;
+  --mark: #6b5a10; --mark-fg: #fff3c0; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 24px 64px; }
+main { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.25; margin: 0; }
+p { margin: 0; }
+code, .mono { font-family: var(--mono); font-size: 0.9em; }
+a { color: var(--accent-strong); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.masthead { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.brand { background: var(--accent-strong); color: var(--on-strong); border-bottom: 5px solid var(--accent); padding: 12px 22px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; }
+.brand .course { font-weight: 700; font-size: 21px; letter-spacing: 0.05em; }
+.brand .course-name { font-size: 14px; font-weight: 700; }
+.brand .term { margin-left: auto; font-size: 13px; }
+.mast-body { padding: 18px 22px 20px; display: flex; flex-direction: column; gap: 10px; }
+.masthead h1 { font-size: 26px; }
+.masthead .sub { color: var(--muted); max-width: 62ch; }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.nav a { text-decoration: none; border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 4px 14px; font-size: 13px; font-weight: 700; color: var(--fg); }
+.nav a:hover { border-color: var(--accent); color: var(--accent-strong); background: var(--accent-soft); }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-top: 6px; }
+.rules div { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; font-size: 13px; }
+.rules strong { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 2px; }
+
+.sec { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 12px; }
+.sec-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.qhead { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 8px 12px; }
+.badge { font-weight: 700; font-size: 12.5px; border-radius: 5px; padding: 2px 9px; }
+.badge.pts { background: var(--accent-soft); color: var(--accent-strong); }
+.badge.diff { background: var(--badge-bg); color: var(--badge-fg); }
+.qtitle { font-weight: 700; font-size: 14px; }
+.score-box { margin-left: auto; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.score-line { display: inline-block; min-width: 54px; text-align: center; border-bottom: 2px solid var(--muted); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.ask { display: flex; flex-direction: column; gap: 8px; max-width: 70ch; }
+h3.ev-title { font-size: 17px; }
+.evidence { background: var(--code-bg); border-radius: 8px; padding: 10px 6px; display: flex; flex-direction: column; font-family: var(--mono); font-size: 13px; overflow-x: auto; }
+.ev-group { padding: 6px 10px 2px; font-weight: 700; color: var(--muted); }
+.ev { display: grid; grid-template-columns: 3.6ch 1fr; gap: 0 8px; padding: 2px 10px; border-left: 4px solid transparent; border-radius: 4px; min-width: max-content; }
+.ev .n { color: var(--muted); }
+.ev .t { white-space: pre; }
+.ev .note { grid-column: 2; font-family: var(--sans); font-size: 12.5px; padding: 1px 0 3px; white-space: normal; }
+.ev.ok { background: var(--ok-bg); border-left-color: var(--ok); }
+.ev.bad { background: var(--bad-bg); border-left-color: var(--bad); }
+.ev.miss { background: var(--warn-bg); border-left-color: var(--warn); }
+.ev.ok .note { color: var(--ok); } .ev.bad .note { color: var(--bad); } .ev.miss .note { color: var(--warn); }
+.ev .note b { font-weight: 700; }
+mark { background: transparent; color: inherit; }
+body[data-reveal="1"] mark { background: var(--mark); color: var(--mark-fg); border-radius: 3px; padding: 0 2px; font-weight: 700; }
+.codes { display: flex; flex-wrap: wrap; gap: 6px 8px; font-family: var(--mono); font-size: 12.5px; }
+.codes span { background: var(--code-bg); border-radius: 5px; padding: 3px 9px; }
+.legend { display: none; flex-wrap: wrap; gap: 8px 16px; font-size: 12.5px; color: var(--muted); }
+body[data-checked="1"] .legend { display: flex; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; border: 2px solid; }
+.legend .l-ok { background: var(--ok-bg); border-color: var(--ok); } .legend .l-bad { background: var(--bad-bg); border-color: var(--bad); } .legend .l-miss { background: var(--warn-bg); border-color: var(--warn); }
+
+.hint-bar { font-size: 13px; color: var(--muted); }
+.fields { display: flex; flex-direction: column; gap: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--panel); }
+.field label { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin-bottom: 4px; }
+.field label b { font-family: var(--mono); font-size: 13.5px; }
+.field label span { font-size: 12.5px; color: var(--muted); }
+.field input, .field textarea { width: 100%; font: 14px/1.4 var(--mono); color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; resize: vertical; }
+.field input:focus, .field textarea:focus { border-color: var(--accent); }
+.field.ok input, .field.ok textarea { border-color: var(--ok); } .field.bad input, .field.bad textarea { border-color: var(--bad); } .field.part input, .field.part textarea { border-color: var(--warn); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+button { font: 700 14px var(--sans); border-radius: 7px; padding: 9px 18px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+button.primary { background: var(--accent-strong); border-color: var(--accent-strong); color: var(--on-strong); }
+button:hover { filter: brightness(0.96); }
+
+.results { display: none; flex-direction: column; gap: 10px; }
+body[data-checked="1"] .results { display: flex; }
+.total { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; padding: 12px 14px; border-radius: 8px; background: var(--accent-soft); }
+.total strong { font-size: 22px; font-variant-numeric: tabular-nums; }
+.row { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; background: var(--surface); }
+.row-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.row-head code { font-weight: 700; }
+.pill { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 10px; }
+.pill.ok { background: var(--ok-bg); color: var(--ok); } .pill.bad { background: var(--bad-bg); color: var(--bad); } .pill.part { background: var(--warn-bg); color: var(--warn); }
+.pts-got { margin-left: auto; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.row ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; }
+.cmd { font-family: var(--mono); font-size: 13px; background: var(--code-bg); border-radius: 5px; padding: 3px 8px; display: inline-block; max-width: 100%; overflow-x: auto; }
+.cmd.ok { background: var(--ok-bg); } .cmd.bad { background: var(--bad-bg); }
+.cmd .x { color: var(--bad); font-weight: 700; text-decoration: underline wavy; }
+.cmd .g { color: var(--ok); font-weight: 700; }
+.tag-ok { color: var(--ok); font-weight: 700; } .tag-bad { color: var(--bad); font-weight: 700; } .tag-miss { color: var(--warn); font-weight: 700; }
+
+.worked { display: none; border: 1px dashed var(--accent); border-radius: 8px; padding: 12px 14px; flex-direction: column; gap: 6px; }
+body[data-reveal="1"] .worked { display: flex; }
+.worked dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; font-size: 13.5px; }
+.worked dt { font-family: var(--mono); font-weight: 700; min-width: 0; overflow-wrap: anywhere; } .worked dd { margin: 0; font-family: var(--mono); font-size: 13px; min-width: 0; overflow-wrap: anywhere; }
+
+.steps { display: flex; flex-direction: column; gap: 12px; padding: 0; margin: 0; list-style: none; counter-reset: s; }
+.steps > li { counter-increment: s; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px 12px 52px; position: relative; background: var(--panel); display: flex; flex-direction: column; gap: 6px; }
+.steps > li::before { content: counter(s); position: absolute; left: 14px; top: 11px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent-strong); color: var(--on-strong); font-weight: 700; display: grid; place-items: center; font-size: 13px; }
+.steps h3 { font-size: 15.5px; }
+.steps .why { color: var(--muted); font-size: 13.5px; }
+.apply { display: none; border-top: 1px dashed var(--line); padding-top: 8px; font-size: 14px; }
+body[data-reveal="1"] .apply { display: block; }
+.apply::before { content: "On this question"; display: block; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--accent-strong); margin-bottom: 3px; }
+.locked { font-size: 13px; color: var(--muted); font-style: italic; }
+body[data-reveal="1"] .locked { display: none; }
+.compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin-top: 6px; }
+.compare div { background: var(--code-bg); border-radius: 6px; padding: 6px 10px; font-family: var(--mono); font-size: 12.5px; overflow-x: auto; white-space: pre; }
+.compare small { display: block; font-family: var(--sans); color: var(--muted); font-size: 11.5px; margin-bottom: 2px; }
+.mistakes { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+.mistakes div { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; background: var(--panel); }
+.mistakes b { display: block; margin-bottom: 2px; }
+.muted { color: var(--muted); }
+.foot { font-size: 12.5px; color: var(--muted); text-align: center; }
+@media (max-width: 520px) { .worked dl { grid-template-columns: minmax(0, 1fr); } .worked dd { margin-bottom: 6px; } .score-box, .brand .term { margin-left: 0; } .brand, .mast-body { padding-inline: 14px; } .sec { padding: 14px 12px 18px; } .steps > li { padding-left: 46px; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<style>
+.step-form { display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.step-form label { font-weight: 700; font-size: 13.5px; }
+.step-form select, .step-form textarea { width: 100%; font: 14px/1.4 var(--sans); color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+.step-form textarea { min-height: 64px; resize: vertical; font-family: var(--sans); }
+.step-form select:focus, .step-form textarea:focus { border-color: var(--accent); }
+.nudge, .fb { display: none; border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+.nudge { background: var(--warn-bg); color: var(--fg); border-left: 4px solid var(--warn); }
+.nudge.on, .fb.on { display: block; }
+.fb.ok { background: var(--ok-bg); border-left: 4px solid var(--ok); }
+.fb.no { background: var(--bad-bg); border-left: 4px solid var(--bad); }
+.fb p + p { margin-top: 6px; }
+.msg { font-size: 13px; color: var(--bad); min-height: 1em; }
+.design { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.design > div { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; }
+.design b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 4px; }
+.design pre { margin: 0; font: 12.5px/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.five { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; list-style: none; padding: 0; margin: 0; counter-reset: f; }
+.five li { counter-increment: f; background: var(--accent-soft); border: 1px solid var(--accent-line); border-radius: 8px; padding: 8px 10px; font-size: 13px; font-weight: 700; color: var(--accent-strong); }
+.five li::before { content: counter(f) ". "; }
+.chip { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 10px; background: var(--code-bg); color: var(--muted); }
+.chip.done { background: var(--ok-bg); color: var(--ok); }
+.ev .t b { font-weight: 700; }
+.fine { font-size: 13px; color: var(--muted); }
+.after { display: none; flex-direction: column; gap: 8px; }
+.after.on { display: flex; }
+.fb ul { margin: 6px 0 0; padding-left: 18px; }
+.ask ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.steps > li .exh-title { font-size: 12.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+</style>
+</head>
+<body>
+<main>
+
+<header class="masthead">
+  <div class="brand"><span class="course">CST8371</span><span class="course-name">Intro to Enterprise Networking</span><span class="term">Fall 2026 · Algonquin College</span></div>
+  <div class="mast-body">
+    <h1>Week 10 · Case B guided solution</h1>
+    <p class="sub">Static NAT. You will work the case one step at a time: five checks to find the fault, then the change, then the proof that it worked. The guide gives you the evidence and nudges. You decide what the evidence means.</p>
+    <nav class="nav"><a href="#case">The case</a><a href="#steps">Steps 1–7</a><a href="#quiz">On the quiz</a><a href="#mistakes">Common mistakes</a></nav>
+    <div class="rules">
+      <div><strong>Practice only</strong>This case is not graded and nothing is collected.</div>
+      <div><strong>Private</strong>Checking runs in this page. Nothing is sent or saved.</div>
+      <div><strong>Use only the evidence</strong>If a device is not shown, you cannot use it as proof.</div>
+      <div><strong>Commit first</strong>Write your reasoning, then check. The nudge is there if you are stuck.</div>
+    </div>
+  </div>
+</header>
+
+<section class="sec" id="case">
+  <div class="sec-label">The case</div>
+  <div class="ask">
+    <p><b>Intended behaviour.</b> Host <code>192.168.100.10</code> (A-10) should always appear outside as <code>209.165.200.226</code> and reach the server <code>192.0.2.69</code>. No other host is mapped.</p>
+    <p><b>What you are told.</b> On EDGE, <code>show ip nat translations</code> shows entries for <code>192.168.100.10</code>. From PC-A, <code>ping -c 3 192.0.2.69</code> shows 100% loss, and <code>wget -q -O - -T 3 http://192.0.2.69/</code> times out.</p>
+    <p><b>Your task.</b> Say what the translation entries prove and what they do not. Find the first step that fails, say which evidence proves it, write the smallest fix on the right router, and say how you would verify it.</p>
+  </div>
+  <div class="design">
+    <div><b>Addressing plan</b><pre>PC-A  192.168.100.10 and .11 /25
+      gateway 192.168.100.126 (EDGE Eth0/2)
+PC-B  172.16.100.10 /28 (LAN-B, no NAT)
+EDGE  Eth0/1 203.0.113.100/24  outside
+      Eth0/2 192.168.100.126/25 inside
+      Eth0/3 172.16.100.14/28  no NAT role
+ISP   Eth0/1 203.0.113.254/24
+      ACL BLOCK-RESERVED in (private sources)
+SERVER 192.0.2.69/24
+Public block for NAT: 209.165.200.224/29
+  .226 = A-10</pre></div>
+    <div><b>NAT design on EDGE</b><pre>Eth0/1  ip nat outside
+Eth0/2  ip nat inside
+ip nat inside source static
+  192.168.100.10 209.165.200.226
+(one for one, permanent, A-10 only)</pre></div>
+  </div>
+  <p class="fine">The design is what the network should look like. The evidence below is what the devices actually show. The fault is in the gap between them.</p>
+  <h3 class="ev-title">The steps, in order</h3>
+  <ol class="five">
+    <li>Traffic generated</li><li>Selected for translation</li><li>Resource available</li><li>Translation occurring</li><li>Return traffic allowed</li><li>Make the change</li><li>Verify the change</li>
+  </ol>
+  <p class="fine">Steps 1–5 are the NAT troubleshooting checklist. Work them in order, before you change anything. The first step that fails is where you look for the fault. You still check the later steps, because they show what the fault is not. Step 6 is the repair and step 7 is the proof that it worked.</p>
+</section>
+
+<section class="sec" id="steps">
+  <div class="sec-label">Steps 1–7</div>
+  <p class="fine">All evidence in steps 1 to 5 was captured <b>before any change</b> to the configuration.</p>
+  <ol class="steps">
+
+    <li data-step="1" data-expect="working">
+      <h3>Traffic generated <span class="chip" data-chip>not checked</span></h3>
+      <p class="why">Before blaming NAT, prove the test traffic was valid: the right source, a way to the gateway, and a path onward from the router.</p>
+      <div class="exh-title">Exhibit</div>
+      <div class="evidence">
+        <div class="ev-group">PC-A</div>
+        <div class="ev"><span class="n">[01]</span><span class="t">PC-A$ ip addr show eth0 | grep inet
+    inet 192.168.100.10/25 scope global eth0
+    inet 192.168.100.11/25 scope global secondary eth0</span></div>
+        <div class="ev"><span class="n">[02]</span><span class="t">PC-A$ ip route
+default via 192.168.100.126 dev eth0
+192.168.100.0/25 dev eth0 scope link</span></div>
+        <div class="ev"><span class="n">[03]</span><span class="t">PC-A$ ping -c 3 192.0.2.69
+3 packets transmitted, 0 packets received, 100% packet loss
+PC-A$ wget -q -O - -T 3 http://192.0.2.69/
+(no output: timed out)</span></div>
+        <div class="ev-group">EDGE</div>
+        <div class="ev"><span class="n">[04]</span><span class="t">EDGE# show ip route 192.0.2.69
+Routing entry for 0.0.0.0/0, supernet
+  * 203.0.113.254</span></div>
+        <div class="ev"><span class="n">[05]</span><span class="t">EDGE# ping 203.0.113.254
+!!!!!
+Success rate is 100 percent (5/5)</span></div>
+      </div>
+      <form class="step-form" onsubmit="return false">
+        <label>What does the evidence say about this step?</label>
+        <select class="verdict"><option value="">Choose…</option><option value="working">Working</option><option value="not">Not working</option><option value="unsure">Cannot tell yet</option></select>
+        <label>Which lines support your call, and why?</label>
+        <textarea class="why-text" placeholder="Cite lines such as [01] and say what each one shows."></textarea>
+        <div class="actions"><button type="button" class="primary check">Check this step</button><button type="button" class="nudge-btn">Need a nudge?</button></div>
+        <div class="msg"></div>
+        <div class="nudge"><p>A failed ping and a timed-out web request tell you something is wrong, not where. Ask two things: from which address did the packet leave PC-A, and does PC-A know the way to the router that will translate it?</p></div>
+        <div class="fb ok"><p><b>That matches the evidence.</b> [01] shows the test source is a LAN-A address and [02] shows the default gateway is EDGE's inside interface, as the plan says. [04] and [05] show EDGE can reach the outside. The failures in [03] are the symptom you were handed, not a fault in this step.</p></div>
+        <div class="fb no"><p><b>Look again.</b> Compare [01] and [02] with the addressing plan. Is the source a LAN-A address? Is the gateway the one the plan names? Then read [04] and [05]: can EDGE reach the outside? If all of that is in order, the test traffic is valid and the failures are only the symptom.</p></div>
+      </form>
+    </li>
+
+    <li data-step="2" data-expect="working">
+      <h3>Selected for translation <span class="chip" data-chip>not checked</span></h3>
+      <p class="why">NAT only translates traffic it selects. Here the selection is the static mapping, plus the interface roles. Compare both with the design.</p>
+      <div class="exh-title">Exhibit (EDGE)</div>
+      <div class="evidence">
+        <div class="ev"><span class="n">[06]</span><span class="t">EDGE# show ip nat statistics
+Outside interfaces:
+  Ethernet0/1
+Inside interfaces:
+  Ethernet0/2
+Hits: 9  Misses: 0</span></div>
+        <div class="ev"><span class="n">[07]</span><span class="t">EDGE# show running-config | include ip nat
+ip nat inside source static 192.168.100.10 209.165.200.226</span></div>
+      </div>
+      <form class="step-form" onsubmit="return false">
+        <label>What does the evidence say about this step?</label>
+        <select class="verdict"><option value="">Choose…</option><option value="working">Working</option><option value="not">Not working</option><option value="unsure">Cannot tell yet</option></select>
+        <label>Which lines support your call, and why? Name what you compared against.</label>
+        <textarea class="why-text" placeholder="Cite lines such as [06] and [07] and say what each one shows next to the design."></textarea>
+        <div class="actions"><button type="button" class="primary check">Check this step</button><button type="button" class="nudge-btn">Need a nudge?</button></div>
+        <div class="msg"></div>
+        <div class="nudge"><p>Put the design text next to the device text and compare them one number at a time. Check the roles first, then the mapping: the inside address and the outside address.</p></div>
+        <div class="fb ok"><p><b>That matches the evidence.</b> [06] shows the roles are where the design puts them. [07] is the design's mapping, number for number. Nothing here is selecting the wrong traffic.</p><p>Notice what you have not proved yet: that the translated traffic gets where it is going and comes back.</p></div>
+        <div class="fb no"><p><b>Look again.</b> Check the roles in [06] against the design. Then read [07] against the design's mapping line, one number at a time: the inside address and the public address. If they match, selection is working.</p></div>
+      </form>
+    </li>
+
+    <li data-step="3" data-expect="working">
+      <h3>Resource available <span class="chip" data-chip>not checked</span></h3>
+      <p class="why">Static NAT does not use a pool. Its resource is the mapping itself: the permanent entry that ties the inside host to the public address. Check that the entry exists and uses the address the design names.</p>
+      <div class="exh-title">Exhibit (EDGE)</div>
+      <div class="evidence">
+        <div class="ev"><span class="n">[08]</span><span class="t">EDGE# show ip nat translations
+Pro Inside global      Inside local       Outside local      Outside global
+--- 209.165.200.226    192.168.100.10     ---                ---</span></div>
+      </div>
+      <form class="step-form" onsubmit="return false">
+        <label>What does the evidence say about this step?</label>
+        <select class="verdict"><option value="">Choose…</option><option value="working">Working</option><option value="not">Not working</option><option value="unsure">Cannot tell yet</option></select>
+        <label>Which lines support your call, and why?</label>
+        <textarea class="why-text" placeholder="Cite [08] and say what the entry shows."></textarea>
+        <div class="actions"><button type="button" class="primary check">Check this step</button><button type="button" class="nudge-btn">Need a nudge?</button></div>
+        <div class="msg"></div>
+        <div class="nudge"><p>A permanent entry with no ports and no outside address is the mapping waiting to be used. Does it name the inside host and the public address from the design?</p></div>
+        <div class="fb ok"><p><b>That matches the evidence.</b> The permanent entry is there and it ties <code>192.168.100.10</code> to <code>209.165.200.226</code>. The resource exists and is ready.</p></div>
+        <div class="fb no"><p><b>Look again.</b> The first line of [08] is the permanent mapping. Does it name the inside host and the public address the design gives? If so, the resource is in place.</p></div>
+      </form>
+    </li>
+
+    <li data-step="4" data-expect="working">
+      <h3>Translation occurring <span class="chip" data-chip>not checked</span></h3>
+      <p class="why">This is still <b>before you make any change</b>, with the failed ping and web request behind you. Look for proof that translations were made while the test ran, and for what the next device received.</p>
+      <div class="exh-title">Exhibit (captured after the failed tests, before any change to the configuration)</div>
+      <div class="evidence">
+        <div class="ev-group">EDGE</div>
+        <div class="ev"><span class="n">[09]</span><span class="t">EDGE# show ip nat translations
+Pro  Inside global           Inside local        Outside local       Outside global
+---  209.165.200.226         192.168.100.10      ---                 ---
+icmp 209.165.200.226:1       192.168.100.10:1    192.0.2.69:1        192.0.2.69:1
+tcp  209.165.200.226:40213   192.168.100.10:40213 192.0.2.69:80      192.0.2.69:80</span></div>
+        <div class="ev-group">ISP</div>
+        <div class="ev"><span class="n">[10]</span><span class="t">ISP# show access-lists BLOCK-RESERVED
+Standard IP access list BLOCK-RESERVED
+    10 deny   10.0.0.0, wildcard bits 0.255.255.255
+    20 deny   172.16.0.0, wildcard bits 0.15.255.255
+    30 deny   192.168.0.0, wildcard bits 0.0.255.255
+    40 deny   169.254.0.0, wildcard bits 0.0.255.255
+    50 deny   127.0.0.0, wildcard bits 0.255.255.255
+    60 permit any (6 matches)</span></div>
+      </div>
+      <form class="step-form" onsubmit="return false">
+        <label>What does the evidence say about this step?</label>
+        <select class="verdict"><option value="">Choose…</option><option value="working">Working</option><option value="not">Not working</option><option value="unsure">Cannot tell yet</option></select>
+        <label>Which lines support your call, and why? Say what the ISP received.</label>
+        <textarea class="why-text" placeholder="Cite [09] and [10]. What kind of source address reached the ISP?"></textarea>
+        <div class="actions"><button type="button" class="primary check">Check this step</button><button type="button" class="nudge-btn">Need a nudge?</button></div>
+        <div class="msg"></div>
+        <div class="nudge"><p>Read [09] for the entries made while the ping and the web request ran, then read [10] and ask which line counted packets. Was the source address private or public when it reached the ISP?</p></div>
+        <div class="fb ok"><p><b>That matches the evidence.</b> EDGE made translations for the ping and the web request [09], and the ISP counted the packets on its <code>permit any</code> line, not on a deny line [10]. The source address was already public.</p><p>This is the trap in this case: translation is present and still the tests fail. A working translation only proves translation. It does not prove the request was answered or that the reply came back.</p></div>
+        <div class="fb no"><p><b>Look again.</b> [09] lists entries for the ping and the web request, so was anything translated? In [10], which line counted the packets, and what does that say about the source address the ISP received?</p></div>
+      </form>
+    </li>
+
+    <li data-step="5" data-expect="not">
+      <h3>Return traffic allowed <span class="chip" data-chip>not checked</span></h3>
+      <p class="why">A translation also needs a way back. Three questions: did the request reach the server, did the server answer, and can the answer find its way back to the translated address?</p>
+      <div class="exh-title">Exhibit</div>
+      <div class="evidence">
+        <div class="ev-group">ISP</div>
+        <div class="ev"><span class="n">[11]</span><span class="t">ISP# show ip route 209.165.200.226
+% Network not in table</span></div>
+        <div class="ev"><span class="n">[12]</span><span class="t">ISP# ping 209.165.200.226
+.....
+Success rate is 0 percent (0/5)</span></div>
+        <div class="ev-group">SERVER</div>
+        <div class="ev"><span class="n">[13]</span><span class="t">SERVER$ netstat -an | grep ':80'
+tcp   0   0 0.0.0.0:80            0.0.0.0:*               LISTEN
+tcp   0   0 192.0.2.69:80         209.165.200.226:40213   SYN_RECV</span></div>
+      </div>
+      <form class="step-form" onsubmit="return false">
+        <label>What does the evidence say about this step?</label>
+        <select class="verdict"><option value="">Choose…</option><option value="working">Working</option><option value="not">Not working</option><option value="unsure">Cannot tell yet</option></select>
+        <label>Which lines support your call, and why? Say where the conversation stopped.</label>
+        <textarea class="why-text" placeholder="Cite [11], [12] and [13]. What reached the server, and what happened to the answer?"></textarea>
+        <div class="actions"><button type="button" class="primary check">Check this step</button><button type="button" class="nudge-btn">Need a nudge?</button></div>
+        <div class="msg"></div>
+        <div class="nudge"><p>Follow one packet. The request left EDGE with a public source. [13] shows what the server did with it. Then ask which address the server must now send its answer to, and whether the ISP, the next device on that path, knows how to reach it.</p></div>
+        <div class="fb ok"><p><b>That matches the evidence.</b> [13] shows the request arrived and the server started to answer. The answer goes to <code>209.165.200.226</code>, and [11] and [12] show the ISP has no way to reach that address.</p><p>This is the first step that fails, so this is where the fault lives. The NAT rule on EDGE is not what is wrong.</p></div>
+        <div class="fb no"><p><b>Look again.</b> [13] shows the request reached the server. The server must now answer the address in its connection table. Read [11] and [12]: can the ISP reach that address? What happens to a packet when a router has no route for its destination?</p></div>
+      </form>
+    </li>
+
+    <li data-step="6" data-kind="fix">
+      <h3>Make the change <span class="chip" data-chip>not checked</span></h3>
+      <p class="why">Change as little as possible, on the device where the first failing step lives. <b>Before you type anything</b>, keep the evidence you collected in steps 1 to 5: the failed ping and web request, the EDGE translations, the ISP route lookup and the SERVER connection table. It proves what was wrong.</p>
+      <form class="step-form" onsubmit="return false">
+        <label>Which device, and which commands, in the order you would type them?</label>
+        <textarea class="fix-cmds" placeholder="Name the device on the first line, then write each command."></textarea>
+        <label>Why that device, and why those commands?</label>
+        <textarea class="why-text" placeholder="Say which step failed, and what you chose not to touch."></textarea>
+        <div class="actions"><button type="button" class="primary check">Check this step</button><button type="button" class="nudge-btn">Need a nudge?</button></div>
+        <div class="msg"></div>
+        <div class="nudge"><p>A route needs a destination, a mask and a next hop. The public block is in the addressing plan. Which router must learn it, and which neighbouring address leads to the device that owns it?</p></div>
+        <div class="fb ok"></div>
+        <div class="fb no"></div>
+      </form>
+    </li>
+
+    <li data-step="7" data-kind="verify">
+      <h3>Verify the change <span class="chip" data-chip>not checked</span></h3>
+      <p class="why">A fix is only proved by the same kind of evidence that showed the fault. Repeat the tests that failed, then read the evidence from steps 4 and 5 again.</p>
+      <form class="step-form" onsubmit="return false">
+        <label>Which tests and commands would you run, and on which device?</label>
+        <textarea class="v-cmds" placeholder="Name the device for each command."></textarea>
+        <label>What should you see if the fix worked?</label>
+        <textarea class="v-exp" placeholder="Say what you expect from each test and from the route lookup."></textarea>
+        <div class="actions"><button type="button" class="primary check">Check this step</button><button type="button" class="nudge-btn">Need a nudge?</button></div>
+        <div class="msg"></div>
+        <div class="nudge"><p>Two things failed at the start: a ping and a web request. Repeat both from the host that failed. Then read the one line on the ISP that was missing before the change.</p></div>
+        <div class="fb ok"></div>
+        <div class="fb no"></div>
+        <div class="after">
+          <div class="exh-title">Exhibit: expected shape after the change</div>
+          <div class="evidence">
+            <div class="ev"><span class="n">[14]</span><span class="t">PC-A$ ping -c 3 192.0.2.69
+3 packets transmitted, 3 packets received, 0% packet loss
+PC-A$ wget -q -O - -T 3 http://192.0.2.69/
+SERVER 192.0.2.69 web ok</span></div>
+            <div class="ev"><span class="n">[15]</span><span class="t">ISP# show ip route 209.165.200.226
+Routing entry for 209.165.200.224/29
+  Known via "static", distance 1, metric 0
+  * 203.0.113.100</span></div>
+          </div>
+          <p class="fine">Controls: PC-A to PC-B (<code>172.16.100.10</code>) works before and after. Two results stay as designed and are not faults: PC-A's second address (<code>ping -c 3 -I 192.168.100.11 192.0.2.69</code>) is not mapped, so it goes out untranslated and the ISP drops it; and PC-B to <code>192.0.2.69</code> fails for the same reason.</p>
+        </div>
+      </form>
+    </li>
+
+  </ol>
+</section>
+
+<section class="sec" id="quiz">
+  <div class="sec-label">How I will see this in a quiz question</div>
+  <div class="qhead"><span class="badge diff">Practice format</span><span class="qtitle">Question – NAT Return Path: Find / Fix / Verify</span></div>
+  <div class="ask">
+    <p>On the in-class quiz you do not get the guide. You get the case, the numbered evidence and an answer sheet. The question asks for the same work you just did, in this order:</p>
+    <ul>
+      <li><b>Find:</b> the first step that fails, the evidence lines that prove it, and a one or two sentence diagnosis (steps 1 to 5).</li>
+      <li><b>Fix:</b> the device and the complete commands (step 6).</li>
+      <li><b>Verify:</b> the command you would run and what you expect to see (step 7).</li>
+    </ul>
+    <p>Try it now, without the step cards: use the case and the exhibits <code>[01]</code>–<code>[13]</code> above, fill every field, then press <b>Check my answers</b>. Marks go per field, so an empty field is a lost mark. Cite only the lines that prove your answer. The sheet checks for key words, not your exact wording.</p>
+  </div>
+  <div class="fields" id="sheet">
+    <div class="field"><label><b>first_failing_step=</b><span>The number (1–5) of the first step that fails</span></label>
+      <select id="f-step" style="width:100%;font:14px var(--mono);padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)"><option value="">Choose…</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+    <div class="field"><label><b>evidence_lines=</b><span>The numbered line or lines that prove it</span></label><input id="f-lines" type="text" autocomplete="off"></div>
+    <div class="field"><label><b>diagnosis=</b><span>One or two sentences: what is wrong, and why it stops the traffic</span></label><textarea id="f-diag" rows="3"></textarea></div>
+    <div class="field"><label><b>fix_command=</b><span>The device, then the complete commands to fix it</span></label><textarea id="f-fix" rows="4"></textarea></div>
+    <div class="field"><label><b>verify_command=</b><span>What you would run, and where, to confirm the fix</span></label><input id="f-vcmd" type="text" autocomplete="off"></div>
+    <div class="field"><label><b>verify_expected=</b><span>What you expect to see if it worked</span></label><textarea id="f-vexp" rows="2"></textarea></div>
+  </div>
+  <div class="actions"><button type="button" class="primary" id="btn-check">Check my answers</button><button type="button" id="btn-show">Show worked answer</button><button type="button" id="btn-clear">Clear sheet</button></div>
+  <div class="results" id="results"></div>
+  <div class="worked" id="worked">
+    <strong>Worked answer</strong>
+    <dl>
+      <dt>first_failing_step=</dt><dd>5 (return traffic allowed)</dd>
+      <dt>evidence_lines=</dt><dd>[11] (no route on the ISP), supported by [13] (the request reached the server)</dd>
+      <dt>diagnosis=</dt><dd>The static mapping works: EDGE translates, and the server received the request. The ISP has no route to the inside global address 209.165.200.226, so the server's reply is dropped at the ISP.</dd>
+      <dt>fix_command=</dt><dd>On ISP: configure terminal / ip route 209.165.200.224 255.255.255.248 203.0.113.100</dd>
+      <dt>verify_command=</dt><dd>PC-A: ping -c 3 192.0.2.69 and wget -q -O - -T 3 http://192.0.2.69/; ISP: show ip route 209.165.200.226</dd>
+      <dt>verify_expected=</dt><dd>0% loss; wget prints SERVER 192.0.2.69 web ok; the ISP lists a static route to 209.165.200.224/29 via 203.0.113.100.</dd>
+    </dl>
+    <p class="fine">Before you change anything, keep the failed ping and web request, the EDGE translations, the ISP route lookup and the SERVER connection table. They are your proof of what was wrong.</p>
+  </div>
+</section>
+
+<section class="sec" id="mistakes">
+  <div class="sec-label">Common mistakes</div>
+  <div class="mistakes">
+    <div><b>Stopping at "the translation is there"</b>A translation only proves that translation happened. Delivery and the return path need their own evidence.</div>
+    <div><b>Changing the NAT rule</b>If the mapping matches the design and the entries appear, the NAT rule is not the fault. Look further along the path.</div>
+    <div><b>Fixing the router where the symptom shows</b>The failing ping starts on PC-A, but the fault lives on the device where the first failing step is, here the ISP.</div>
+    <div><b>Treating the symptom as the cause</b>A failed ping and a timed-out request describe what you see. They do not say why.</div>
+    <div><b>Half a command</b>A route needs the destination, the mask and the next hop, and you name the device it goes on.</div>
+    <div><b>Verifying with only one test</b>Repeat everything that failed: the ping and the web request. Then read the route that was missing.</div>
+  </div>
+</section>
+
+<p class="foot">Practice case for CST8371. Evidence lines are teaching summaries of device output, not full captures.</p>
+</main>
+
+<script>
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  function normS(s) { return (s || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+  function setFb(li, ok, html) {
+    var a = $('.fb.ok', li), b = $('.fb.no', li);
+    a.classList.toggle('on', ok); b.classList.toggle('on', !ok);
+    (ok ? a : b).innerHTML = html;
+    var chip = $('[data-chip]', li);
+    chip.textContent = ok ? 'matches the evidence' : 'look again';
+    chip.className = 'chip' + (ok ? ' done' : '');
+  }
+  function ul(items) { return items.length ? '<ul>' + items.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul>' : ''; }
+
+  var ROUTE = /ip route\s+209\.165\.200\.(224\s+255\.255\.255\.248|226\s+255\.255\.255\.255)\s+203\.0\.113\.100/;
+
+  function checkFix(li, msg) {
+    var c = normS($('.fix-cmds', li).value), t = $('.why-text', li).value.trim();
+    if (!c) { msg.textContent = 'Write the device and the commands first.'; return; }
+    if (t.length < 8) { msg.textContent = 'Say why that device and those commands before you check.'; return; }
+    msg.textContent = '';
+    var hasIsp = /\bisp\b/.test(c);
+    var hasRoute = ROUTE.test(c);
+    var wrong = /\bedge\b/.test(c) || /ip nat|access-list|overload/.test(c);
+    var miss = [];
+    if (!hasIsp) miss.push(/\bedge\b/.test(c) ? 'Is that the device where your first failing step lives? Re-read which device could not reach the address.' : 'Name the device the commands go on.');
+    if (!hasRoute) miss.push('Give the complete route: the destination from the plan, its mask, and the next hop that leads to the owner of that address.');
+    if (wrong) miss.push('You are changing something the evidence showed was fine. A limited repair touches only what failed.');
+    if (!miss.length) {
+      setFb(li, true, '<p><b>That matches the evidence.</b> The change goes on the ISP, where step 5 failed. It adds only the missing route and leaves the NAT rule, the roles and the ACL alone, because steps 2 to 4 gave no reason to touch them.</p><p>Now you need proof that it worked.</p>');
+    } else {
+      setFb(li, false, '<p><b>Look again.</b></p>' + ul(miss));
+    }
+  }
+
+  function checkVerify(li, msg) {
+    var c = normS($('.v-cmds', li).value), e = normS($('.v-exp', li).value);
+    if (!c || e.length < 8) { msg.textContent = 'Fill both boxes before you check.'; return; }
+    msg.textContent = '';
+    var hasPing = /ping/.test(c);
+    var hasWget = /wget|curl|http/.test(c);
+    var hasRoute = /show ip route/.test(c);
+    var expOk = /0% ?(packet )?loss|no loss|web ok|reply|replies|success|static|209\.165\.200\.224|203\.0\.113\.100/.test(e);
+    var miss = [];
+    if (!hasPing) miss.push('Repeat the ping that failed, from the host that failed.');
+    if (!hasWget) miss.push('The web request failed too. Repeat it as well.');
+    if (!hasRoute) miss.push('Read the line that was missing on the device you changed.');
+    if (!expOk) miss.push('Say what you expect to see: the ping result, what the web request returns, and what the route lookup now shows.');
+    if (!miss.length) {
+      setFb(li, true, '<p><b>That matches the evidence.</b> You repeat both tests that failed, you read the route that was missing, and you say what each should show. The exhibit below shows the expected shape.</p>');
+      $('.after', li).classList.add('on');
+    } else {
+      setFb(li, false, '<p><b>Look again.</b></p>' + ul(miss));
+    }
+  }
+
+  $$('.steps > li').forEach(function (li) {
+    var kind = li.getAttribute('data-kind');
+    var expect = li.getAttribute('data-expect');
+    var msg = $('.msg', li);
+    $('.nudge-btn', li).addEventListener('click', function () { $('.nudge', li).classList.toggle('on'); });
+    $('.check', li).addEventListener('click', function () {
+      if (kind === 'fix') { checkFix(li, msg); return; }
+      if (kind === 'verify') { checkVerify(li, msg); return; }
+      var v = $('.verdict', li).value;
+      var t = $('.why-text', li).value.trim();
+      if (!v) { msg.textContent = 'Choose a verdict first.'; return; }
+      if (t.length < 8) { msg.textContent = 'Write which lines support your call before you check.'; return; }
+      msg.textContent = '';
+      var ok = (v === expect);
+      $('.fb.ok', li).classList.toggle('on', ok);
+      $('.fb.no', li).classList.toggle('on', !ok);
+      var chip = $('[data-chip]', li);
+      chip.textContent = ok ? 'matches the evidence' : 'look again';
+      chip.className = 'chip' + (ok ? ' done' : '');
+    });
+  });
+
+  function row(label, state, lines) {
+    var cls = state === 2 ? 'ok' : (state === 1 ? 'part' : 'bad');
+    var txt = state === 2 ? 'Good' : (state === 1 ? 'Partly' : 'Missing');
+    return '<div class="row"><div class="row-head"><code>' + label + '</code><span class="pill ' + cls + '">' + txt + '</span></div>' +
+      (lines.length ? '<ul>' + lines.map(function (l) { return '<li>' + l + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+  }
+
+  function check() {
+    var step = $('#f-step').value;
+    var lines = normS($('#f-lines').value);
+    var diag = normS($('#f-diag').value);
+    var fix = normS($('#f-fix').value);
+    var vcmd = normS($('#f-vcmd').value);
+    var vexp = normS($('#f-vexp').value);
+    var out = [];
+
+    out.push(row('first_failing_step', step === '5' ? 2 : 0,
+      step === '5' ? [] : ['Re-read your notes for each step. Which is the earliest step whose evidence does not match the design?']));
+
+    var hasKey = /11|12/.test(lines);
+    out.push(row('evidence_lines', hasKey ? 2 : (lines ? 1 : 0),
+      hasKey ? [] : ['Cite the line that shows the device could not reach the translated address.']));
+
+    var dKeys = [/isp|router/.test(diag), /route|routing|reach/.test(diag), /209\.165\.200\.226|inside global|translated|public address|reply|return/.test(diag)];
+    var dn = dKeys.filter(Boolean).length;
+    var dl = [];
+    if (!dKeys[0]) dl.push('Name the device that is at fault.');
+    if (!dKeys[1]) dl.push('Say what that device is missing.');
+    if (!dKeys[2]) dl.push('Say which traffic or address this stops, and why the NAT rule is not the cause.');
+    out.push(row('diagnosis', dn === 3 ? 2 : (dn ? 1 : 0), dl));
+
+    var hasIsp = /\bisp\b/.test(fix);
+    var hasRoute = ROUTE.test(fix);
+    var fl = [];
+    if (!hasIsp) fl.push('Name the router the commands go on.');
+    if (!hasRoute) fl.push('Give the complete route: destination, mask and next hop.');
+    out.push(row('fix_command', (hasIsp && hasRoute) ? 2 : ((hasIsp || hasRoute) ? 1 : 0), fl));
+
+    var vOk = /show ip route|ping|wget/.test(vcmd);
+    out.push(row('verify_command', vOk ? 2 : (vcmd ? 1 : 0), vOk ? [] : ['Pick a command that shows whether the route now exists, or a test that proves the host can reach the server.']));
+
+    var eOk = /0% ?(packet )?loss|no loss|web ok|reply|replies|success|static|209\.165\.200\.224|203\.0\.113\.100/.test(vexp);
+    out.push(row('verify_expected', eOk ? 2 : (vexp ? 1 : 0), eOk ? [] : ['Say what you expect to see: the ping result, the web request, and the route.']));
+
+    var r = $('#results');
+    r.innerHTML = out.join('');
+    document.body.setAttribute('data-checked', '1');
+    r.style.display = 'flex';
+  }
+
+  $('#btn-check').addEventListener('click', check);
+  $('#btn-show').addEventListener('click', function () { document.body.setAttribute('data-reveal', '1'); });
+  $('#btn-clear').addEventListener('click', function () {
+    ['#f-step', '#f-lines', '#f-diag', '#f-fix', '#f-vcmd', '#f-vexp'].forEach(function (s) { $(s).value = ''; });
+    $('#results').innerHTML = '';
+    $('#results').style.display = 'none';
+    document.body.removeAttribute('data-checked');
+    document.body.removeAttribute('data-reveal');
+  });
+})();
+</script>
+</body>
+</html>

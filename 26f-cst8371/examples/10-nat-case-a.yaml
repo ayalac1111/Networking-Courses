@@ -1,0 +1,969 @@
+annotations:
+- border_color: '#2E7D32FF'
+  border_radius: 10
+  border_style: '2,2'
+  color: '#00B14030'
+  thickness: 2
+  type: rectangle
+  x1: -760
+  y1: -295
+  x2: -290
+  y2: 120
+  z_index: 0
+- border_color: '#1565C0FF'
+  border_radius: 10
+  border_style: '2,2'
+  color: '#5F85BE30'
+  thickness: 2
+  type: rectangle
+  x1: -5
+  y1: -295
+  x2: 470
+  y2: 120
+  z_index: 0
+- border_color: '#E65100FF'
+  border_radius: 10
+  border_style: '2,2'
+  color: '#F5A62340'
+  thickness: 2
+  type: rectangle
+  x1: -140
+  y1: -55
+  x2: -20
+  y2: 75
+  z_index: 1
+- border_color: '#808080FF'
+  border_radius: 10
+  border_style: '2,2'
+  color: '#9E9E9E30'
+  thickness: 2
+  type: rectangle
+  x1: -430
+  y1: -590
+  x2: -290
+  y2: -350
+  z_index: 1
+- border_color: '#00000000'
+  border_style: ''
+  color: '#1B5E20FF'
+  rotation: 0
+  text_bold: true
+  text_content: |-
+    INSIDE  =  PRIVATE addresses   [tag: inside]
+  text_font: monospace
+  text_italic: false
+  text_size: 14
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -748
+  y1: -287
+  z_index: 40
+- border_color: '#00000000'
+  border_style: ''
+  color: '#0D47A1FF'
+  rotation: 0
+  text_bold: true
+  text_content: |-
+    OUTSIDE  =  PUBLIC addresses   [tag: outside]
+  text_font: monospace
+  text_italic: false
+  text_size: 14
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 8
+  y1: -287
+  z_index: 40
+- border_color: '#00000000'
+  border_style: ''
+  color: '#BF360CFF'
+  rotation: 0
+  text_bold: true
+  text_content: |-
+    [tag: nat-boundary]
+  text_font: monospace
+  text_italic: false
+  text_size: 9
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -135
+  y1: 80
+  z_index: 40
+- border_color: '#00000000'
+  border_style: ''
+  color: '#555555FF'
+  rotation: 0
+  text_bold: true
+  text_content: |-
+    [tag: mgmt]
+    bridge0, not NAT
+  text_font: monospace
+  text_italic: false
+  text_size: 9
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -425
+  y1: -345
+  z_index: 40
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: |-
+    LAN-A  192.168.100.0/25  (private)
+    NAT applies here
+    .10 = A-10, .11 = A-11 (alias)
+  text_font: monospace
+  text_italic: false
+  text_size: 10
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -700
+  y1: -166
+  z_index: 40
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: |-
+    LAN-B  172.16.100.0/28  (private)
+    NO NAT on this LAN
+    .10 = B-10
+  text_font: monospace
+  text_italic: false
+  text_size: 10
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -700
+  y1: 34
+  z_index: 40
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: |-
+    203.0.113.0/24  (public)
+  text_font: monospace
+  text_italic: false
+  text_size: 10
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 10
+  y1: -60
+  z_index: 40
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: |-
+    192.0.2.0/24  (public)
+    SERVER = 192.0.2.69
+  text_font: monospace
+  text_italic: false
+  text_size: 10
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 300
+  y1: -60
+  z_index: 40
+- border_color: '#00000000'
+  border_style: ''
+  color: '#808080FF'
+  rotation: 0
+  text_bold: false
+  text_content: |-
+    198.51.100.16/28  (public)
+    NAT pool, usable .17 - .30
+  text_font: monospace
+  text_italic: false
+  text_size: 10
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 10
+  y1: 40
+  z_index: 40
+- border_color: '#E65100FF'
+  border_radius: 8
+  border_style: ''
+  color: '#FFF3E0FF'
+  thickness: 2
+  type: rectangle
+  x1: -760
+  y1: 150
+  x2: 470
+  y2: 330
+  z_index: 9
+- border_color: '#00000000'
+  border_style: ''
+  color: '#BF360CFF'
+  rotation: 0
+  text_bold: true
+  text_content: |-
+    NAT RULE ON EDGE  -  Dynamic NAT with a pool (no overload), LAN-A only
+  text_font: monospace
+  text_italic: false
+  text_size: 11
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -745
+  y1: 158
+  z_index: 10
+- border_color: '#00000000'
+  border_style: ''
+  color: '#333333FF'
+  rotation: 0
+  text_bold: false
+  text_content: |-
+    interface Ethernet0/1   ip nat outside
+    interface Ethernet0/2   ip nat inside     (LAN-A 192.168.100.0/25)
+    interface Ethernet0/3   no NAT role       (LAN-B 172.16.100.0/28)
+    access-list 10 permit 192.168.100.0 0.0.0.127
+    ip nat pool LANA-POOL 198.51.100.17 198.51.100.30 netmask 255.255.255.240
+    ip nat inside source list 10 pool LANA-POOL
+    Design: each LAN-A host gets its own address from 198.51.100.17 - .30 (one for one).
+    LAN-B is not selected, so it is not translated.
+  text_font: monospace
+  text_italic: false
+  text_size: 10
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: -745
+  y1: 182
+  z_index: 10
+- border_color: '#808080FF'
+  border_radius: 10
+  border_style: ''
+  color: '#F3E5F5FF'
+  thickness: 2
+  type: rectangle
+  x1: 540
+  y1: -250
+  x2: 1030
+  y2: 120
+  z_index: 9
+- border_color: '#00000000'
+  border_style: ''
+  color: '#333333FF'
+  rotation: 0
+  text_bold: true
+  text_content: |-
+    ADDRESSING PLAN
+  text_font: monospace
+  text_italic: false
+  text_size: 10
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 554
+  y1: -242
+  z_index: 10
+- border_color: '#00000000'
+  border_style: ''
+  color: '#333333FF'
+  rotation: 0
+  text_bold: false
+  text_content: |-
+    INSIDE (private)
+     PC-A  eth0   192.168.100.10, .11 /25
+           gw     192.168.100.126  (EDGE Eth0/2)
+     PC-B  eth0   172.16.100.10 /28
+           gw     172.16.100.14    (EDGE Eth0/3)
+    NAT ROUTER
+     EDGE  Eth0/1 203.0.113.100/24    outside
+           Eth0/2 192.168.100.126/25  inside
+           Eth0/3 172.16.100.14/28    no NAT role
+    OUTSIDE (public)
+     ISP    Eth0/1 203.0.113.254/24  ACL BLOCK-RESERVED in
+            Eth0/2 192.0.2.254/24
+     SERVER eth0   192.0.2.69/24  gw 192.0.2.254
+    PUBLIC ADDRESS THAT NAT USES
+     198.51.100.17 - .30   dynamic pool, LAN-A
+    MANAGEMENT (DHCP via bridge0, not NAT)
+     EDGE, ISP Eth0/0   PCs, SERVER eth1
+  text_font: monospace
+  text_italic: false
+  text_size: 10
+  text_unit: pt
+  thickness: 1
+  type: text
+  x1: 554
+  y1: -218
+  z_index: 10
+nodes:
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: |-
+      ! CST8371 Fall 2026 - Week 10 NAT guided practice Case A: EDGE (NAT router).
+      hostname EDGE
+      !
+      no ip domain lookup
+      ip domain name cst8371.local
+      username admin privilege 15 secret cisco
+      enable secret class
+      !
+      vrf definition MGMT
+       address-family ipv4
+       exit-address-family
+      !
+      interface Ethernet0/0
+       description MGMT-TO-BRIDGE0
+       vrf forwarding MGMT
+       ip address dhcp
+       ip dhcp client broadcast-flag clear
+       no shutdown
+      !
+      interface Ethernet0/1
+       description TO-ISP-OUTSIDE
+       ip address 203.0.113.100 255.255.255.0
+       ip nat outside
+       no shutdown
+      !
+      interface Ethernet0/2
+       description LAN-A-192.168.100.0/25
+       ip address 192.168.100.126 255.255.255.128
+       ip nat inside
+       no shutdown
+      !
+      interface Ethernet0/3
+       description LAN-B-172.16.100.0/28
+       ip address 172.16.100.14 255.255.255.240
+       no shutdown
+      !
+      ip route 0.0.0.0 0.0.0.0 203.0.113.254
+      !
+      access-list 10 permit 192.168.10.0 0.0.0.127
+      ip nat pool LANA-POOL 198.51.100.17 198.51.100.30 netmask 255.255.255.240
+      ip nat inside source list 10 pool LANA-POOL
+      !
+      crypto key generate rsa modulus 2048
+      ip ssh version 2
+      !
+      line con 0
+       exec-timeout 0 0
+       logging synchronous
+      line vty 0 4
+       login local
+       transport input ssh
+       exec-timeout 30 0
+      end
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n0
+  image_definition: null
+  label: EDGE
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - nat-boundary
+  x: -80
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i4
+    label: Ethernet0/3
+    mac_address: null
+    slot: 3
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: ios_config.txt
+    content: |-
+      ! CST8371 Fall 2026 - Week 10 NAT guided practice Case A: ISP. Outside the NAT domain.
+      hostname ISP
+      !
+      no ip domain lookup
+      ip domain name cst8371.local
+      username admin privilege 15 secret cisco
+      enable secret class
+      !
+      vrf definition MGMT
+       address-family ipv4
+       exit-address-family
+      !
+      interface Ethernet0/0
+       description MGMT-TO-BRIDGE0
+       vrf forwarding MGMT
+       ip address dhcp
+       ip dhcp client broadcast-flag clear
+       no shutdown
+      !
+      interface Ethernet0/1
+       description TO-EDGE-OUTSIDE
+       ip address 203.0.113.254 255.255.255.0
+       ip access-group BLOCK-RESERVED in
+       no shutdown
+      !
+      interface Ethernet0/2
+       description TO-SERVER-OUTSIDE-HOST
+       ip address 192.0.2.254 255.255.255.0
+       no shutdown
+      !
+      ip route 198.51.100.16 255.255.255.240 203.0.113.100
+      !
+      ip access-list standard BLOCK-RESERVED
+       deny 10.0.0.0 0.255.255.255
+       deny 172.16.0.0 0.15.255.255
+       deny 192.168.0.0 0.0.255.255
+       deny 169.254.0.0 0.0.255.255
+       deny 127.0.0.0 0.255.255.255
+       permit any
+      !
+      crypto key generate rsa modulus 2048
+      ip ssh version 2
+      !
+      line con 0
+       exec-timeout 0 0
+       logging synchronous
+      line vty 0 4
+       login local
+       transport input ssh
+       exec-timeout 30 0
+      end
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n1
+  image_definition: null
+  label: ISP
+  node_definition: iol-xe
+  parameters: {}
+  ram: null
+  tags:
+  - outside
+  x: 240
+  y: 0
+  interfaces:
+  - id: i0
+    label: Loopback0
+    mac_address: null
+    type: loopback
+  - id: i1
+    label: Ethernet0/0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i2
+    label: Ethernet0/1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i3
+    label: Ethernet0/2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i4
+    label: Ethernet0/3
+    mac_address: null
+    slot: 3
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: node.cfg
+    content: |-
+      # this is a shell script which will be sourced at boot
+      # CST8371 Fall 2026 - Week 10 NAT guided practice Case A: PC-A (inside host on LAN-A)
+      hostname PC-A
+      # configurable user account
+      USERNAME=admin
+      PASSWORD=cisco
+
+      # data interface
+      ip addr add 192.168.100.10/25 dev eth0
+      ip addr add 192.168.100.11/25 dev eth0
+      ip link set eth0 up
+
+      # default route is set BEFORE the management DHCP so the data gateway stays the default
+      ip route add default via 192.168.100.126
+
+      # management interface (external connector, bridge0): DHCP from the real network
+      ip link set eth1 up
+      udhcpc -i eth1 -b
+      # never let the management network become the default path
+      ip route del default dev eth1 2>/dev/null || true
+
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n2
+  image_definition: null
+  label: PC-A
+  node_definition: alpine
+  parameters: {}
+  ram: null
+  tags:
+  - inside
+  - nat-lan
+  x: -640
+  y: -100
+  interfaces:
+  - id: i0
+    label: eth0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i1
+    label: eth1
+    mac_address: null
+    slot: 1
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: node.cfg
+    content: |-
+      # this is a shell script which will be sourced at boot
+      # CST8371 Fall 2026 - Week 10 NAT guided practice Case A: PC-B (inside host on LAN-B)
+      hostname PC-B
+      # configurable user account
+      USERNAME=admin
+      PASSWORD=cisco
+
+      # data interface
+      ip addr add 172.16.100.10/28 dev eth0
+      ip link set eth0 up
+
+      # default route is set BEFORE the management DHCP so the data gateway stays the default
+      ip route add default via 172.16.100.14
+
+      # management interface (external connector, bridge0): DHCP from the real network
+      ip link set eth1 up
+      udhcpc -i eth1 -b
+      # never let the management network become the default path
+      ip route del default dev eth1 2>/dev/null || true
+
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n3
+  image_definition: null
+  label: PC-B
+  node_definition: alpine
+  parameters: {}
+  ram: null
+  tags:
+  - inside
+  - no-nat-lan
+  x: -640
+  y: 60
+  interfaces:
+  - id: i0
+    label: eth0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i1
+    label: eth1
+    mac_address: null
+    slot: 1
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: node.cfg
+    content: |-
+      # this is a shell script which will be sourced at boot
+      # CST8371 Fall 2026 - Week 10 NAT guided practice Case A: SERVER (outside test host)
+      hostname SERVER
+      # configurable user account
+      USERNAME=admin
+      PASSWORD=cisco
+
+      # data interface
+      ip addr add 192.0.2.69/24 dev eth0
+      ip link set eth0 up
+
+      # default route is set BEFORE the management DHCP so the data gateway stays the default
+      ip route add default via 192.0.2.254
+
+      # management interface (external connector, bridge0): DHCP from the real network
+      ip link set eth1 up
+      udhcpc -i eth1 -b
+      # never let the management network become the default path
+      ip route del default dev eth1 2>/dev/null || true
+
+      # outside test service (busybox httpd; not validated on the course image, see guide)
+      mkdir -p /tmp/www
+      echo "SERVER 192.0.2.69 web ok" > /tmp/www/index.html
+      httpd -p 80 -h /tmp/www || true
+
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n4
+  image_definition: null
+  label: SERVER
+  node_definition: alpine
+  parameters: {}
+  ram: null
+  tags:
+  - outside
+  - test-host
+  x: 400
+  y: 0
+  interfaces:
+  - id: i0
+    label: eth0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i1
+    label: eth1
+    mac_address: null
+    slot: 1
+    type: physical
+- boot_disk_size: null
+  configuration: []
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n5
+  image_definition: null
+  label: LAN-A
+  node_definition: unmanaged_switch
+  parameters: {}
+  ram: null
+  tags:
+  - inside
+  x: -400
+  y: -100
+  interfaces:
+  - id: i0
+    label: port0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i1
+    label: port1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i2
+    label: port2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i3
+    label: port3
+    mac_address: null
+    slot: 3
+    type: physical
+  - id: i4
+    label: port4
+    mac_address: null
+    slot: 4
+    type: physical
+  - id: i5
+    label: port5
+    mac_address: null
+    slot: 5
+    type: physical
+  - id: i6
+    label: port6
+    mac_address: null
+    slot: 6
+    type: physical
+  - id: i7
+    label: port7
+    mac_address: null
+    slot: 7
+    type: physical
+- boot_disk_size: null
+  configuration: []
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n6
+  image_definition: null
+  label: LAN-B
+  node_definition: unmanaged_switch
+  parameters: {}
+  ram: null
+  tags:
+  - inside
+  x: -400
+  y: 60
+  interfaces:
+  - id: i0
+    label: port0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i1
+    label: port1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i2
+    label: port2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i3
+    label: port3
+    mac_address: null
+    slot: 3
+    type: physical
+  - id: i4
+    label: port4
+    mac_address: null
+    slot: 4
+    type: physical
+  - id: i5
+    label: port5
+    mac_address: null
+    slot: 5
+    type: physical
+  - id: i6
+    label: port6
+    mac_address: null
+    slot: 6
+    type: physical
+  - id: i7
+    label: port7
+    mac_address: null
+    slot: 7
+    type: physical
+- boot_disk_size: null
+  configuration:
+  - name: default
+    content: |-
+      System Bridge
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n7
+  image_definition: null
+  label: EXTERNAL-Bridge
+  node_definition: external_connector
+  parameters: {}
+  ram: null
+  tags:
+  - mgmt
+  x: -360
+  y: -540
+  interfaces:
+  - id: i0
+    label: port
+    mac_address: null
+    slot: 0
+    type: physical
+- boot_disk_size: null
+  configuration: []
+  cpu_limit: null
+  cpus: null
+  data_volume: null
+  hide_links: false
+  id: n8
+  image_definition: null
+  label: EXTERNAL-Sw
+  node_definition: unmanaged_switch
+  parameters: {}
+  ram: null
+  tags:
+  - mgmt
+  x: -360
+  y: -400
+  interfaces:
+  - id: i0
+    label: port0
+    mac_address: null
+    slot: 0
+    type: physical
+  - id: i1
+    label: port1
+    mac_address: null
+    slot: 1
+    type: physical
+  - id: i2
+    label: port2
+    mac_address: null
+    slot: 2
+    type: physical
+  - id: i3
+    label: port3
+    mac_address: null
+    slot: 3
+    type: physical
+  - id: i4
+    label: port4
+    mac_address: null
+    slot: 4
+    type: physical
+  - id: i5
+    label: port5
+    mac_address: null
+    slot: 5
+    type: physical
+  - id: i6
+    label: port6
+    mac_address: null
+    slot: 6
+    type: physical
+  - id: i7
+    label: port7
+    mac_address: null
+    slot: 7
+    type: physical
+links:
+- id: l0
+  n1: n0
+  n2: n1
+  i1: i2
+  i2: i2
+  conditioning: {}
+  label: EDGE-Ethernet0/1<->ISP-Ethernet0/1
+- id: l1
+  n1: n0
+  n2: n5
+  i1: i3
+  i2: i0
+  conditioning: {}
+  label: EDGE-Ethernet0/2<->LAN-A-port0
+- id: l2
+  n1: n0
+  n2: n6
+  i1: i4
+  i2: i0
+  conditioning: {}
+  label: EDGE-Ethernet0/3<->LAN-B-port0
+- id: l3
+  n1: n2
+  n2: n5
+  i1: i0
+  i2: i1
+  conditioning: {}
+  label: PC-A-eth0<->LAN-A-port1
+- id: l4
+  n1: n3
+  n2: n6
+  i1: i0
+  i2: i1
+  conditioning: {}
+  label: PC-B-eth0<->LAN-B-port1
+- id: l5
+  n1: n1
+  n2: n4
+  i1: i3
+  i2: i0
+  conditioning: {}
+  label: ISP-Ethernet0/2<->SERVER-eth0
+- id: l6
+  n1: n7
+  n2: n8
+  i1: i0
+  i2: i0
+  conditioning: {}
+  label: EXTERNAL-Bridge-port<->EXTERNAL-Sw-port0
+- id: l7
+  n1: n8
+  n2: n0
+  i1: i1
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port1<->EDGE-Ethernet0/0
+- id: l8
+  n1: n8
+  n2: n1
+  i1: i2
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port2<->ISP-Ethernet0/0
+- id: l9
+  n1: n8
+  n2: n2
+  i1: i3
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port3<->PC-A-eth1
+- id: l10
+  n1: n8
+  n2: n3
+  i1: i4
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port4<->PC-B-eth1
+- id: l11
+  n1: n8
+  n2: n4
+  i1: i5
+  i2: i1
+  conditioning: {}
+  label: EXTERNAL-Sw-port5<->SERVER-eth1
+lab:
+  description: CST8371 Week 10 guided practice - NAT Case A (CML-Free)
+  notes: |-
+    # NAT-Case-A (CML-Free)
+
+    Week 10 guided practice. **Not graded.** Presenter sheet: `NAT-Cases-Guide.md`.
+
+    **Nodes.** Five counted nodes: EDGE and ISP (routers), PC-A, PC-B and SERVER (Alpine hosts). LAN-A, LAN-B, EXTERNAL-Sw and EXTERNAL-Bridge are not counted. Stop any other running lab first.
+
+    Login: routers `admin` / `cisco`, enable secret `class`. Hosts `admin` / `cisco`. Wait about three minutes after Start.
+
+    ## Read the diagram
+
+    - **Inside (left, green):** two private LANs with different ranges. LAN-A `192.168.100.0/25` (PC-A, two addresses) and LAN-B `172.16.100.0/28` (PC-B).
+    - **Orange label:** the NAT rule on EDGE and the design it should produce.
+    - **Outside (right, blue):** ISP and SERVER `192.0.2.69`. The ISP drops private source addresses (ACL `BLOCK-RESERVED`, inbound on `Ethernet0/1`).
+    - Zones are ordinary rectangles: select and move or resize them.
+
+    ## Tags
+
+    | Tag | Nodes | Meaning |
+    |---|---|---|
+    | `inside` | PC-A, PC-B, LAN-A, LAN-B | Private side |
+    | `nat-lan` | PC-A | LAN selected for NAT |
+    | `no-nat-lan` | PC-B | LAN not selected for NAT |
+    | `outside` | ISP, SERVER | Public side |
+    | `test-host` | SERVER | The one external test node |
+    | `nat-boundary` | EDGE | NAT router |
+    | `mgmt` | EXTERNAL-Bridge, EXTERNAL-Sw | Management, bridge0, not NAT |
+
+    ## Tests
+
+    From PC-A: `ping -c 3 192.0.2.69`, `ping -c 3 -I 192.168.100.11 192.0.2.69`, `wget -q -O - -T 3 http://192.0.2.69/`.
+    Evidence on EDGE: `show ip nat translations`, `show ip nat statistics`. On ISP: `show access-lists BLOCK-RESERVED`.
+  title: NAT-Case-A
+  version: 0.2.0
