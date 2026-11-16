@@ -36,11 +36,10 @@ The three tickets cover three kinds of NAT fault:
 
 | Task | Command | Notes |
 | --- | --- | --- |
-| Show live translations | `show ip nat translations` | EXEC mode. The port of a service (22, 23, 69) appears only in the **outside** columns; the inside host shows a random port. |
-| Show NAT counters, interface roles, rule bindings and pool allocation | `show ip nat statistics` | EXEC mode. Lists the inside and outside interfaces, each rule as `access-list <n> pool <name>` or `interface <if>` with its `refcount`, the pools and the `static` count. |
+| Show live translations (without DNS) | `show ip nat translations \| exclude :53` | EXEC mode. Run it **after** you generate your test traffic. `\| exclude :53` hides the many DNS translations (port 53), so the entries you see are your own traffic. The port of a service (22, 23, 69) appears only in the **outside** columns; the inside host shows a random port. |
+| Show NAT counters, interface roles, rule bindings and pool allocation | `show ip nat statistics` | EXEC mode. Lists the inside and outside interfaces, each rule as `access-list <n> pool <name>` or `interface <if>` with its `refcount`, each pool with its `start` and `end` addresses, and the `static` count. |
 | Clear dynamic translations before a test | `clear ip nat translation *` | Removes **dynamic** entries only; a static entry stays. Do this before every test so old entries do not mix with your evidence. |
 | Show an ACL | `show access-list <number>` | EXEC mode. |
-| Show a NAT pool's configuration | `show ip nat pool <name>` | Shows the pool's actual address range, and whether it exists under that name. |
 | Confirm the inside/outside role on one interface | `show ip interface <intf> \| include NAT` | |
 | Confirm what address DHCP handed an end device | `show ip dhcp binding` | Run on CORE. |
 | Show TCP sessions and listeners on a router | `show tcp brief` | EXEC mode. |
@@ -62,7 +61,8 @@ ch03-c03-{username}.txt     C03 ticket
 
 - **Capture before you change anything.** Every ticket requires the state *before* your fix and the state *after* it. Evidence captured only after a repair cannot show what was wrong.
 - **Re-test after every repair.** After you change a rule, a pool or an ACL, clear the translations and generate the ticket's test traffic again. A correct fix with no new post-fix evidence earns no evidence credit.
-- **Capture while the traffic is fresh.** Dynamic translations expire after about a minute. Generate the traffic, then capture the router output immediately. For TCP sessions (C03) keep the sessions open while you capture.
+- **Generate the traffic first, then capture.** NAT does nothing for idle hosts, so `show ip nat translations` shows your test only after the test traffic exists. In every ticket: (1) run `clear ip nat translation *` on EDGE, (2) run the ticket's test traffic, (3) capture on EDGE immediately with `show ip nat translations | exclude :53`. Dynamic translations expire after about a minute. For TCP sessions (C01 SSH, C03 Telnet) keep the sessions open while you capture.
+- **Read the table for your own traffic.** `| exclude :53` removes the DNS translations, so what remains is what you generated: the protocol, the inside address and the course server `192.0.2.69`. If your traffic is not in the table, generate it again and repeat the command before you capture.
 - **Run each test from the device the ticket names.** Where a ticket asks for a second test from CORE, run it on CORE with the stated source interface, not from the end host again.
 - **Every successful ping must show 100 percent success.** A first ping can lose a packet while ARP resolves; repeat it before you collect successful proof. The failed tests required **before** a repair are evidence of the fault, not successful reachability.
 - **Capture from the live device.** The prompt must be visible in the captured output. Provisioning templates and configuration listings are not evidence. `show running-config` is not accepted as evidence.
@@ -330,7 +330,7 @@ Each ticket below is a short report, the way it would arrive from a user or from
 | --- | --- | --- |
 | Design match | What `show access-list` and `show ip nat statistics` display for this rule matches B4 | A value differs from B4 |
 | Rule selection | The rule's `refcount` in `show ip nat statistics` is above 0 after test traffic | `refcount` stays 0 |
-| NAT translation table | Three entries: TCP/22 from `172.16.9.46`, ICMP from `172.16.9.44`, ICMP from CORE's `172.16.9.33` | Fewer than three, or entries for only one source |
+| NAT translation table | Three entries for your traffic (DNS hidden by `\| exclude :53`): TCP/22 from `172.16.9.46`, ICMP from `172.16.9.44`, ICMP from CORE's `172.16.9.33` | Fewer than three, or entries for only one source |
 | Connection test | The SSH connection reaches the server's login, the ping from `172.16.9.44` shows `0% packet loss`, and the CORE ping reports `Success rate is 100 percent` | Connection times out, or any ping loss (if a translation entry exists and the connection still fails, the cause is past NAT: raise your hand) |
 
 #### Collection of Information
@@ -343,15 +343,15 @@ Your evidence file `ch03-c01-{username}.txt` was created by the setup script. It
 
 Paste the prompt, the command and the raw output into each slot. Do not edit output, and do not remove commands. Capture the BEFORE slots before any change.
 
-Required on **EDGE**, before and after the repair:
+Collect in this order, **before** the repair and again **after** it. The translations exist only while your traffic is fresh, so the traffic always comes **first** and the capture on EDGE comes **after** it.
+
+**Step 1 — Clear the old entries.** On EDGE, so that only this test's entries appear:
 
 ```text
-show ip nat translations
-show ip nat statistics
-show access-list <the ACL number bound to this rule>
+EDGE:    clear ip nat translation *
 ```
 
-Also required, before and after the repair. Use **SSH (TCP)** from Alpine's DHCP address, then a **ping** from its second address, then generate a third translation from **CORE**, sourced from its own Alpine-facing interface. Run the CORE test on CORE, not from Alpine again. Paste each test's output, including a failure message:
+**Step 2 — Generate the traffic.** Run the three tests and paste each output, including a failure message. Use **SSH (TCP)** from Alpine's DHCP address, then a **ping** from its second address, then a **ping** on **CORE** sourced from its own Alpine-facing interface. Run the CORE test on CORE, not from Alpine again:
 
 ```text
 Alpine:  ssh cisco@192.0.2.69
@@ -359,7 +359,17 @@ Alpine:  ping -c 4 -I 172.16.9.44 192.0.2.69
 CORE:    ping 192.0.2.69 source GigabitEthernet0/0/2
 ```
 
-Leave the SSH session open while you capture on EDGE. Repeat the after-repair ping until it shows 100 percent.
+Leave the SSH session open. After the repair, repeat each ping until it shows 100 percent.
+
+**Step 3 — Capture on EDGE right away**, while the traffic is fresh:
+
+```text
+EDGE:    show ip nat translations | exclude :53
+EDGE:    show ip nat statistics
+EDGE:    show access-list <the ACL number bound to this rule>
+```
+
+**Step 4 — Check that your traffic is in the table.** After the repair, `show ip nat translations | exclude :53` lists your three tests: TCP/22 from `172.16.9.46`, ICMP from `172.16.9.44` and ICMP from `172.16.9.33`, all to `192.0.2.69`. Before the repair the entries for the failing source are missing: capture that as the fault evidence. If a test you ran is not listed and the rule should select it, generate it again and repeat the capture.
 
 Complete the one-line comment in the file, stating what was wrong and what you changed:
 
@@ -389,9 +399,9 @@ Complete the one-line comment in the file, stating what was wrong and what you c
 
 | Verification Item | Success Indicator | Failure Signal |
 | --- | --- | --- |
-| Design match | The rule's pool name, and the pool's range and mask in `show ip nat statistics` and `show ip nat pool`, match B4 | A name, range or mask differs from B4 |
+| Design match | The rule's pool name, and the pool's `start` and `end` addresses and netmask in `show ip nat statistics`, match B4 | A name, range or mask differs from B4 |
 | Rule selection | The rule's `refcount` is above 0 after test traffic | `refcount` stays 0 |
-| NAT translation table | Two entries: UDP/69 from `10.U.18.14` and ICMP from CORE's `10.U.18.1`, both translated to an address in `209.10.U.2` – `209.10.U.6` | No entries, an address outside the range, or only one entry |
+| NAT translation table | Two entries for your traffic (DNS hidden by `\| exclude :53`): UDP/69 from `10.U.18.14` and ICMP from CORE's `10.U.18.1`, both translated to an address in `209.10.U.2` – `209.10.U.6` | No entries, an address outside the range, or only one entry |
 | Connection test | The TFTP upload completes, and the CORE ping reports `Success rate is 100 percent` | Upload times out, or any ping loss |
 
 #### Collection of Information
@@ -402,16 +412,15 @@ Your evidence file `ch03-c02-{username}.txt` was created by the setup script:
 === C02 – Trouble Ticket: PC Network Pool ===
 ```
 
-Required on **EDGE**, before and after the repair:
+Collect in this order, **before** the repair and again **after** it. The traffic always comes **first** and the capture on EDGE comes **after** it, because the translations expire after about a minute.
+
+**Step 1 — Clear the old entries.** On EDGE, so that only this test's entries appear:
 
 ```text
-show ip nat translations
-show ip nat statistics
-show access-list <the ACL number bound to this rule>
-show ip nat pool <the pool name bound to this rule>
+EDGE:    clear ip nat translation *
 ```
 
-Also required, before and after the repair. Create the test file once, then run the upload from the **PC** (PowerShell), and generate a second translation from **CORE**:
+**Step 2 — Generate the traffic.** Create the test file once, then run the upload from the **PC** (PowerShell), and generate a second translation from **CORE** (run it on CORE, not from the PC again). Paste each output, including a failure message:
 
 ```powershell
 "TFTP test $username" | Set-Content "ch03-tftp-test-$username.txt"
@@ -422,7 +431,19 @@ tftp -i 192.0.2.69 PUT "ch03-tftp-test-$username.txt"
 CORE:    ping 192.0.2.69 source GigabitEthernet0/0/0
 ```
 
-Run the traffic, then capture on EDGE right away: the translations expire after about a minute. Repeat the after-repair ping until it shows 100 percent.
+After the repair, repeat the ping until it shows 100 percent.
+
+**Step 3 — Capture on EDGE right away**, while the traffic is fresh:
+
+```text
+EDGE:    show ip nat translations | exclude :53
+EDGE:    show ip nat statistics
+EDGE:    show access-list <the ACL number bound to this rule>
+```
+
+The pool's addresses are in `show ip nat statistics`, on the `start … end …` line under the rule's pool name.
+
+**Step 4 — Check that your traffic is in the table.** After the repair, `show ip nat translations | exclude :53` lists UDP/69 from `10.U.18.14` and ICMP from `10.U.18.1`, both to `192.0.2.69` and both translated to an address from the pool. Before the repair the entries are missing or translated to an address outside the pod block: capture that as the fault evidence. If a test you ran is not listed, generate it again and repeat the capture.
 
 Complete the one-line comment in the file:
 
@@ -465,7 +486,11 @@ Your evidence file `ch03-c03-{username}.txt` was created by the setup script:
 === C03 – Trouble Ticket: Static Port-Forward ===
 ```
 
-The test needs a host **outside** your NAT. Use Alpine (it reaches the course server through the C01 repair), exactly as in Lab 10. From Alpine, SSH to the course server (password `cisco`), then Telnet to the published address and log in (`admin` / `cisco`). Keep the session open while you capture:
+Collect in this order, **before** the repair and again **after** it. The traffic comes **first**; EDGE and CORE are captured **after** it, with the Telnet session still open.
+
+The test needs a host **outside** your NAT. Use Alpine (it reaches the course server through the C01 repair), exactly as in Lab 10.
+
+**Step 1 — Generate the traffic.** From Alpine, SSH to the course server (password `cisco`), then Telnet to the published address and log in (`admin` / `cisco`). **Keep both sessions open** while you capture:
 
 ```bash
 ssh cisco@192.0.2.69
@@ -475,15 +500,17 @@ ssh cisco@192.0.2.69
 telnet 203.0.113.U 2323
 ```
 
-Required, before and after the repair:
+Paste the result of the Telnet attempt: the failure message before the repair, the CORE login prompt after it.
+
+**Step 2 — Capture on EDGE and CORE right away**, with the sessions still open:
 
 ```text
-EDGE:  show ip nat translations
+EDGE:  show ip nat translations | exclude :53
 EDGE:  show ip nat statistics
 CORE:  show tcp brief
 ```
 
-Also paste the result of the Telnet attempt (the failure message before the repair, the CORE login prompt after it).
+**Step 3 — Check that your traffic is in the table.** `| exclude :53` hides the DNS translations. The static entry stays in the table, with or without traffic; after the repair it is followed by the live session from `192.0.2.69` through `203.0.113.U:2323`, and your Alpine SSH session to the course server is listed as well. Before the repair, compare the static entry with B4 and confirm that CORE shows no `ESTAB` session from `192.0.2.69` on port 23.
 
 Complete the one-line comment in the file:
 
