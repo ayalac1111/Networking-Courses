@@ -42,7 +42,7 @@ Phases 1 to 3 need only CML-Free, so you can do them at home. Phases 4 and 5 nee
    - In CML, extract the configurations of all nodes (select the nodes, then **Extract configurations**), so the routers' running configurations are stored in the lab.
    - EMP-PC and SRV forget anything typed at the shell when they restart. Put their address and default route in each node's **Config** tab (`node.cfg`); the file has a marked place for them.
    - **Download** the lab and keep the YAML file, for example as `13-RET-capstone-<username>.yaml`.
-4. **In the lab:** import your YAML into the lab PC's CML, start it, and check that your configurations are there. Then follow `13-RET-capstone-bridge-guide.md` (C00) and continue with Phase 4.
+4. **In the lab:** import your YAML into the lab PC's CML, start it, and check that your configurations are there. Then follow the [bridge guide](../resources/l13-bridge-guide.md) (C00) and continue with Phase 4.
 
 ### The admin network (E1/0)
 
@@ -386,7 +386,7 @@ The bridge is the riskiest part of this capstone. Prove it in your first 20 minu
   - nothing else yet: no routes, no OSPF, no NAT, no ACLs (those are Phases 4 and 5).
 - [ ] **C00-R2** ISP-B base, on the console: hostname `ISP-B`, the same user and enable secret. Its addressing and route come in Phase 4 (P4-R8).
 - [ ] Your lab file is imported into the lab PC's CML and your Phase 1 to 3 configurations are present.
-- [ ] You followed `13-RET-capstone-bridge-guide.md`: VMnet2, Network Adapter 2, `bridge1`, the `EDGE-LINK` label, and the `EDGE-LINK` External Connector linked to `SW-BB`.
+- [ ] You followed the [bridge guide](../resources/l13-bridge-guide.md): VMnet2, Network Adapter 2, `bridge1`, the `EDGE-LINK` label, and the `EDGE-LINK` External Connector linked to `SW-BB`.
 - [ ] The lab PC's **BLACK** (Realtek) port is cabled to EDGE `Gi0/0/2`, and its **BLUE** (Intel) port to ISP-B `Gi0/0/1`.
 
 | # | Device | Command | Required result |
@@ -601,15 +601,7 @@ show ip interface brief
 
 ### Traffic generator
 
-Your `l13.zip` package contains two versions of the traffic generator. They send the same traffic, use the same token and print the same summary. Run the one that matches the outside host.
-
-**macOS, Linux or Alpine** (Python 3, standard library only; on Alpine, `apk add python3` first):
-
-```bash
-python3 ret-gen.py --username <username> --u <U>
-```
-
-**Windows**, in the same PowerShell window you use for the lab:
+Your `l13.zip` package contains the traffic generator, `ret-gen.ps1`. Run it on the outside PC, in the same PowerShell window you use for the lab:
 
 ```powershell
 .\ret-gen.ps1 -Username <username> -U <U>
