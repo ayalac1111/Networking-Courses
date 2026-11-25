@@ -114,6 +114,7 @@ Each ACL has exactly **one** ACE with the `log` keyword. Put it on the deny that
 | View ACL and match counts | `show ip access-lists <NAME>` | EXEC mode |
 | Which ACL is bound where | `show ip interface <if>` | look at the `access list` lines |
 | NAT still translating? | `show ip nat translations` / `show ip nat statistics` | |
+| Show one NAT pool | `show ip nat pool name <name>` | the keyword `name` is required before the pool name |
 
 ---
 
@@ -407,16 +408,16 @@ Make sure NAT is fully proven now, using each service the ACLs will restrict lat
 
 | # | From | Test | Command |
 |---|---|---|---|
-| 1 | Alpine | TFTP to the TFTP server | `tftp -p -l <any file> 192.0.2.69` |
+| 1 | Alpine | TFTP to the TFTP server | `tftp 192.0.2.69 -c put <any file>` |
 | 2 | Alpine | SSH to the SSH server | `ssh admin@192.0.2.22` |
 | 3 | Alpine | HTTP to the web server | `curl http://192.0.2.80` |
 | 4 | PC | DNS query to the DNS server | `nslookup ns.cnap.cst 192.0.2.53` |
-| 5 | PC | HTTP to the TFTP server's address | `curl http://192.0.2.69` |
-| 6 | PC | HTTPS to the web server | `curl -k https://192.0.2.80` |
-| 7 | Alpine | ICMP to the TFTP server | `ping 192.0.2.69` |
+| 5 | PC | HTTP to the TFTP server's address | `curl.exe http://192.0.2.69` |
+| 6 | PC | HTTPS to the web server | `curl.exe -k https://192.0.2.80` |
+| 7 | Alpine | ICMP to the TFTP server | `ping -c 4 192.0.2.69` |
 | 8 | PC | ICMP to the TFTP server | `ping 192.0.2.69` |
 
-> **Alpine's TFTP syntax differs from the PC's.** Alpine runs BusyBox's `tftp`: `tftp -p -l <file> <host>` (`-p` = put, `-l` = local file, host last). It is not the Windows-style `tftp -i <host> put <file>`. Later checkpoints that use TFTP from Alpine use the BusyBox form. A web browser works instead of `curl` for tests 3, 5 and 6. Open Alpine in a regular SSH session from your PC: copy and paste work much better than in the VM console.
+> **Alpine's TFTP syntax differs from the PC's.** On Alpine the server comes first and the transfer is a `-c` command: `tftp <host> -c put <file>`. It is not the Windows-style `tftp -i <host> put <file>`. Later checkpoints that use TFTP from Alpine use the same form. **On the PC, type `curl.exe`, not `curl`:** in Windows PowerShell, `curl` is an alias for `Invoke-WebRequest`, which rejects `-k` and `--max-time`. A web browser works instead of `curl` for tests 3, 5 and 6. Open Alpine in a regular SSH session from your PC: copy and paste work much better than in the VM console.
 
 Every ping (tests 7 and 8) must show **100% success**: `0% packet loss` on Alpine, `Lost = 0 (0% loss)` on the PC. If a ping shows any loss, run it again until it is clean.
 
@@ -433,7 +434,7 @@ Paste each host result and its EDGE result into the slots the template gives tha
 ```text
 EDGE# show ip nat statistics
 EDGE# show ip access-list U
-EDGE# show ip nat pool <username>-POOL
+EDGE# show ip nat pool name <username>-POOL
 ```
 
 `show ip nat pool` is a review command: it confirms the pool's real range. It is not pass/fail evidence by itself.
@@ -448,7 +449,7 @@ EDGE# show ip nat pool <username>-POOL
 | Translations | For each of the 8 tests, the host output and the matching EDGE entry captured at the time you ran it, including both ping outputs |
 | NAT statistics | `show ip nat statistics` with `Hits:` of 8 or more |
 | Selector ACL | `show ip access-list U` showing a single ACE for `192.168.U.0 0.0.0.255` |
-| Pool | `show ip nat pool <username>-POOL` with the range and the `/28` mask |
+| Pool | `show ip nat pool name <username>-POOL` with the range and the `/28` mask |
 | Proof line | One `!-- PROOF:` sentence at the bottom |
 
 ### Success Indicator / Failure Signal
@@ -594,7 +595,7 @@ echo "l12 tftp test" > l12-tftp-test.txt
 |---|---|---|---|
 | 1 | 1 | `curl --max-time 5 http://192.0.2.80` | Blocked: times out |
 | 2 | 2 | `curl --max-time 5 -k https://192.0.2.80` | Blocked: times out |
-| 3 | 3 | `tftp -p -l l12-tftp-test.txt 192.0.2.69` | Blocked: no transfer. Wait about 10 seconds, then press Ctrl-C |
+| 3 | 3 | `tftp 192.0.2.69 -c put l12-tftp-test.txt` | Blocked: no transfer. Wait about 10 seconds, then press Ctrl-C |
 | 4 | 4 | `ssh -o ConnectTimeout=5 admin@192.0.2.22` | Blocked: connection times out |
 | 5 | 5 | `ping -c 3 <PC-address>` | Blocked: 100% packet loss |
 | 6 | 6 | `ping -c 3 192.0.2.69` | ✔ Allowed: 0% packet loss. It worked before the ACL and still does |
@@ -773,11 +774,11 @@ echo "l12 tftp test" > l12-tftp-test.txt
 | # | ACE | Command (from the PC) | Expected now that POLICY-PC is bound |
 |---|---|---|---|
 | 1 | 1 | `nslookup ns.cnap.cst 192.0.2.53` | Blocked: DNS request times out |
-| 2 | 2 | `curl --max-time 5 http://192.0.2.69` | Blocked: times out |
-| 3 | 3 | `curl -k --max-time 5 https://192.0.2.80` | Blocked: times out |
+| 2 | 2 | `curl.exe --max-time 5 http://192.0.2.69` | Blocked: times out |
+| 3 | 3 | `curl.exe -k --max-time 5 https://192.0.2.80` | Blocked: times out |
 | 4 | 4 | `tftp -i 192.0.2.69 PUT l12-tftp-test.txt` | ✔ Allowed: the transfer completes |
 | 5 | 4 | `ssh admin@192.0.2.22` | ✔ Allowed: a password prompt appears; press Ctrl-C |
-| 6 | 4 | `curl --max-time 5 http://192.0.2.80` | ✔ Allowed: the web server answers |
+| 6 | 4 | `curl.exe --max-time 5 http://192.0.2.80` | ✔ Allowed: the web server answers |
 
 > Tests 4 to 6 are the controls. They prove your deny ACEs are not wider than the policy. They worked before the ACL (TFTP, SSH, HTTP to the web server) and must still work.
 
