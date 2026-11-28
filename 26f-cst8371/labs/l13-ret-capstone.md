@@ -97,7 +97,7 @@ Wherever a table shows `U`, use your own number: your Brightspace **U** grade. A
 | EDGE             | Gi0/0/1   | `198.18.U.1/30`  | To ISP-B                                                          |
 | ISP-B            | Gi0/0/0   | `198.18.U.2/30`  | To EDGE                                                           |
 | ISP-B            | Gi0/0/1   | `198.18.U.17/28` | Outside LAN gateway                                               |
-| Outside PC       | BLUE (Intel) | `198.18.U.20/28` | No default gateway on this adapter; two static routes instead (P4-R9) |
+| Outside PC       | BLUE (Intel) | `198.18.U.20/28` | Default gateway `198.18.U.17` (ISP-B), set in the Windows network settings (P4-R9) |
 | Public NAT block | -         | `198.19.U.0/29`  | `.1` Employees PAT; `.2` portal and sensors                       |
 | TFTP server      | -         | `192.0.2.69`     | Evidence uploads (`scp`) and the listing check (`ssh`)            |
 | Web server       | -         | `192.0.2.80`     | Employee Internet test                                            |
@@ -432,10 +432,8 @@ The bridge is the riskiest part of this capstone. Prove it in your first 20 minu
   - **one static route**: the default route `0.0.0.0/0` via EDGE, `198.18.U.1`;
   - no OSPF and no NAT.
 - [ ] **P4-R9** The outside PC reaches the outside world **through ISP-B only**:
-  - The **BLUE** (Intel) adapter has `198.18.U.20/28` and **no** default gateway. Find its Windows name with `Get-NetAdapter`.
-  - Two **non-persistent** routes send `192.0.2.0/24` and `198.19.U.0/29` to `198.18.U.17`, so they disappear on reboot.
-  - The lab PC's own default gateway is unchanged, and the BLACK (Realtek) adapter keeps no address: it belongs to CML.
-  - Use an administrator PowerShell (right-click Windows PowerShell, **Run as administrator**).
+  - In the Windows network settings (**Control Panel > Network and Internet > Network Connections**, right-click the BLUE (Intel) adapter, **Properties > Internet Protocol Version 4 (TCP/IPv4) > Properties**), the **BLUE** (Intel) adapter has IP address `198.18.U.20`, subnet mask `255.255.255.240` and default gateway `198.18.U.17`. No DNS server is needed.
+  - The BLACK (Realtek) adapter keeps no address: it belongs to CML.
 - [ ] **P4-R10** Redundancy still holds with EDGE attached: with R1-R3 shut, R3 still has the default route and reaches EDGE.
 
 > **Election is not pre-emptive.** If the adjacencies formed before you set the priorities, the old DR stays DR. The Reflection asks you why.
@@ -497,11 +495,10 @@ show ip route static
 show ip interface brief
 ```
 
-**Step 5 - Outside PC.** In PowerShell, run these **four** commands:
+**Step 5 - Outside PC.** In PowerShell, run these **three** commands:
 
 ```powershell
-route print -4 192.0.2.*
-route print -4 198.19.*
+ipconfig
 ping 198.18.U.1
 Test-NetConnection 192.0.2.69 -Port 22
 ```
@@ -572,6 +569,8 @@ Bring R1 `E0/1` back up afterwards.
 | N1 | EMP-PC | Fetch the page on `http://192.0.2.80/` |
 | N2 | Outside PC | Fetch `http://198.19.U.2:443/` |
 | N3 | Outside PC | Send one sensor reading to `198.19.U.2` port `8000+U` (`ret-gen` with a count of 1) |
+
+> **N2: use Firefox or PowerShell, not Chrome or Edge.** The portal is plain HTTP on port 443, not HTTPS. Chrome and Edge refuse it on the lab PCs (`ERR_SSL_PROTOCOL_ERROR` or `Bad Request`). Use **Firefox** with the full address `http://198.19.U.2:443/`, or `Invoke-WebRequest -UseBasicParsing http://198.19.U.2:443/` in PowerShell.
 
 **Step 2 - EDGE.** Straight after the tests, run these **three** commands:
 
@@ -721,7 +720,7 @@ Seven files, the latest timestamps after your final test run.
 ### D3 - Clean up
 
 - Physical routers: before you erase EDGE and ISP-B, copy `show running-config` from each into a text file (for example `l13-edge-<username>.txt`) if you need another lab session: there is no Day0, so you paste your own configuration back next time. Then erase both, as in Lab 12 D3.
-- Remove the outside PC's static routes and the BLUE (Intel) adapter's address.
+- Set the BLUE (Intel) adapter back to **Obtain an IP address automatically** and **Obtain DNS server address automatically**, and move its cable back to the college network.
 - Stop the CML lab and download it. Leave `bridge1`, VMnet2 and Network Adapter 2 in place.
 
 ## End of Lab 13 - RET Capstone
