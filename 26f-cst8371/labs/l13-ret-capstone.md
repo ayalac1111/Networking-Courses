@@ -15,27 +15,27 @@ Cisco IOS-XE physical lab; Windows lab PC (PowerShell).
 
 1. An addressing and design plan: `l13-addressing-<username>.csv`, exported from the planner page `ret-capstone-planner.html` in your `l13.zip` package. The page runs offline in any browser.
 2. A working network: three routers in CML, the physical EDGE, and your own ISP-B.
-3. Six evidence files, `l13-c01-<username>.txt` to `l13-c06-<username>.txt`, uploaded with `scp` to the course server `192.0.2.69`.
+3. Evidence files `l13-c02-<username>.txt` to `l13-c05-<username>.txt`, plus `l13-c06-<username>.txt` if you do the Part B bonus, uploaded with `scp` to the course server `192.0.2.69`.
 
 **The five phases**
 
 | Phase | Where | You build | Checkpoint |
 |---|---|---|---|
-| 1. Addressing | CML, home or lab | Your internal addressing plan, interfaces up | C01 |
+| 1. Addressing | CML, home or lab | Your internal addressing plan, interfaces up | Gate (planner CSV) |
 | 2. Routing | CML, home or lab | OSPF area 0, preferred path and failover | C02 |
 | 3. Internal policy | CML, home or lab | Employees-to-Servers and management ACLs | C03 |
 | - | Lab | Connect CML to EDGE through `bridge1` | C00 (gate) |
 | 4. Providers | Lab: CML + bench | EDGE in OSPF, DR/BDR, both providers, ISP-B | C04 |
-| 5. Publish | Lab: bench | NAT and the outside-facing ACL, then traffic tests | C05, C06 |
+| 5. Publish | Lab: bench | NAT and the traffic generator; the outside-facing ACL is the bonus | C05, C06 [BONUS] |
 
-**Gates.** Do not start Phase 4 until C00 passes. Do not start NAT (Phase 5) until C02 passes. Do not bind any outside-facing ACL until C05 passes.
+**Gates.** Phase 1 has no evidence file: every later check reads your values from your planner CSV, so your addressing must be right before anything else can score. Do not start Phase 4 until C00 passes. Do not start NAT (Phase 5) until C02 passes. Do not bind any outside-facing ACL until C05 passes.
 
 ### Where you work: home first, then the lab
 
 Phases 1 to 3 need only CML-Free, so you can do them at home. Phases 4 and 5 need the physical bench.
 
 1. **Download** `l13.zip`: from Brightspace at home, or in the lab with `scp cisco@192.0.2.69:configs/l13.zip "$env:USERPROFILE\Desktop\"`. Extract it with no wrapper folder. **Import** `13-RET-capstone.yaml` into CML. It opens as the lab **RET Network**.
-   - At home, copy `l13-c01.txt` to `l13-c03.txt` as `l13-c0N-<username>.txt` and replace `{USERNAME}` and `{U}` in their first lines yourself. In the lab, `lab_setup.ps1` creates the rest and never overwrites a file you already have.
+   - At home, copy `l13-c02.txt` and `l13-c03.txt` as `l13-c0N-<username>.txt` and replace `{USERNAME}` and `{U}` in their first lines yourself. In the lab, `lab_setup.ps1` creates the rest and never overwrites a file you already have.
 2. **Work Phases 1 to 3** anywhere.
 3. **Save your work into the lab file** before you leave a CML session:
    - On R1, R2 and R3: `write memory`.
@@ -114,30 +114,36 @@ Everything inside RET comes from **one block: `10.U.0.0/23`**. You carve it.
 
 ## Grading and rules
 
-This capstone replaces Lab 13 and is worth **3% of your final grade**, graded out of **20 points**. Grading is automatic and checks the behaviour of your devices against your evidence and your own planner CSV.
+This capstone replaces Lab 13 and is worth **3% of your final grade**, graded out of **30 points** (10 points = 1% of your final grade). Up to **10 bonus points** come on top, so the maximum is **40/30**. Grading is fully automatic and checks the behaviour of your devices against your evidence and your own planner CSV.
 
-| Part | Checkpoint | Work | Points | Evidence file |
-|---|---|---|---|---|
-| | C00 | In the lab: `bridge1` proven | gate, 0 | verified live |
-| **A** | C01 | Addressing plan and interfaces | 2 | `l13-c01-<username>.txt` |
-| **A** | C02 | OSPF, preferred path, failover | 5 | `l13-c02-<username>.txt` |
-| **A** | C03 | Internal policy ACLs | 5 | `l13-c03-<username>.txt` |
-| **B** | C04 | EDGE, DR/BDR, both providers | 3 | `l13-c04-<username>.txt` |
-| **B** | C05 | NAT | 3 | `l13-c05-<username>.txt` |
-| **B** | C06 | Outside-facing ACL and traffic tests | 2 | `l13-c06-<username>.txt` |
-| | | **Part A 12 (60%) · Part B 8 (40%)** | **20** | |
+| Part | Checkpoint | Work | Points | Bonus | Evidence file |
+|---|---|---|---|---|---|
+| | - | Phase 1: addressing plan and interfaces | gate, 0 | - | your planner CSV |
+| | C00 | In the lab: `bridge1` proven | gate, 0 | - | verified live |
+| **A** (home) | C02 | OSPF, preferred path | 10 | +2.5 | `l13-c02-<username>.txt` |
+| **A** (home) | C03 | Internal policy ACL | 10 | +2.5 | `l13-c03-<username>.txt` |
+| **B** (lab) | C04 | EDGE, DR/BDR, both providers | 4 | +1.3 | `l13-c04-<username>.txt` |
+| **B** (lab) | C05 | NAT and the traffic generator | 6 | - | `l13-c05-<username>.txt` |
+| **B** (lab) | C06 | Outside-facing ACL and traffic tests | - | +3.7 | `l13-c06-<username>.txt` |
+| | | **Part A 20 + 5 bonus · Part B 10 + 5 bonus** | **30** | **+10** | |
+
+- **Part A** (home, CML only) is worth 20 points: 2% of your final grade, or up to 25 points with its bonus.
+- **Part B** (lab, bench) is worth 10 points: 1%, or up to 15 points with its bonus.
+- **`[BONUS]` requirements** are optional. Each one is marked in its phase, and each adds points on top of the 30.
 
 **Due: Friday, December 4, 2026, 8:00 PM.** Submissions are accepted with no late penalty until **Monday, December 14, 2026, 9:00 AM**. The files on the server at that time are the ones graded.
 
 **Rules that apply to every checkpoint**
 
-- **Requirements, not steps.** Every requirement has an ID (P2-R4, and so on). Your evidence must prove each ID in its checkpoint.
+- **Requirements, not steps.** Every requirement has an ID (P2-R4, and so on). Your evidence must prove each ID in its checkpoint. Requirements marked **`[BONUS]`** are optional and earn points on top of the 30.
 - **Your plan is graded against your devices.** The grader reads your values (subnets, gateways, loopbacks) from `l13-addressing-<username>.csv`. If you change the design, export the planner again; the CSV and the devices must agree.
-- **No AI tools.** Do not use AI tools (ChatGPT, Copilot, Claude, Gemini or similar) for any part of this capstone: the plan, the configurations, the evidence, the `!-- PROOF:` lines or the Reflection. This capstone shows what you can build and troubleshoot on your own, which is exactly what the Final SBA will ask of you with no help available.
+- **No AI tools.** Do not use AI tools (ChatGPT, Copilot, Claude, Gemini or similar) for any part of this capstone: the plan, the configurations or the evidence. This capstone shows what you can build and troubleshoot on your own, which is exactly what the Final SBA will ask of you with no help available.
 - **No matches, no points.** Every ACE in every ACL must show `(n matches)` with n of 1 or more, exactly as in Lab 12. Each ACL has exactly one ACE that carries `log`.
 - **Every graded ping is 100%.** Run each one until the ARP entries are learned, then collect.
-- Evidence files follow the Lab 12 format: the `=== C0N ===` header, the device prompt, the command and its raw output, and a `!-- PROOF:` line at the bottom. Do not edit the output. `show tcp brief` appears once in every file, on the device you are connected to by SSH.
-- **Start from the templates.** `l13-c01.txt` to `l13-c06.txt` in your package list every command, device by device, with a slot under each. The setup script copies them to your Desktop as `l13-c0N-<username>.txt` with your username and U filled in. Replace each `<placeholder>` in a command with your own value before you run it.
+- Evidence files follow the Lab 12 format: the `=== C0N ===` header, the device prompt, the command and its raw output. Do not edit the output. `show tcp brief` appears once in every file, on the device you are connected to by SSH.
+- **Start from the templates.** `l13-c02.txt` to `l13-c06.txt` in your package list every command, device by device, with a slot under each. The setup script copies them to your Desktop as `l13-c0N-<username>.txt` with your username and U filled in. Replace each `<placeholder>` in a command with your own value before you run it.
+
+<!-- TODO: upload fallback / infrastructure-fault rule undecided -->
 
 **If you cannot connect to EDGE.** Your C00 gate leaves evidence either way.
 1. Retry on a spare station or in another slot.
@@ -146,7 +152,9 @@ This capstone replaces Lab 13 and is worth **3% of your final grade**, graded ou
 
 ---
 
-## Phase 1 - Addressing (C01)
+## Phase 1 - Addressing (gate)
+
+Phase 1 earns no points and has no evidence file, but it is a gate: the grader reads every subnet, gateway, host and loopback from your planner CSV, so a wrong plan or an interface that does not match it fails the OSPF, ACL and NAT checks that depend on it.
 
 ### Why this matters
 
@@ -169,45 +177,21 @@ RET's employee count is growing from 85 to 150 people. Phones, laptops and test 
 - [ ] **P1-R7** The plan is recorded in the planner and exported as `l13-addressing-<username>.csv`.
 - [ ] **P1-R8** Every interface in the topology is up/up with its planned or given address, and each directly connected pair can reach each other.
 
-### C01 - Collection of information
+### Self-check before Phase 2 (nothing to submit)
 
-**Evidence file:** `l13-c01-<username>.txt`
+Check your work with these commands; you do not collect them in an evidence file.
 
-**Step 1 - routers.** On **R1**, **R2** and **R3**, run these **two** commands:
-
-```text
-show ip interface brief
-show ip interface brief | include Loopback
-```
-
-**Step 2 - hosts.** On **EMP-PC** and **SRV**, run these **two** commands:
-
-```text
-ip -4 addr show eth0
-ip route
-```
-
-**Step 3 - one ping across each link.** Replace the placeholders with your own addresses:
-
-| From | Command |
-|---|---|
-| EMP-PC | `ping -c 4 <Employees gateway>` |
-| SRV | `ping -c 4 <Servers gateway>` |
-| R1 | `ping <R3 address on the R1-R3 link>` |
-| R2 | `ping <R3 address on the R2-R3 link>` |
-| R1 | `ping 172.16.U.2` |
-
-**Step 4 - write your `!-- PROOF:` line:** one sentence naming the output that shows the Employees and Servers prefixes, and why the Employees prefix you chose is the smallest one that meets P1-R2.
-
-### Success Indicator / Failure Signal
+- On **R1**, **R2** and **R3**: `show ip interface brief`.
+- On **EMP-PC** and **SRV**: `ip -4 addr show eth0` and `ip route`.
+- One ping across each link: EMP-PC to the Employees gateway, SRV to the Servers gateway, R1 and R2 to R3 on their links, and R1 to `172.16.U.2`.
 
 | Item | Success | Failure |
 |---|---|---|
-| Plan | CSV inside the block, no overlaps, sizes met | Overlap, a subnet off its boundary, or a size too small |
+| Plan | The planner shows no errors: CSV inside the block, no overlaps, sizes met | Overlap, a subnet off its boundary, or a size too small |
 | Interfaces | All up/up with the CSV addresses | Any mismatch between the CSV and the device |
 | Pings | 100% on every link | Any loss |
 
-> **Hold C01 to C03.** Nothing inside CML can reach the course server until Phase 4. You upload these files from the outside PC at C04.
+> **Hold C02 and C03.** Nothing inside CML can reach the course server until Phase 4. You upload these files from the outside PC at C04.
 
 ---
 
@@ -223,7 +207,7 @@ You configured every command you need here in Lab 12. The capstone tests whether
 | Area                          | `0` only                                                                 |
 | Router IDs                    | R1 `U.0.0.1`, R2 `U.0.0.2`, R3 `U.0.0.3` (and EDGE `U.0.0.4` in Phase 4) |
 | Reference bandwidth           | `10000 Mbps` on every router                                             |
-| Link bandwidth                | R1-R3 `1000 Mbps`<br> R2-R3 `500 Mbps`<br>backbone E0/2 `1000 Mbps`      |
+| Link cost (both ends)         | R1-R3 `10`<br> R2-R3 `20`<br>backbone E0/2 `10`<br>Set with `bandwidth` (1000 / 500 / 1000 Mbps) or `ip ospf cost` |
 | Hello / Dead, R1-R3 and R2-R3 | `10 / 40` (the default; leave it)                                        |
 | Hello / Dead, backbone        | `5 / 20`                                                                 |
 | Loopback network type         | point-to-point                                                           |
@@ -234,19 +218,21 @@ You configured every command you need here in Lab 12. The capstone tests whether
 - [ ] **P2-R2** Router IDs set **manually** to the table values.
 - [ ] **P2-R3** Costs:
   - Reference bandwidth `10000` on **all** routers.
-  - Link bandwidths set so the cost is the same on both ends of each link.
+  - Each link has its target cost from the table on **both** ends: set it with `bandwidth` or with `ip ospf cost`.
   - The expected cost of each link recorded in the planner.
 - [ ] **P2-R4** R1-R3 is the preferred path between Employees and Servers; R2-R3 is the backup. Prove it from the routing table.
 - [ ] **P2-R5** Passive interfaces:
   - Every interface that does not face an OSPF neighbour is passive: both LANs and every loopback.
   - Interfaces that face a neighbour are **not** passive.
 - [ ] **P2-R6** Loopbacks use network type point-to-point, so each one appears as a `/32`.
-- [ ] **P2-R7** Timers match on both ends of every link they apply to.
+- [ ] **P2-R7 [BONUS]** The backbone timers are `5 / 20` on R1 and R2 `E0/2`, matching on both ends.
+  - EDGE uses `5 / 20` on the backbone in Phase 4. If you skip this bonus, EDGE will not reach `FULL` with R1 and R2 until their timers match.
 - [ ] **P2-R8** **No static routes** on R1, R2 or R3.
 - [ ] **P2-R9** Every internal network is reachable from every router.
-- [ ] **P2-R10** **Failover:**
+- [ ] **P2-R10 [BONUS]** **Failover:**
   - With R1-R3 shut, Employees and Servers still reach each other through R2, with no manual change.
   - After the link is restored, the preferred path returns.
+- [ ] **P2-B1 [BONUS]** The R1-R3 and R2-R3 links use OSPF network type point-to-point: there is no DR/BDR election on a `/30`.
 
 ### C02 - Collection of information
 
@@ -260,10 +246,18 @@ show ip ospf | include Reference
 show ip ospf neighbor
 show ip ospf interface brief
 show ip route ospf
-show ip route static
+show ip route static | count ^S
 ```
 
-**Step 2 - the failover test.** Collect this pair three times, in the slots marked **BEFORE**, **FAILED** and **RESTORED**:
+`show ip route static | count ^S` prints `Number of lines which match regexp = 0` when there are no static routes (P2-R8).
+
+**[BONUS] P2-R7 - on R1 and R2 only**, also run:
+
+```text
+show ip ospf interface Ethernet0/2 | include Timer
+```
+
+**Step 2 - the path test.** Collect this pair in the slot marked **BEFORE** (P2-R4). For the **[BONUS] P2-R10** failover test, collect it twice more, in the slots marked **FAILED** and **RESTORED**:
 
 On **R3**:
 
@@ -280,10 +274,8 @@ ping -c 4 <EMP-PC address>
 | Slot | Do this first |
 |---|---|
 | BEFORE | Nothing: every link up |
-| FAILED | Shut R1 `E0/1` and wait for R3's routing table to change |
-| RESTORED | Bring R1 `E0/1` back up and wait for the R1-R3 adjacency to reach `FULL` |
-
-**Step 3 - write your `!-- PROOF:` line:** one sentence naming the outputs that show all adjacencies FULL, the cost of each path, the preferred next hop, the backup next hop during the failure, and the return to the preferred path.
+| FAILED [BONUS] | Shut R1 `E0/1` and wait for R3's routing table to change |
+| RESTORED [BONUS] | Bring R1 `E0/1` back up and wait for the R1-R3 adjacency to reach `FULL` |
 
 ### Success Indicator / Failure Signal
 
@@ -292,10 +284,12 @@ ping -c 4 <EMP-PC address>
 | Adjacencies | All FULL | Stuck at INIT or EXSTART, or missing |
 | Router IDs | Match the table | Auto-selected |
 | Reference bandwidth | `10000 mbps` on all three | Default on any router |
-| Costs | Match your planner; equal on both ends | Bandwidth set on one end only |
+| Costs | Match your planner; equal on both ends | Cost changed on one end only, or on the wrong interface |
 | Passive | Exactly the non-neighbour interfaces | A LAN not passive, or a neighbour link passive |
 | Static routes | None | Any |
-| Failover | Next hop changes to R2, then returns | No change, or a manual fix needed |
+| Backbone timers [BONUS] | `5 / 20` on R1 and R2 `E0/2` | Default `10 / 40` on either |
+| Failover [BONUS] | Next hop changes to R2, then returns | No change, or a manual fix needed |
+| Point-to-point links [BONUS] | R1-R3 and R2-R3 neighbours `FULL/  -` | `FULL/DR` or `FULL/BDR` on a `/30` |
 
 ---
 
@@ -311,14 +305,14 @@ RET's servers hold customer data. Employees use the portal and name services and
   - Permitted: TCP 80, TCP 443, UDP 53, and ICMP echo for troubleshooting.
   - Everything else to Servers is denied and counted.
 - [ ] **P3-R2** Employees traffic to any destination other than the Servers network is **not** affected by P3-R1.
-- [ ] **P3-R3** Management access:
+- [ ] **P3-R3 [BONUS]** Management access:
   - SSH to R1, R2 and R3 (and EDGE in Phase 4) is accepted only from EMP-PC's address and from the admin network on `E1/0`.
   - Any other source is refused and counted.
   - SSH through `E1/0` still works after the ACL is applied. `E1/0` is in a VRF: find out how `access-class` treats connections that arrive in a VRF.
   - The admin network is different at home and in the lab: update the ACL when you move.
-- [ ] **P3-R4** The ACL is placed as close to the source as the policy allows. Your planner records the router, interface and direction, and why.
+- [ ] **P3-R4** The Employees policy ACL is placed as close to the source as the policy allows. Your planner records the router, interface and direction, and why.
 - [ ] **P3-R5** OSPF stays FULL everywhere after every ACL is bound.
-- [ ] **P3-R6** Every ACE has matches. Exactly one ACE per ACL carries `log`.
+- [ ] **P3-R6** Every ACE has matches. Exactly one ACE per ACL carries `log`, and the Employees policy ACL's logged ACE shows in the syslog.
 
 **Traffic you must generate** (record each command and result in your lab book):
 
@@ -329,10 +323,12 @@ RET's servers hold customer data. Employees use the portal and name services and
 | T3 | EMP-PC | SRV, TCP 8080 | Refused, counted |
 | T4 | EMP-PC | SRV, SSH | Refused, counted |
 | T5 | EMP-PC | ping SRV | 100% |
-| T6 | EMP-PC | SSH to the loopbacks of R1, R2 and R3 | Login prompt on each |
-| T7 | SRV | SSH to the loopbacks of R1, R2 and R3 | Refused and counted on each |
+| T6 [BONUS] | EMP-PC | SSH to the loopbacks of R1, R2 and R3 | Login prompt on each |
+| T7 [BONUS] | SRV | SSH to the loopbacks of R1, R2 and R3 | Refused and counted on each |
 | T8 | EMP-PC | SRV, TCP 80 | Permitted by the ACL; SRV refuses the connection because nothing listens on 80 |
-| T9 | Your computer | SSH to the `E1/0` address of R1, R2 and R3 | Login prompt on each |
+| T9 [BONUS] | Your computer | SSH to the `E1/0` address of R1, R2 and R3 | Login prompt on each |
+
+T6, T7 and T9 test the management ACL (P3-R3 [BONUS]). Skip them if you do not do the bonus.
 
 ### C03 - Collection of information
 
@@ -340,33 +336,37 @@ RET's servers hold customer data. Employees use the portal and name services and
 
 **Step 1 - clear the counters, then run T1 to T9.** Record each test command and its result in your lab book.
 
-**Step 2 - the ACLs.** On the router that holds each ACL, run these **three** commands. Use your own ACL name and interface:
+**Step 2 - the Employees policy ACL.** On the router that holds it, run these **three** commands. Use your own ACL name and interface:
 
 ```text
 show ip access-lists <name>
-show ip interface <interface> | include access list
+show ip interface <interface> | include line protocol|access list
 show logging | include <name>
 ```
 
-**Step 3 - every router.** On **R1**, **R2** and **R3**, run these **three** commands:
+**Step 3 - every router.** On **R1**, **R2** and **R3**, run:
 
 ```text
 show ip ospf neighbor
+```
+
+**[BONUS] P3-R3 - the management ACL.** On **R1**, **R2** and **R3**, also run:
+
+```text
 show running-config | section line vty
 show ip access-lists <management ACL name>
 ```
-
-**Step 4 - write your `!-- PROOF:` line:** one sentence naming the ACE lines that prove T1 to T9 and the output that shows OSPF still FULL.
 
 ### Success Indicator / Failure Signal
 
 | Item | Success | Failure |
 |---|---|---|
-| Permitted flows | T1, T2, T5, T6, T9 work; T8 counted as permitted | Any fails |
-| Denied flows | T3, T4, T7 fail and are counted | Not counted, or allowed |
+| Permitted flows | T1, T2, T5 work; T8 counted as permitted | Any fails |
+| Denied flows | T3, T4 fail and are counted | Not counted, or allowed |
 | Placement | Closest to the source; reason recorded | Placed on the server side with no reason |
 | OSPF | Still FULL | An adjacency lost after binding |
 | Matches | Every ACE has matches | Any ACE at 0 |
+| Management ACL [BONUS] | T6 and T9 work; T7 refused and counted; SSH through `E1/0` still works | SRV allowed, or EMP-PC or the admin network refused |
 
 ---
 
@@ -419,7 +419,8 @@ The bridge is the riskiest part of this capstone. Prove it in your first 20 minu
   - **R1 is DR, R2 is BDR, EDGE is DROTHER.**
   - The planner says in one sentence why EDGE should never be DR here.
   - The roles are proven from the neighbour tables.
-- [ ] **P4-R3** Backbone timers are `5 / 20` and match on all three routers.
+- [ ] **P4-R3 [BONUS]** Backbone timers are `5 / 20` and match on all three routers.
+  - EDGE uses `5 / 20`: if you skipped P2-R7 at home, EDGE will not reach `FULL` with R1 and R2 until their timers match.
 - [ ] **P4-R4** You add **exactly two static routes on EDGE**:
   - the default route `0.0.0.0/0` via ISP-A, `203.0.113.254`;
   - a route to the outside network `198.18.U.16/28` via ISP-B, `198.18.U.2`.
@@ -431,29 +432,31 @@ The bridge is the riskiest part of this capstone. Prove it in your first 20 minu
   - the given addressing on both interfaces;
   - **one static route**: the default route `0.0.0.0/0` via EDGE, `198.18.U.1`;
   - no OSPF and no NAT.
-- [ ] **P4-R9** The outside PC reaches the outside world **through ISP-B only**:
+- [ ] **P4-R9** The outside PC reaches the course server and SRV **through ISP-B only**:
   - In the Windows network settings (**Control Panel > Network and Internet > Network Connections**, right-click the BLUE (Intel) adapter, **Properties > Internet Protocol Version 4 (TCP/IPv4) > Properties**), the **BLUE** (Intel) adapter has IP address `198.18.U.20`, subnet mask `255.255.255.240` and default gateway `198.18.U.17`. No DNS server is needed.
   - The BLACK (Realtek) adapter keeps no address: it belongs to CML.
-- [ ] **P4-R10** Redundancy still holds with EDGE attached: with R1-R3 shut, R3 still has the default route and reaches EDGE.
+  - From the outside PC, `ping 192.0.2.69` (the course server) and `ping <SRV address>` (SRV's **private** address) both reach 100%.
+  - The ping to SRV's private address works here because nothing translates or filters yet: it crosses ISP-B, EDGE, the bridge, R1 and R3, and returns through R3's default route and EDGE's route to `198.18.U.16/28`. Once you bind the outside-facing ACL (Phase 5, bonus), the same ping is expected to fail.
+- [ ] **P4-R10 [BONUS]** Redundancy still holds with EDGE attached: with R1-R3 shut, R3 still has the default route and reaches EDGE.
 
-> **Election is not pre-emptive.** If the adjacencies formed before you set the priorities, the old DR stays DR. The Reflection asks you why.
+> **Election is not pre-emptive.** If the adjacencies formed before you set the priorities, the old DR stays DR. The optional Reflection at the end asks you why.
 
 > **Do not ping the outside PC.** The Windows firewall drops incoming echo requests, so a failed ping to `198.18.U.20` proves nothing. Every test in this capstone starts **from** the outside PC instead.
 
-### Upload C01 to C04
+### Upload C02 to C04
 
-From the outside PC, upload `l13-c01` to `l13-c03`, then `l13-c04-<username>.txt` and `l13-addressing-<username>.csv`, to `192.0.2.69` with `scp`, as in every lab. The upload crosses ISP-B, EDGE and ISP-A, so a successful upload is itself proof of the physical path.
+From the outside PC, upload `l13-c02` and `l13-c03`, then `l13-c04-<username>.txt` and `l13-addressing-<username>.csv`, to `192.0.2.69` with `scp`, as in every lab. The upload crosses ISP-B, EDGE and ISP-A, so a successful upload is itself proof of the physical path.
 
 Put the exported CSV on your Desktop beside the evidence files first (the browser saves it to Downloads). Then, in PowerShell:
 
 ```powershell
 Set-Location "$env:USERPROFILE\Desktop"
 $username = "<username>"
-scp "l13-c01-$username.txt" "l13-c02-$username.txt" "l13-c03-$username.txt" "l13-c04-$username.txt" "l13-addressing-$username.csv" "cisco@192.0.2.69:/var/tftp/"
+scp "l13-c02-$username.txt" "l13-c03-$username.txt" "l13-c04-$username.txt" "l13-addressing-$username.csv" "cisco@192.0.2.69:/var/tftp/"
 ssh cisco@192.0.2.69 "ls -l /var/tftp/*$username*"
 ```
 
-The listing must show all five files, each with a non-zero size. A transfer that returns without an error is not confirmation.
+The listing must show all four files, each with a non-zero size. A transfer that returns without an error is not confirmation.
 
 ### C04 - Collection of information
 
@@ -499,11 +502,11 @@ show ip interface brief
 
 ```powershell
 ipconfig
-ping 198.18.U.1
-Test-NetConnection 192.0.2.69 -Port 22
+ping 192.0.2.69
+ping <SRV address>
 ```
 
-**Step 6 - redundancy.** Shut R1 `E0/1`, then run on **R3**, in the slot marked **FAILED**:
+**Step 6 - [BONUS] P4-R10 redundancy.** Shut R1 `E0/1`, then run on **R3**, in the slot marked **FAILED**:
 
 ```text
 show ip route ospf | include 0.0.0.0
@@ -512,30 +515,30 @@ ping 172.16.U.6
 
 Bring R1 `E0/1` back up afterwards.
 
-**Step 7 - management of EDGE.** Record both tests in your lab book, then run `show ip access-lists <your management ACL>` on **EDGE**:
+**Step 7 - [BONUS] management of EDGE (M1/M2).** EDGE gets the same management ACL as R1-R3 (P3-R3), applied to its vty lines with `access-class`. Record both tests in your lab book, then run `show running-config | section line vty` and `show ip access-lists <your management ACL>` on **EDGE**:
 
 | Test | From | Command | Expected |
 |---|---|---|---|
 | M1 | EMP-PC | `ssh admin@172.16.U.6` | Login prompt |
 | M2 | SRV | `ssh admin@172.16.U.6` | Refused and counted |
 
-**Step 8 - write your `!-- PROOF:` line:** one sentence naming the outputs that show R1 DR, R2 BDR and EDGE DROTHER, the `O*E2` default route on R1, R2 and R3, the two outside interfaces outside OSPF, and EDGE's two static routes.
-
 ### Success Indicator / Failure Signal
 
 | Item | Success | Failure |
 |---|---|---|
 | Roles | R1 DR, R2 BDR, EDGE DROTHER | EDGE elected DR, or the roles reversed |
-| Timers | `5 / 20` on all three | One router at the default |
 | Default route | `O*E2 0.0.0.0/0` on R1, R2, R3 | Missing, or a static default on an internal router |
 | Outside interfaces | "OSPF not enabled" on both | Listed, even as passive |
 | EDGE statics | Exactly two, and no redistribution into OSPF | Missing, extra, or `O E2 198.18.U.16/28` on an internal router |
-| EDGE management | M1 login prompt; M2 refused and counted on the management ACL | M2 allowed, or M1 refused |
-| Upload | All five files listed on the server | Missing files |
+| Outside PC pings | 100% to `192.0.2.69` and to SRV's private address | Any loss |
+| Upload | All four files listed on the server | Missing files |
+| Timers [BONUS] | `5 / 20` on all three | One router at the default |
+| Redundancy [BONUS] | R3's default route via R2 with R1-R3 shut; EDGE still reached | No default route, or EDGE unreachable |
+| EDGE management [BONUS] | M1 login prompt; M2 refused and counted on the management ACL | M2 allowed, or M1 refused |
 
 ---
 
-## Phase 5 - Publish RET to the Internet (C05, C06)
+## Phase 5 - Publish RET to the Internet (C05, C06 [BONUS])
 
 ### C05 - your NAT parameters
 
@@ -556,47 +559,7 @@ Bring R1 `E0/1` back up afterwards.
 - [ ] **P5-R4** NAT roles:
   - Correct on all three EDGE interfaces.
   - R1, R2, R3 and ISP-B carry no NAT configuration.
-- [ ] **P5-R5** RET uses **two** public addresses, not three. Your planner says in one sentence what that saves and what it costs (link back to your Week 11 public IPv4 recommendation).
-
-### C05 - Collection of information
-
-**Evidence file:** `l13-c05-<username>.txt`
-
-**Step 1 - three tests.** Record each command and its result in your lab book:
-
-| Test | From | What |
-|---|---|---|
-| N1 | EMP-PC | Fetch the page on `http://192.0.2.80/` |
-| N2 | Outside PC | Fetch `http://198.19.U.2:443/` |
-| N3 | Outside PC | Send one sensor reading to `198.19.U.2` port `8000+U` (`ret-gen` with a count of 1) |
-
-> **N2: use Firefox or PowerShell, not Chrome or Edge.** The portal is plain HTTP on port 443, not HTTPS. Chrome and Edge refuse it on the lab PCs (`ERR_SSL_PROTOCOL_ERROR` or `Bad Request`). Use **Firefox** with the full address `http://198.19.U.2:443/`, or `Invoke-WebRequest -UseBasicParsing http://198.19.U.2:443/` in PowerShell.
-
-**Step 2 - EDGE.** Straight after the tests, run these **three** commands:
-
-```text
-show ip nat translations
-show ip nat statistics
-show ip interface brief
-```
-
-**Step 3 - write your `!-- PROOF:` line:** one sentence naming the translation lines that show the Employees PAT, the portal and the sensor mapping.
-
-### External policy requirements (C06)
-
-**Security policy statement.** From the Internet (either provider), only the published services may enter RET. Return traffic for connections RET started must still work. Evidence uploads from the outside PC must still work.
-
-- [ ] **P5-R6** Inbound from either provider:
-  - Only TCP 443 and TCP `8000+U` to the published address are permitted into RET.
-  - Everything else into RET is denied and counted.
-- [ ] **P5-R7** The ACL is written against the **public** address. It is checked before NAT translates the packet, so the inside address of SRV never appears in it.
-- [ ] **P5-R8** Replies to Employees connections still arrive.
-- [ ] **P5-R9** From the outside PC, these still work:
-  - The `scp` uploads to `192.0.2.69`.
-  - The SSH listing check (D2).
-  - Both are SSH sessions (TCP 22) that cross EDGE between ISP-B and ISP-A, in both directions.
-- [ ] **P5-R10** SSH to EDGE from either provider is refused and counted.
-- [ ] **P5-R11** The Phase 3 policy still holds, and OSPF is still FULL.
+- [ ] **P5-R5** RET uses **two** public addresses, not three. Your planner asks what that saves and what it costs (link back to your Week 11 public IPv4 recommendation); the sentence is for you and is not graded.
 
 ### Traffic generator
 
@@ -613,53 +576,114 @@ What it does:
 - Adds a token derived from your username and U to every request.
 - Prints a summary and saves it as `l13-gen-<username>.txt` on your Desktop.
 
-A request counts as **delivered** when SRV sends back any HTTP response. The sensor endpoint always answers `501 Not Implemented`: SRV's web server has no handler for readings, but the answer proves the reading crossed EDGE, NAT and your ACL and reached SRV. `501` is the expected result and counts as delivered.
+Every request goes to the public address, so it is delivered only if your static mappings, your NAT roles and the whole path work. A request counts as **delivered** when SRV sends back any HTTP response. The sensor endpoint always answers `501 Not Implemented`: SRV's web server has no handler for readings, but the answer proves the reading crossed EDGE and NAT and reached SRV. `501` is the expected result and counts as delivered.
 
-- [ ] **P5-R12** The summary shows `delivered=20 failed=0` for both the portal and the sensor.
-- [ ] **P5-R13** Clear the counters, run the generator once, then read the ACL. The matches on your permit ACEs for TCP 443 and TCP `8000+U` are each at least 20.
+- [ ] **P5-R12** Run the generator **before** you bind any outside-facing ACL. The summary shows `delivered=20 failed=0` for both the portal and the sensor.
 - [ ] **P5-R14** The token in your summary matches your username and U. A summary copied from another student fails this check.
 
-### C06 - Collection of information
+> **See it for yourself (optional, not graded).** You can open RET's published sites from the outside PC in **Firefox**: the portal at `http://198.19.U.2:443/` and the course web server at `http://192.0.2.80/`. The portal is plain HTTP on port 443, not HTTPS, so type the full `http://` address. Chrome and Edge refuse it on the lab PCs (`ERR_SSL_PROTOCOL_ERROR` or `Bad Request`). `Invoke-WebRequest -UseBasicParsing http://198.19.U.2:443/` in PowerShell works too. EMP-PC is an Alpine host with no browser: it uses `wget`.
+
+### C05 - Collection of information
+
+**Evidence file:** `l13-c05-<username>.txt`
+
+**Step 1 - the generator.** On the outside PC, run `ret-gen.ps1` once. Paste its summary into the **Outside PC** section of the file.
+
+**Step 2 - N1, right after the generator.** Record the command and its result in your lab book:
+
+| Test | From | What |
+|---|---|---|
+| N1 | EMP-PC | Fetch the page on `http://192.0.2.80/` |
+
+**Step 3 - EDGE, straight away.** Within a minute of the generator finishing (N1 included), run these **three** commands:
+
+```text
+show ip nat translations
+show ip nat statistics
+show ip interface brief
+```
+
+> **Why straight away.** Next to your static mappings (the lines with `---`), `show ip nat translations` shows one extended entry per generator connection, from `198.18.U.20`, and N1's PAT entry to `198.19.U.1`. Those entries prove that real outside traffic was translated to SRV (P5-R2, P5-R3). The generator's and N1's connections close after each request, and IOS removes a closed translation after about 60 seconds: wait longer and only the static lines remain.
+
+**Step 4 - upload C05 now**, before you start the bonus. An outside-facing ACL that blocks your own uploads must not cost you your core points.
+
+```powershell
+scp "l13-c05-$username.txt" "l13-addressing-$username.csv" "cisco@192.0.2.69:/var/tftp/"
+ssh cisco@192.0.2.69 "ls -l /var/tftp/*$username*"
+```
+
+### Success Indicator / Failure Signal (C05)
+
+| Item | Success | Failure |
+|---|---|---|
+| Employees PAT | N1 translated to `198.19.U.1` | No translation, or a different address |
+| Portal and sensors | `delivered=20 failed=0` twice; extended entries from `198.18.U.20` | Any request lost, or only static lines in the translations |
+| NAT roles | Outside on `Gi0/0/0` and `Gi0/0/1`, inside on `Gi0/0/2` only | A role missing or on the wrong interface |
+
+### External policy requirements (C06) [BONUS]
+
+Everything in C06 is bonus. Start it only after C05 is uploaded.
+
+**Security policy statement.** From the Internet (either provider), only the published services may enter RET. Return traffic for connections RET started must still work. Evidence uploads from the outside PC must still work.
+
+- [ ] **P5-R6 [BONUS]** Inbound from either provider:
+  - Only TCP 443 and TCP `8000+U` to the published address are permitted into RET.
+  - Everything else into RET is denied and counted.
+- [ ] **P5-R7 [BONUS]** The ACL is written against the **public** address. It is checked before NAT translates the packet, so the inside address of SRV never appears in it.
+- [ ] **P5-R8 [BONUS]** Replies to Employees connections still arrive.
+- [ ] **P5-R9 [BONUS]** From the outside PC, these still work:
+  - The `scp` uploads to `192.0.2.69`.
+  - The SSH listing check (D2).
+  - Both are SSH sessions (TCP 22) that cross EDGE between ISP-B and ISP-A, in both directions.
+- [ ] **P5-R10 [BONUS]** SSH to EDGE from either provider is refused and counted.
+- [ ] **P5-R11 [BONUS]** The Phase 3 policy still holds, and OSPF is still FULL.
+- [ ] **P5-R13 [BONUS]** Clear the counters, run the ACL test script once, then read the ACL. The matches on your permit ACEs for TCP 443 and TCP `8000+U` are each at least 20.
+
+### ACL test script [BONUS]
+
+Your `l13.zip` package also contains `ret-acl-test.ps1`. Run it on the outside PC **after** the outside-facing ACL is bound:
+
+```powershell
+.\ret-acl-test.ps1 -Username <username> -U <U> -SrvAddress <SRV address>
+```
+
+It sends every outside test in one run, so each ACE of your outside ACL gets matches: 20 portal requests and 20 sensor readings to `198.19.U.2` (they must still be delivered), a connection to `192.0.2.69` port 22 (must work), and traffic that must be blocked (SSH to EDGE, a ping to `198.19.U.2`, other ports on `198.19.U.2`, and SRV's private address, which answered in C04). It prints a PASS or FAIL line per test with your token and saves the summary as `l13-acltest-<username>.txt` on your Desktop.
+
+### C06 - Collection of information [BONUS]
 
 **Evidence file:** `l13-c06-<username>.txt`
 
-**Step 1 - clear the counters, then run X1 to X7.** Record each command and result in your lab book. Paste the generator summary (X1) into the **Outside PC** section of the file.
+**Step 1 - clear the counters, then run the tests.** Record X2 and X3 in your lab book. Paste the ACL test summary into the **Outside PC** section of the file.
 
 | Test | From | What | Expected |
 |---|---|---|---|
-| X1 | Outside PC | The traffic generator, once | `delivered=20 failed=0`, twice |
 | X2 | EMP-PC | Fetch `http://192.0.2.80/` | Page returned |
 | X3 | EMP-PC | `ping -c 4 192.0.2.80` | 100% |
-| X4 | Outside PC | Upload `l13-c05-<username>.txt` with `scp` | File listed on the server |
-| X5 | Outside PC | The D2 SSH listing check | Listing shown |
-| X6 | Outside PC | `ssh admin@198.18.U.1` | Refused, counted |
-| X7 | Outside PC | `ping 198.19.U.2` | 100% loss, counted |
+| Script | Outside PC | `ret-acl-test.ps1`, once | Every line `PASS` |
 
 **Step 2 - EDGE.** Run these **six** commands, in this order. Use your own ACL name:
 
 ```text
 show ip access-lists <name>
-show ip interface GigabitEthernet0/0/0 | include access list
-show ip interface GigabitEthernet0/0/1 | include access list
+show ip interface GigabitEthernet0/0/0 | include line protocol|access list
+show ip interface GigabitEthernet0/0/1 | include line protocol|access list
 show logging | include <name>
 show ip nat translations
 show ip ospf neighbor
 ```
 
-**Step 3 - write your `!-- PROOF:` line:** one sentence naming the ACE lines that prove X1 to X7 and the generator line that shows every request delivered. Then answer the Reflection under `!-- REFLECTION:` at the bottom of the same file.
-
-**Step 4 - upload** `l13-c05`, `l13-c06` and the final `l13-addressing-<username>.csv`. The latest upload is graded.
+**Step 3 - upload** `l13-c06` and the final `l13-addressing-<username>.csv`. This upload is itself the `scp` and listing test of P5-R9. The latest upload is graded.
 
 ```powershell
-scp "l13-c05-$username.txt" "l13-c06-$username.txt" "l13-addressing-$username.csv" "cisco@192.0.2.69:/var/tftp/"
+scp "l13-c06-$username.txt" "l13-addressing-$username.csv" "cisco@192.0.2.69:/var/tftp/"
 ssh cisco@192.0.2.69 "ls -l /var/tftp/*$username*"
 ```
 
-### Success Indicator / Failure Signal
+### Success Indicator / Failure Signal (C06) [BONUS]
 
 | Item | Success | Failure |
 |---|---|---|
-| Portal and sensors | Delivered from the outside PC; generator totals and ACL counters agree | Any request lost, or counts that do not add up |
+| Portal and sensors | Delivered through the ACL; script totals and ACL counters agree | Any request lost, or counts that do not add up |
 | ACL target | Public address only | SRV's inside address in the outside ACL |
 | Employees | Still reach `192.0.2.80` | Replies dropped by the inbound ACL |
 | Uploads | The final `scp` upload is listed on the server | Upload blocked by your own ACL |
@@ -668,9 +692,9 @@ ssh cisco@192.0.2.69 "ls -l /var/tftp/*$username*"
 
 ---
 
-## Reflection (answer in your C06 file, under `!-- REFLECTION:`)
+## Reflection (optional, ungraded practice)
 
-Each answer must name the line of **your own** evidence that supports it.
+These questions are not graded and do not go in any evidence file. They are good preparation for the Final SBA: answer each one from **your own** evidence, naming the line that supports it.
 
 1. Which router became DR on the backbone segment, and which output proves it?
 2. Suppose you raised R2's priority above R1's after the adjacencies were FULL, and R1 stayed DR. Why, and what would change it?
@@ -705,9 +729,10 @@ Each answer must name the line of **your own** evidence that supports it.
 
 ### D1 - Submission requirements
 
-- Six evidence files `l13-c01-<username>.txt` to `l13-c06-<username>.txt` and `l13-addressing-<username>.csv`, uploaded to `192.0.2.69` from the outside PC.
+- Four evidence files `l13-c02-<username>.txt` to `l13-c05-<username>.txt`, plus `l13-c06-<username>.txt` if you did the Part B bonus, and `l13-addressing-<username>.csv`, uploaded to `192.0.2.69` from the outside PC.
 - The CSV matches your final devices.
 - The course server is the only submission point. There is no Brightspace dropbox for this capstone.
+<!-- TODO: upload fallback / infrastructure-fault rule undecided -->
 
 ### D2 - Validate
 
@@ -715,7 +740,7 @@ Each answer must name the line of **your own** evidence that supports it.
 ssh cisco@192.0.2.69 "ls -l /var/tftp/*$username*"
 ```
 
-Seven files, the latest timestamps after your final test run.
+Five files: four evidence files and the CSV (six with the C06 bonus), the latest timestamps after your final test run.
 
 ### D3 - Clean up
 
